@@ -1,0 +1,19 @@
+{
+  "name": "geonaute/linkdata-client",
+  "description": "A Symfony4 bundle for Linkdata",
+  "type": "symfony-bundle",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Raphael Bonini",
+      "email": "raphael.bonini@stadline.com"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "^6.3",
+    "jms/serializer": "^1.12"
+  },
+  "autoload": {
+    "psr-4": { "Geonaute\\LinkdataClient\\": "" }
+  }
+}
