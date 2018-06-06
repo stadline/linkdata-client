@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Geonaute\LinkdataClient\Entity;
+namespace Stadline\src\LinkdataClient\Entity;
 
 use DateTime;
 
@@ -121,7 +121,7 @@ class Sport
      * @var Universe
      *
      * @Serializer\SerializedName("universe")
-     * @Serializer\Type("array<Geonaute\LinkdataClient\Entity\Universe>")
+     * @Serializer\Type("array<Stadline\src\LinkdataClient\Entity\Universe>")
      */
     private $universe;
 

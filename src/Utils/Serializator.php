@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Geonaute\LinkdataClient\Utils;
+namespace Stadline\src\LinkdataClient\Utils;
 
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;

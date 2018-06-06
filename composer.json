@@ -1,5 +1,5 @@
 {
-  "name": "geonaute/linkdata-client",
+  "name": "stadline/linkdata-client",
   "description": "A Symfony4 bundle for Linkdata",
   "type": "symfony-bundle",
   "license": "proprietary",
@@ -10,10 +10,17 @@
     }
   ],
   "require": {
+    "php": "^7.1",
     "guzzlehttp/guzzle": "^6.3",
-    "jms/serializer": "^1.12"
+    "pagerfanta/pagerfanta": "^1.0",
+    "symfony/serializer": "^4.1"
   },
   "autoload": {
-    "psr-4": { "Geonaute\\LinkdataClient\\": "" }
+    "psr-4": { "Stadline\\LinkdataClient\\": "" }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
   }
 }
