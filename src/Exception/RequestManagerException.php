@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Geonaute\LinkdataClient\Exception;
+namespace Stadline\src\LinkdataClient\Exception;
 
 class RequestManagerException extends \Exception
 {
