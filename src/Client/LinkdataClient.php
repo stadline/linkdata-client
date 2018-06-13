@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\src\src\LinkdataClient\Client;
+namespace Stadline\src\LinkdataClient\Client;
 
 use HttpRequestException;
 use Stadline\src\LinkdataClient\Exception\RequestManagerException;
