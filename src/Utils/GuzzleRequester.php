@@ -14,7 +14,7 @@ class GuzzleRequester extends Paginator
     //todo change the baseUri and place it into configuration
     public function getClient(): Client
     {
-        return new Client(['base_uri' => 'http://localhost:8000/']);
+        return new Client(['base_uri' => 'http://eu2-stable-dev-www.eu-central-1.elasticbeanstalk.com']);
     }
 
     /**
