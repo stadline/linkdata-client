@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\src\LinkdataClient\Exception;
+namespace Stadline\LinkdataClient\src\Exception;
 
 class PaginatorException extends \Exception
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\src\LinkdataClient\Entity;
+namespace Stadline\LinkdataClient\src\Entity;
 
 use DateTime;
 
@@ -28,7 +28,7 @@ class Universe
      * @var array
      *
      * @Serializer\SerializedName("sports")
-     * @Serializer\Type("array<Stadline\src\LinkdataClient\Entity\Sport>")
+     * @Serializer\Type("array<Stadline\LinkdataClient\src\Entity\Sport>")
      */
     private $sports;
 
