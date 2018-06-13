@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Stadline\src\LinkdataClient\Utils;
+namespace Stadline\LinkdataClient\src\Utils;
 
-use Stadline\src\LinkdataClient\Exception\PaginatorException;
+use Stadline\LinkdataClient\src\Exception\PaginatorException;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Exception\LessThan1MaxPerPageException;
 use Pagerfanta\Exception\NotIntegerMaxPerPageException;

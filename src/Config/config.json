@@ -1,3 +1,4 @@
 {
-    "version": "v2"
+    "base_url": "http://eu2-stable-dev-www.eu-central-1.elasticbeanstalk.com/",
+    "isSecure": false
 }

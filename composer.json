@@ -10,13 +10,12 @@
     }
   ],
   "require": {
-    "php": "^7.0",
+    "php": "^7.1",
     "guzzlehttp/guzzle": "^6.3",
-    "pagerfanta/pagerfanta": "^1.0",
-    "symfony/serializer": "^3.4"
+    "pagerfanta/pagerfanta": "^1.0"
   },
   "autoload": {
-    "psr-4": { "Stadline\\LinkdataClient\\": "" }
+    "psr-4": { "Stadline\\LinkdataClient\\src\\": "src" }
   },
   "extra": {
     "branch-alias": {
