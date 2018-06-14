@@ -1,4 +1,4 @@
 {
-    "base_url": "http://eu2-stable-dev-www.eu-central-1.elasticbeanstalk.com/",
+    "base_url": "https://eu2-linkdata.dev.geonaute.com/v2",
     "isSecure": false
 }

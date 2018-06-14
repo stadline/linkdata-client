@@ -10,6 +10,7 @@ class UriConverter
     public function formateUri(string $method, array $args): array
     {
         $response = [];
+        $queryString = '';
         $config = $this->loadConfiguration();
 
         // get each parts of method splited by uppercase
@@ -18,7 +19,9 @@ class UriConverter
         // extract the method
         $response['method'] = array_shift($splitedUri);
         // if we have an id (for querying one occurence), extract it and place it at the end of the uri
-        $queryString = isset($args['id']) ? \sprintf('/%s', $args['id']) : '';
+        foreach ($args as $arg) {
+            $queryString = isset($arg['id']) ? \sprintf('/%s', $arg['id']) : '';
+        }
 
         if (1 === \count($splitedUri)) {
             $response['uri'] = \sprintf('%s/%s%s', $config->base_url, strtolower($splitedUri[0]), $queryString);
