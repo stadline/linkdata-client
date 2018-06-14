@@ -121,7 +121,7 @@ class Sport
      * @var Universe
      *
      * @Serializer\SerializedName("universe")
-     * @Serializer\Type("array<Stadline\LinkdataClient\src\Entity\Universe>")
+     * @Serializer\Type("string")
      */
     private $universe;
 
@@ -149,22 +149,22 @@ class Sport
      */
     private $updatedAt;
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): string
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(DateTime $updatedAt): void
+    public function setUpdatedAt(string $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): string
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(string $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -189,12 +189,12 @@ class Sport
         $this->translatedNames = $translatedNames;
     }
 
-    public function getUniverse(): Universe
+    public function getUniverse(): string
     {
         return $this->universe;
     }
 
-    public function setUniverse(Universe $universe): void
+    public function setUniverse(string $universe): void
     {
         $this->universe = $universe;
     }
