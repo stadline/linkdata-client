@@ -4,37 +4,34 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Utils;
 
+use Doctrine\Common\Inflector\Inflector;
+use Stadline\LinkdataClient\src\Exception\LinkdataClientException;
 
 class UriConverter
 {
+    private $config;
+
+    public function __construct() {
+        $this->config = $this->loadConfiguration();
+    }
+
+    /**
+     * @throws LinkdataClientException
+     */
     public function formateUri(string $method, array $args): array
     {
         $response = [];
-        $config = $this->loadConfiguration();
 
-        // get each parts of method splited by uppercase
-        $splitedUri = preg_split('/(?=[A-Z])/', $method, -1, PREG_SPLIT_NO_EMPTY);
-
-        // extract the method
-        $response['method'] = array_shift($splitedUri);
-        // if we have an id (for querying one occurence), extract it and place it at the end of the uri
-        $queryString = isset($args['id']) ? \sprintf('/%s', $args['id']) : '';
-
-        if (1 === \count($splitedUri)) {
-            $response['uri'] = \sprintf('%s/%s%s', $config->base_url, strtolower($splitedUri[0]), $queryString);
-
-            return $response;
+        if (1 !== preg_match('/^(?<method>[a-z]+)(?<className>[A-Za-z]+)$/', $method, $matches)) {
+            throw new LinkdataClientException(\sprintf('The method %s is not reconnized.', $method));
         }
 
-        $uri = strtolower(array_shift($splitedUri));
+        $response['method'] = $matches['method'];
+        $this->validateClassByName($matches['className']);
 
-        foreach ($splitedUri as $item) {
-            $uri .= str_replace($item, substr($item, 0), sprintf('_%s', strtolower($item)));
-        }
+        $response['uri'] = $this->generateUri($matches['className'], $args);
 
-        $response['uri'] = \sprintf('%s/%s%s', $config->base_url, $uri, $queryString);
-
-        return $uri;
+        return $response;
     }
 
     private function loadConfiguration()
@@ -42,5 +39,49 @@ class UriConverter
         $json = file_get_contents(__DIR__.'/../Config/config.json');
 
         return json_decode($json);
+    }
+
+    /**
+     * @throws LinkdataClientException
+     */
+    private function validateClassByName(string $className): string
+    {
+        // first, try to get the singular class
+        $class = Inflector::singularize($className);
+
+        if (class_exists(\sprintf('%s\%s', $this->config->entity_namespace, $class))) {
+            return $class;
+        }
+
+        // second, if singular class not found, try to get the class in the plural
+        $class = Inflector::pluralize($className);
+
+        if (class_exists(\sprintf('%s\%s', $this->config->entity_namespace, $class))) {
+            return $class;
+        }
+
+        // third, if singular and plural class not found, try to parse it to retrieve the correct name
+        $splitedClassName = $this->parse($className);
+        array_pop($splitedClassName);
+
+        if (empty($splitedClassName)) {
+            throw new LinkdataClientException('The class you try to retrieve does not exist.');
+        }
+
+        return $this->validateClassByName(implode($splitedClassName));
+    }
+
+    private function parse(string $className): array
+    {
+        // get each part of the uri by uppercase
+        return preg_split('/(?=[A-Z])/', $className, 0, PREG_SPLIT_NO_EMPTY);
+    }
+
+    private function generateUri(string $className, array $args): string
+    {
+        $uri = Inflector::pluralize($className);
+        $id = !\is_null($args[0]) ? \sprintf('/%s', $args[0]) : '';
+
+        return \sprintf('%s/%s%s', $this->config->base_url, Inflector::tableize($uri), $id);
     }
 }
