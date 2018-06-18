@@ -25,10 +25,10 @@ class GuzzleRequester extends Paginator
     /**
      * @throws RequestManagerException
      */
-    public function makeRequest(string $method, string $uri): string
+    public function makeRequest(string $method, string $uri, string $body = null): string
     {
         $client = $this->getClient();
-        $request = new Request($method, $uri);
+        $request = new Request($method, $uri, [], $body);
 
         try {
             $response = $client->send($request);
