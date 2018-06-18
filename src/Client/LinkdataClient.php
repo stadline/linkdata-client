@@ -8,6 +8,7 @@ use HttpRequestException;
 use Stadline\LinkdataClient\src\Exception\RequestManagerException;
 use Stadline\LinkdataClient\src\Utils\GuzzleRequester;
 use Psr\Http\Message\ResponseInterface;
+use Stadline\LinkdataClient\src\Utils\Serializator;
 use Stadline\LinkdataClient\src\Utils\UriConverter;
 
 /**
@@ -19,16 +20,23 @@ class LinkdataClient
     {
         $uriConverter = new UriConverter();
         $uri = $uriConverter->formateUri($method, $args);
+        $serializator = new Serializator();
 
         try {
             $requester = new GuzzleRequester();
-            $response = $requester->makeRequest($uri['method'], $uri['uri']);
+
+            // Put or POST, make a serialization with the entity.
+            if (in_array($uri['method'], ['post', 'put']) && count($args[0]) > 0) {
+                $body = $serializator->serialize($args[0][0]);
+            }
+
+            $response = $requester->makeRequest($uri['method'], $uri['uri'], $body);
+
+            // Deserialize and return response.
+            return $serializator->deserialize($response);
         } catch (RequestManagerException $e) {
             die(var_dump($e->getMessage()));
 //            throw new HttpRequestException(\sprintf('Error during call url : %s with %s method', $uri['method'], $uri['uri']));
         }
-
-        //for test
-        die(var_dump($response));
     }
 }
