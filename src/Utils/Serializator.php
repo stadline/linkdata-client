@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Utils;
 
+use Stadline\LinkdataClient\src\Exception\SerializatorException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\JsonSerializableNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -18,10 +19,13 @@ class Serializator
         return new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
     }
 
-    protected function serialize($object): string
+    public function serialize($object): string
     {
-        $serializer = $this->getSerializer();
-        return $serializer->serialize($object, 'json');
+        if (!strstr(get_class($object), 'Stadline\LinkdataClient\src\Entity')) {
+            throw new SerializatorException(sprintf('Entity %s is not supported by Serializator', get_class($object)));
+        }
+
+        return $this->getSerializer()->serialize($object, 'json');
     }
 
     public function deserialize(string $response)
