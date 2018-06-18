@@ -25,6 +25,7 @@ class Serializator
             throw new SerializatorException(sprintf('Entity %s is not supported by Serializator', get_class($object)));
         }
 
+
         return $this->getSerializer()->serialize($object, 'json');
     }
 
