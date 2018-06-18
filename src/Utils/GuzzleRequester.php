@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Request;
 
 class GuzzleRequester extends Paginator
 {
+    //todo change the baseUri and place it into configuration
     public function getClient(): Client
     {
         $config = $this->loadConfiguration();
