@@ -153,18 +153,20 @@ class LinkdataClient
 
         try {
             $requester = new GuzzleRequester();
+            $headers = [];
 
             // Put or POST, make a serialization with the entity.
-            if (in_array($uri['method'], ['post', 'put']) && count($args[0]) > 0) {
-                $body = $serializator->serialize($args[0][0]);
+            if (in_array($uri['method'], ['post', 'put']) && count($args[1]) > 0) {
+                $body = $serializator->serialize($args[1][0]);
+                $headers['Content-Type'] = 'application/json';
             }
 
-            $response = $requester->makeRequest($uri['method'], $uri['uri'], $body);
+            $response = $requester->makeRequest($uri['method'], $uri['uri'], $headers, $body);
 
             // Deserialize and return response.
             return $serializator->deserialize($response);
         } catch (RequestManagerException $e) {
-            throw new LinkdataClientException(\sprintf('Error during call url : %s with %s method', $uri['method'], $uri['uri']));
+            throw new LinkdataClientException(\sprintf('Error during call url : %s with %s method', $uri['uri'], strtoupper($uri['method'])));
         }
     }
 }
