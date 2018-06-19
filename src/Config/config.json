@@ -1,4 +1,5 @@
 {
     "base_url": "https://eu2-linkdata.dev.geonaute.com/v2",
-    "isSecure": false
+    "isSecure": false,
+    "entity_namespace": "Stadline\\LinkdataClient\\src\\Entity"
 }

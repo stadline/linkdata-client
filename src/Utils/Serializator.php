@@ -6,7 +6,6 @@ namespace Stadline\LinkdataClient\src\Utils;
 
 use Stadline\LinkdataClient\src\Exception\SerializatorException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\JsonSerializableNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
