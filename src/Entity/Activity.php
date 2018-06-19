@@ -4,19 +4,6 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use AppBundle\Activity\Validator\Constraints\Datastream;
-use AppBundle\Activity\Validator\Constraints\Locations;
-use AppBundle\DoctrineExtensions\Timezonable\Mapping\Annotation\Timezonable;
-use AppBundle\DoctrineExtensions\Userable\Mapping\Annotation\Userable;
-use AppBundle\Validator\Constraints\ActivityDataSummaryConstraint;
-use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -25,88 +12,69 @@ class Activity
     /**
      * @var string
      *
-     * @Serializer\SerializedName("id")
-     * @Serializer\Type("string")
+     * @Groups({"activity_norm"})
      */
     private $id;
 
     /**
      * @var string
      *
-     * @Serializer\SerializedName("name")
-     * @Serializer\Type("string")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $name;
 
     /**
      * @var string
      *
-     * @Serializer\SerializedName("user")
-     * @Serializer\Type("string")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     protected $user;
 
     /**
      * @var string
      *
-     * @Serializer\SerializedName("sport")
-     * @Serializer\Type("string")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     protected $sport;
 
     /**
-     * @var UserDevice
+     * @var string
      *
-     * @Serializer\SerializedName("userDevice")
-     * @Serializer\Type("string")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     protected $userDevice;
 
     /**
-     * @var DateTime
-     *
-     * @Serializer\SerializedName("startdate")
-     * @Serializer\Type("datetime")
+     * @var string
      */
     private $startdate;
 
     /**
      * @var string
-     *
-     * @Serializer\SerializedName("startdateTimezone")
-     * @Serializer\Type("string")
      */
-    private $startdateTimezone;
+    private $startstringzone;
 
     /**
      * @var int
-     *
-     * @Serializer\SerializedName("duration")
-     * @Serializer\Type("integer")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $duration;
 
     /**
      * @var float
-     *
-     * @Serializer\SerializedName("latitude")
-     * @Serializer\Type("float")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $latitude;
 
     /**
      * @var float
-     *
-     * @Serializer\SerializedName("longitude")
-     * @Serializer\Type("float")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $longitude;
 
     /**
      * @var float
-     *
-     * @Serializer\SerializedName("elevation")
-     * @Serializer\Type("float")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $elevation;
 
@@ -115,118 +83,91 @@ class Activity
      *
      * @Serializer\SerializedName("manual")
      * @Serializer\Type("boolean")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $manual;
 
     /**
      * @var string
-     *
-     * @Serializer\SerializedName("comment")
-     * @Serializer\Type("string")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $comment;
 
     /**
      * @var string
-     *
-     * @Serializer\SerializedName("connector")
-     * @Serializer\Type("string")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $connector;
 
     /**
      * @var string
-     *
-     * @Serializer\SerializedName("userSession")
-     * @Serializer\Type("string")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $userSession;
 
     /**
      * @var array
-     *
-     * @Serializer\SerializedName("images")
-     * @Serializer\Type("array")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $images;
 
     /**
      * @var bool
-     *
-     * @Serializer\SerializedName("correctedElevation")
-     * @Serializer\Type("boolean")
+     * @Groups({"activity_norm"})
      */
     private $correctedElevation;
 
     /**
      * @var string
-     *
-     * @Serializer\SerializedName("thumbnail")
-     * @Serializer\Type("string")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $thumbnail;
 
     /**
      * @var array
-     *
-     * @Serializer\SerializedName("dataSummaries")
-     * @Serializer\Type("array")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $dataSummaries;
 
     /**
-     * @var string
-     *
-     * @Serializer\SerializedName("tags")
-     * @Serializer\Type("array")
+     * @var array
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $tags;
 
     /**
      * @var bool
-     *
-     * @Serializer\SerializedName("trackFlag")
-     * @Serializer\Type("boolean")
+     * @Groups({"activity_norm"})
      */
     private $trackFlag;
 
     /**
      * @var bool
-     *
-     * @Serializer\SerializedName("datastreamFlag")
-     * @Serializer\Type("boolean")
+     * @Groups({"activity_norm"})
      */
     private $datastreamFlag;
 
     /**
      * @var string
-     *
-     * @Serializer\SerializedName("globalChallenge")
-     * @Serializer\Type("string")
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $globalChallenge;
 
     /**
      * @var array
-     *
-     * @Serializer\SerializedName("availableDatatypes")
-     * @Serializer\Type("array")
+     * @Groups({"activity_norm"})
      */
     private $availableDatatypes;
 
     /**
-     * @var DateTime
-     *
-     * @Serializer\SerializedName("createdAt")
-     * @Serializer\Type("datetime")
+     * @var string
+     * @Groups({"activity_norm"})
      */
     private $createdAt;
 
     /**
-     * @var DateTime
-     *
-     * @Serializer\SerializedName("updatedAt")
-     * @Serializer\Type("datetime")
+     * @var string
+     * @Groups({"activity_norm"})
      */
     private $updatedAt;
 
@@ -241,7 +182,7 @@ class Activity
     /**
      * @param string $id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -257,7 +198,7 @@ class Activity
     /**
      * @param string $name
      */
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -273,7 +214,7 @@ class Activity
     /**
      * @param string $user
      */
-    public function setUser(string $user): void
+    public function setUser(?string $user): void
     {
         $this->user = $user;
     }
@@ -289,39 +230,39 @@ class Activity
     /**
      * @param string $sport
      */
-    public function setSport(string $sport): void
+    public function setSport(?string $sport): void
     {
         $this->sport = $sport;
     }
 
     /**
-     * @return UserDevice
+     * @return string
      */
-    public function getUserDevice(): ?UserDevice
+    public function getUserDevice(): ?string
     {
         return $this->userDevice;
     }
 
     /**
-     * @param UserDevice $userDevice
+     * @param string $userDevice
      */
-    public function setUserDevice(UserDevice $userDevice): void
+    public function setUserDevice(?string $userDevice): void
     {
         $this->userDevice = $userDevice;
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
-    public function getStartdate(): ?DateTime
+    public function getStartdate(): ?string
     {
         return $this->startdate;
     }
 
     /**
-     * @param DateTime $startdate
+     * @param string $startdate
      */
-    public function setStartdate(DateTime $startdate): void
+    public function setStartdate(?string $startdate): void
     {
         $this->startdate = $startdate;
     }
@@ -329,17 +270,17 @@ class Activity
     /**
      * @return string
      */
-    public function getStartdateTimezone(): ?string
+    public function getStartstringzone(): ?string
     {
-        return $this->startdateTimezone;
+        return $this->startstringzone;
     }
 
     /**
-     * @param string $startdateTimezone
+     * @param string $startstringzone
      */
-    public function setStartdateTimezone(string $startdateTimezone): void
+    public function setStartstringzone(?string $startstringzone): void
     {
-        $this->startdateTimezone = $startdateTimezone;
+        $this->startstringzone = $startstringzone;
     }
 
     /**
@@ -353,7 +294,7 @@ class Activity
     /**
      * @param int $duration
      */
-    public function setDuration(int $duration): void
+    public function setDuration(?int $duration): void
     {
         $this->duration = $duration;
     }
@@ -369,7 +310,7 @@ class Activity
     /**
      * @param float $latitude
      */
-    public function setLatitude(float $latitude): void
+    public function setLatitude(?float $latitude): void
     {
         $this->latitude = $latitude;
     }
@@ -385,7 +326,7 @@ class Activity
     /**
      * @param float $longitude
      */
-    public function setLongitude(float $longitude): void
+    public function setLongitude(?float $longitude): void
     {
         $this->longitude = $longitude;
     }
@@ -401,7 +342,7 @@ class Activity
     /**
      * @param float $elevation
      */
-    public function setElevation(float $elevation): void
+    public function setElevation(?float $elevation): void
     {
         $this->elevation = $elevation;
     }
@@ -417,7 +358,7 @@ class Activity
     /**
      * @param bool $manual
      */
-    public function setManual(bool $manual): void
+    public function setManual(?bool $manual): void
     {
         $this->manual = $manual;
     }
@@ -433,7 +374,7 @@ class Activity
     /**
      * @param string $comment
      */
-    public function setComment(string $comment): void
+    public function setComment(?string $comment): void
     {
         $this->comment = $comment;
     }
@@ -449,7 +390,7 @@ class Activity
     /**
      * @param string $connector
      */
-    public function setConnector(string $connector): void
+    public function setConnector(?string $connector): void
     {
         $this->connector = $connector;
     }
@@ -465,7 +406,7 @@ class Activity
     /**
      * @param string $userSession
      */
-    public function setUserSession(string $userSession): void
+    public function setUserSession(?string $userSession): void
     {
         $this->userSession = $userSession;
     }
@@ -481,7 +422,7 @@ class Activity
     /**
      * @param array $images
      */
-    public function setImages(array $images): void
+    public function setImages(?array $images): void
     {
         $this->images = $images;
     }
@@ -497,7 +438,7 @@ class Activity
     /**
      * @param bool $correctedElevation
      */
-    public function setCorrectedElevation(bool $correctedElevation): void
+    public function setCorrectedElevation(?bool $correctedElevation): void
     {
         $this->correctedElevation = $correctedElevation;
     }
@@ -513,7 +454,7 @@ class Activity
     /**
      * @param string $thumbnail
      */
-    public function setThumbnail(string $thumbnail): void
+    public function setThumbnail(?string $thumbnail): void
     {
         $this->thumbnail = $thumbnail;
     }
@@ -529,23 +470,23 @@ class Activity
     /**
      * @param array $dataSummaries
      */
-    public function setDataSummaries(array $dataSummaries): void
+    public function setDataSummaries(?array $dataSummaries): void
     {
         $this->dataSummaries = $dataSummaries;
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getTags(): ?string
+    public function getTags(): ?array
     {
         return $this->tags;
     }
 
     /**
-     * @param string $tags
+     * @param array $tags
      */
-    public function setTags(string $tags): void
+    public function setTags(?array $tags): void
     {
         $this->tags = $tags;
     }
@@ -561,7 +502,7 @@ class Activity
     /**
      * @param bool $trackFlag
      */
-    public function setTrackFlag(bool $trackFlag): void
+    public function setTrackFlag(?bool $trackFlag): void
     {
         $this->trackFlag = $trackFlag;
     }
@@ -577,7 +518,7 @@ class Activity
     /**
      * @param bool $datastreamFlag
      */
-    public function setDatastreamFlag(bool $datastreamFlag): void
+    public function setDatastreamFlag(?bool $datastreamFlag): void
     {
         $this->datastreamFlag = $datastreamFlag;
     }
@@ -593,7 +534,7 @@ class Activity
     /**
      * @param string $globalChallenge
      */
-    public function setGlobalChallenge(string $globalChallenge): void
+    public function setGlobalChallenge(?string $globalChallenge): void
     {
         $this->globalChallenge = $globalChallenge;
     }
@@ -609,39 +550,39 @@ class Activity
     /**
      * @param array $availableDatatypes
      */
-    public function setAvailableDatatypes(array $availableDatatypes): void
+    public function setAvailableDatatypes(?array $availableDatatypes): void
     {
         $this->availableDatatypes = $availableDatatypes;
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
-    public function getCreatedAt(): ?DateTime
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }
 
     /**
-     * @param DateTime $createdAt
+     * @param string $createdAt
      */
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(?string $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
-    public function getUpdatedAt(): ?DateTime
+    public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
     }
 
     /**
-     * @param DateTime $updatedAt
+     * @param string $updatedAt
      */
-    public function setUpdatedAt(DateTime $updatedAt): void
+    public function setUpdatedAt(?string $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
