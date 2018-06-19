@@ -4,90 +4,77 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use AppBundle\DBAL\Types\GenderType;
-use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class User
 {
     /**
      * @var string
      *
-     * @Serializer\SerializedName("id")
-     * @Serializer\Type("string")
+     * @Groups({"user_norm"})
      */
     protected $id;
 
     /**
+     * @var string
+     *
+     * @Groups({"user_norm"})
+     */
+    protected $oneId;
+
+    /**
      * @var int
      *
-     * @Serializer\SerializedName("gender")
-     * @Serializer\Type("integer")
+     * @Groups({"user_norm", "user_denorm"})
      */
     protected $gender;
 
     /**
      * @var array
      *
-     * @Serializer\SerializedName("roles")
-     * @Serializer\Type("array")
+     * @Groups({"user_norm"})
      */
     protected $roles;
 
     /**
      * @var string
      *
-     * @Serializer\SerializedName("language")
-     * @Serializer\Type("string")
+     * @Groups({"user_norm", "user_denorm"})
      */
     protected $language;
 
     /**
      * @var string
      *
-     * @Serializer\SerializedName("country")
-     * @Serializer\Type("string")
+     * @Groups({"user_norm", "user_denorm"})
      */
     protected $country;
 
     /**
      * @var string
      *
-     * @Serializer\SerializedName("imageUrl")
-     * @Serializer\Type("string")
+     * @Groups({"user_norm", "user_denorm"})
      */
     protected $imageUrl;
 
     /**
-     * @var DateTime
+     * @var string
      *
-     * @Serializer\SerializedName("birthDate")
-     * @Serializer\Type("datatime")
+     * @Groups({"user_denorm"})
      */
     protected $birthDate;
 
     /**
-     * @var DateTime
+     * @var string
      *
-     * @Serializer\SerializedName("createdAt")
-     * @Serializer\Type("datetime")
+     * @Groups({"user_norm"})
      */
     private $createdAt;
 
     /**
-     * @var DateTime
+     * @var string
      *
-     * @Serializer\SerializedName("updatedAt")
-     * @Serializer\Type("datetime")
+     * @Groups({"user_norm"})
      */
     private $updatedAt;
 
@@ -124,10 +111,9 @@ class User
 //    private $userAgreements;
 
     /**
-     * @var DateTime
+     * @var string
      *
-     * @Serializer\SerializedName("scheduleDelete")
-     * @Serializer\Type("datetime")
+     * @Groups({"user_norm", "user_denorm"})
      */
     private $scheduleDelete;
 
@@ -142,9 +128,25 @@ class User
     /**
      * @param string $id
      */
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOneId(): ?string
+    {
+        return $this->oneId;
+    }
+
+    /**
+     * @param string $oneId
+     */
+    public function setOneId(?string $oneId): void
+    {
+        $this->oneId = $oneId;
     }
 
     /**
@@ -158,7 +160,7 @@ class User
     /**
      * @param int $gender
      */
-    public function setGender(int $gender): void
+    public function setGender(?int $gender): void
     {
         $this->gender = $gender;
     }
@@ -174,7 +176,7 @@ class User
     /**
      * @param array $roles
      */
-    public function setRoles(array $roles): void
+    public function setRoles(?array $roles): void
     {
         $this->roles = $roles;
     }
@@ -190,7 +192,7 @@ class User
     /**
      * @param string $language
      */
-    public function setLanguage(string $language): void
+    public function setLanguage(?string $language): void
     {
         $this->language = $language;
     }
@@ -206,7 +208,7 @@ class User
     /**
      * @param string $country
      */
-    public function setCountry(string $country): void
+    public function setCountry(?string $country): void
     {
         $this->country = $country;
     }
@@ -222,71 +224,71 @@ class User
     /**
      * @param string $imageUrl
      */
-    public function setImageUrl(string $imageUrl): void
+    public function setImageUrl(?string $imageUrl): void
     {
         $this->imageUrl = $imageUrl;
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
-    public function getBirthDate(): ?DateTime
+    public function getBirthDate(): ?string
     {
         return $this->birthDate;
     }
 
     /**
-     * @param DateTime $birthDate
+     * @param string $birthDate
      */
-    public function setBirthDate(DateTime $birthDate): void
+    public function setBirthDate(?string $birthDate): void
     {
         $this->birthDate = $birthDate;
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
-    public function getCreatedAt(): ?DateTime
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }
 
     /**
-     * @param DateTime $createdAt
+     * @param string $createdAt
      */
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(?string $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
-    public function getUpdatedAt(): ?DateTime
+    public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
     }
 
     /**
-     * @param DateTime $updatedAt
+     * @param string $updatedAt
      */
-    public function setUpdatedAt(DateTime $updatedAt): void
+    public function setUpdatedAt(?string $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
-    public function getScheduleDelete(): ?DateTime
+    public function getScheduleDelete(): ?string
     {
         return $this->scheduleDelete;
     }
 
     /**
-     * @param DateTime $scheduleDelete
+     * @param string $scheduleDelete
      */
-    public function setScheduleDelete(DateTime $scheduleDelete): void
+    public function setScheduleDelete(?string $scheduleDelete): void
     {
         $this->scheduleDelete = $scheduleDelete;
     }
