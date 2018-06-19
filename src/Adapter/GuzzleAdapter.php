@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\src\Utils;
+namespace Stadline\LinkdataClient\src\Adapter;
 
+use GuzzleHttp\Exception\RequestException;
+use Stadline\LinkdataClient\src\Exception\LinkdataClientNetworkException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
-use Stadline\LinkdataClient\src\Exception\RequestManagerException;
+use Stadline\LinkdataClient\src\Utils\Paginator;
 
-class GuzzleRequester extends Paginator
+class GuzzleAdapter extends Paginator
 {
-    //todo change the baseUri and place it into configuration
     public function getClient(): Client
     {
         $config = $this->loadConfiguration();
@@ -23,7 +24,8 @@ class GuzzleRequester extends Paginator
     }
 
     /**
-     * @throws RequestManagerException
+     * @throws LinkdataClientNetworkException
+     * @throws GuzzleException
      */
     public function makeRequest(string $method, string $uri, array $headers = [], string $body = null): string
     {
@@ -32,8 +34,8 @@ class GuzzleRequester extends Paginator
 
         try {
             $response = $client->send($request);
-        } catch (GuzzleException $e) {
-            throw new RequestManagerException($e->getMessage());
+        } catch (RequestException $e) {
+            throw new LinkdataClientNetworkException(\sprintf('Error while requesting %s with %s method', $method, $uri), $body, $e);
         }
 
         return (string) $response->getBody();
