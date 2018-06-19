@@ -157,6 +157,7 @@ class LinkdataClient
             // Put or POST, make a serialization with the entity.
             if (in_array($uri['method'], ['post', 'put']) && count($args[0]) > 0) {
                 $body = $serializator->serialize($args[0][0]);
+                var_dump($body); die;
             }
 
             $response = $requester->makeRequest($uri['method'], $uri['uri'], $body);

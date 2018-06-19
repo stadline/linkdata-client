@@ -24,8 +24,11 @@ class Serializator
             throw new SerializatorException(sprintf('Entity %s is not supported by Serializator', get_class($object)));
         }
 
-
-        return $this->getSerializer()->serialize($object, 'json');
+        return $this->getSerializer()->serialize(
+            $object,
+            'json',
+            [sprintf('%s_denorm', strtolower((new \ReflectionClass($object))->getShortName()))]
+        );
     }
 
     public function deserialize(string $response)
@@ -41,7 +44,8 @@ class Serializator
         return $this->getSerializer()->deserialize(
             $response,
             $className,
-            'json'
+            'json',
+            [sprintf('%s_norm', strtolower($entityName))]
         );
     }
 
