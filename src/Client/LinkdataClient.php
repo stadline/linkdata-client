@@ -126,6 +126,7 @@ class LinkdataClient
         try {
             $serializator = new Serializator();
             $requester = new GuzzleRequester();
+            $body = null;
             $headers = [];
 
             // Put or POST, make a serialization with the entity.
