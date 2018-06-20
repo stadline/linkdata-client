@@ -1,0 +1,36 @@
+sudo: required
+
+services: docker
+
+addons:
+  apt:
+    packages:
+      - docker-ce
+
+# Exclude feature branches (must be test by pull-requests)
+branches:
+  except:
+    - /feature\/.*/
+
+# Keep composer cache
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.cache/docker
+
+# Get only 20 last commits
+git:
+  depth: 20
+
+install:
+  - travis_retry docker-compose up -d
+  - docker-compose exec php make install-prod
+
+script:
+  - docker-compose exec php make test-cs-fixer
+  - docker-compose exec php make phpstan
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always

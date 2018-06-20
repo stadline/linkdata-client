@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\src\Entity;
 
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class Activity
 {

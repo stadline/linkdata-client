@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Utils;
 
-use Stadline\LinkdataClient\src\Exception\PaginatorException;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Exception\LessThan1MaxPerPageException;
 use Pagerfanta\Exception\NotIntegerMaxPerPageException;
 use Pagerfanta\Pagerfanta;
+use Stadline\LinkdataClient\src\Exception\PaginatorException;
 
 abstract class Paginator extends Serializator
 {
