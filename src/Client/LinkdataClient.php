@@ -122,9 +122,9 @@ class LinkdataClient
     {
         $uriConverter = new UriConverter();
         $uri = $uriConverter->formateUri($method, $args);
-        $serializator = new Serializator();
 
         try {
+            $serializator = new Serializator();
             $requester = new GuzzleRequester();
             $headers = [];
 
