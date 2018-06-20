@@ -24,6 +24,7 @@ git:
 
 install:
   - travis_retry docker-compose up -d
+  - docker-compose exec php make install-prod
 
 script:
   - docker-compose exec php make test-cs-fixer
