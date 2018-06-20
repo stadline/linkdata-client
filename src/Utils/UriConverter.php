@@ -11,7 +11,8 @@ class UriConverter
 {
     private $config;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->config = $this->loadConfiguration();
     }
 
@@ -22,7 +23,7 @@ class UriConverter
     {
         $response = [];
 
-        if (1 !== preg_match('/^(?<method>[a-z]+)(?<className>[A-Za-z]+)$/', $method, $matches)) {
+        if (1 !== \preg_match('/^(?<method>[a-z]+)(?<className>[A-Za-z]+)$/', $method, $matches)) {
             throw new LinkdataClientException(\sprintf('The method %s is not reconnized.', $method));
         }
 
@@ -36,9 +37,9 @@ class UriConverter
 
     private function loadConfiguration()
     {
-        $json = file_get_contents(__DIR__.'/../Config/config.json');
+        $json = \file_get_contents(__DIR__.'/../Config/config.json');
 
-        return json_decode($json);
+        return \json_decode($json);
     }
 
     /**
@@ -49,38 +50,38 @@ class UriConverter
         // first, try to get the singular class
         $class = Inflector::singularize($className);
 
-        if (class_exists(\sprintf('%s\%s', $this->config->entity_namespace, $class))) {
+        if (\class_exists(\sprintf('%s\%s', $this->config->entity_namespace, $class))) {
             return $class;
         }
 
         // second, if singular class not found, try to get the class in the plural
         $class = Inflector::pluralize($className);
 
-        if (class_exists(\sprintf('%s\%s', $this->config->entity_namespace, $class))) {
+        if (\class_exists(\sprintf('%s\%s', $this->config->entity_namespace, $class))) {
             return $class;
         }
 
         // third, if singular and plural class not found, try to parse it to retrieve the correct name
         $splitedClassName = $this->parse($className);
-        array_pop($splitedClassName);
+        \array_pop($splitedClassName);
 
         if (empty($splitedClassName)) {
             throw new LinkdataClientException('The class you try to retrieve does not exist.');
         }
 
-        return $this->validateClassByName(implode($splitedClassName));
+        return $this->validateClassByName(\implode($splitedClassName));
     }
 
     private function parse(string $className): array
     {
         // get each part of the uri by uppercase
-        return preg_split('/(?=[A-Z])/', $className, 0, PREG_SPLIT_NO_EMPTY);
+        return \preg_split('/(?=[A-Z])/', $className, 0, PREG_SPLIT_NO_EMPTY);
     }
 
     private function generateUri(string $className, array $args): string
     {
         $uri = Inflector::pluralize($className);
-        $id = !\is_null($args[0]) ? \sprintf('/%s', $args[0]) : '';
+        $id = null !== $args[0] ? \sprintf('/%s', $args[0]) : '';
 
         return \sprintf('%s/%s%s', $this->config->base_url, Inflector::tableize($uri), $id);
     }

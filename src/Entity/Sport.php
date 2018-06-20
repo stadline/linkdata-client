@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Entity;
 
-use DateTime;
-
 class Sport
 {
     public const ALPINISME = 153;
@@ -118,7 +116,7 @@ class Sport
     private $translatedNames;
 
     /**
-     * @var Universe
+     * @var string
      *
      * @Serializer\SerializedName("universe")
      * @Serializer\Type("string")
@@ -134,18 +132,18 @@ class Sport
     private $active = true;
 
     /**
-     * @var DateTime
+     * @var string
      *
      * @Serializer\SerializedName("createdAt")
-     * @Serializer\Type("DateTime")
+     * @Serializer\Type("string")
      */
     private $createdAt;
 
     /**
-     * @var DateTime
+     * @var string
      *
      * @Serializer\SerializedName("updatedAt")
-     * @Serializer\Type("DateTime")
+     * @Serializer\Type("string")
      */
     private $updatedAt;
 

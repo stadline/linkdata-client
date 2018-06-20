@@ -1,0 +1,64 @@
+<?php
+$finder = PhpCsFixer\Finder::create()
+    ->in(__DIR__)
+    ->exclude('var')
+    ->exclude('public')
+    ->exclude('app/DoctrineMigrations')
+    ->exclude('features/bootstrap')
+;
+return PhpCsFixer\Config::create()
+    ->setRiskyAllowed(true)
+    ->setRules([
+        '@Symfony' => true,
+        '@DoctrineAnnotation' => true,
+        '@Symfony:risky' => true,
+        'doctrine_annotation_array_assignment' => true,
+        'array_syntax' => [
+            'syntax' => 'short',
+        ],
+        'braces' => [
+            'allow_single_line_closure' => true,
+        ],
+        'combine_consecutive_issets' => true,
+        'combine_consecutive_unsets' => true,
+        'compact_nullable_typehint' => true,
+        'explicit_indirect_variable' => true,
+        'explicit_string_variable' => true,
+        'declare_strict_types' => true,
+        'modernize_types_casting' => true,
+        'hash_to_slash_comment' => true,
+        'list_syntax' => true,
+        'native_function_invocation' => true,
+        'no_extra_consecutive_blank_lines' => [
+            'break',
+            'continue',
+            'curly_brace_block',
+            'extra',
+            'parenthesis_brace_block',
+            'return',
+            'square_brace_block',
+            'throw',
+            'use',
+        ],
+        'no_superfluous_elseif' => true,
+        'no_unreachable_default_argument_value' => true,
+        'no_useless_else' => true,
+        'no_useless_return' => true,
+        'ordered_imports' => true,
+        // 'phpdoc_add_missing_param_annotation' => [
+        //     'only_untyped' => false,
+        // ],
+        'phpdoc_order' => true,
+        'phpdoc_types_order' => true,
+        'psr4' => true,
+        'semicolon_after_instruction' => true,
+        'strict_comparison' => true,
+        'strict_param' => true,
+        'ternary_to_null_coalescing' => true,
+        'general_phpdoc_annotation_remove' => [
+            'author'
+        ],
+        'void_return' => true,
+    ])
+    ->setFinder($finder)
+;

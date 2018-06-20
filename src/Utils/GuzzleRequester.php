@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Utils;
 
-use Stadline\LinkdataClient\src\Exception\RequestManagerException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use Stadline\LinkdataClient\src\Exception\RequestManagerException;
 
 class GuzzleRequester extends Paginator
 {
@@ -41,8 +41,8 @@ class GuzzleRequester extends Paginator
 
     private function loadConfiguration()
     {
-        $json = file_get_contents(__DIR__.'/../Config/config.json');
+        $json = \file_get_contents(__DIR__.'/../Config/config.json');
 
-        return json_decode($json);
+        return \json_decode($json);
     }
 }
