@@ -10,7 +10,7 @@ final class FormatType
     public const JSONLD = 'json-ld';
 
     /** @var array */
-    protected static $formats = [
+    private static $formats = [
         self::JSON => 'json',
         self::JSONLD => 'jsonld',
     ];

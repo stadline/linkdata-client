@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\src\Utils;
 
 use Doctrine\Common\Inflector\Inflector;
-use Stadline\LinkdataClient\src\Exception\LinkdataClientFormatException;
+use Stadline\LinkdataClient\src\Exception\UriException\FormatException;
 
 class UriConverter
 {
@@ -17,14 +17,14 @@ class UriConverter
     }
 
     /**
-     * @throws LinkdataClientFormatException
+     * @throws FormatException
      */
-    public function formateUri(string $method, array $args): array
+    public function formatUri(string $method, array $args): array
     {
         $response = [];
 
         if (1 !== \preg_match('/^(?<method>[a-z]+)(?<className>[A-Za-z]+)$/', $method, $matches)) {
-            throw new LinkdataClientFormatException(\sprintf('The method %s is not recognized.', $method));
+            throw new FormatException(\sprintf('The method %s is not recognized.', $method));
         }
 
         $response['method'] = $matches['method'];
@@ -43,7 +43,7 @@ class UriConverter
     }
 
     /**
-     * @throws LinkdataClientFormatException
+     * @throws FormatException
      */
     public function validateClassByName(string $className): string
     {
@@ -66,7 +66,7 @@ class UriConverter
         \array_pop($splitedClassName);
 
         if (empty($splitedClassName)) {
-            throw new LinkdataClientFormatException('The class you try to retrieve does not exist.');
+            throw new FormatException('The class you try to retrieve does not exist.');
         }
 
         return $this->validateClassByName(\implode($splitedClassName));

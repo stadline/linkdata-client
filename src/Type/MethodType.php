@@ -12,7 +12,7 @@ final class MethodType
     public const DELETE = 'delete';
 
     /** @var array */
-    protected static $methods = [
+    private static $methods = [
         self::POST => 'post',
         self::PUT => 'put',
         self::GET => 'get',

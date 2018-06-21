@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\src\Client;
 
 use Psr\Http\Message\ResponseInterface;
-use Stadline\LinkdataClient\src\Exception\LinkdataClientException;
-use Stadline\LinkdataClient\src\Exception\LinkdataClientFormatException;
 use Stadline\LinkdataClient\src\Adapter\GuzzleAdapter;
+use Stadline\LinkdataClient\src\Exception\ClientHydraException;
 use Stadline\LinkdataClient\src\Type\MethodType;
 use Stadline\LinkdataClient\src\Utils\Serializator;
 use Stadline\LinkdataClient\src\Utils\UriConverter;
@@ -117,21 +116,14 @@ use Stadline\LinkdataClient\src\Utils\UriConverter;
 class LinkdataClient
 {
     /**
-     * @throws LinkdataClientException
+     * @throws ClientHydraException
      */
     public function __call(string $method, array $args)
     {
-        $uriConverter = new UriConverter();
-
         try {
-            $uri = $uriConverter->formateUri($method, $args);
-        } catch (LinkdataClientFormatException $e) {
-            throw new LinkdataClientException('An error occurred during retrieving uri');
-        }
+            $uriConverter = new UriConverter();
+            $uri = $uriConverter->formatUri($method, $args);
 
-        $serializator = new Serializator();
-
-        try {
             $serializator = new Serializator();
             $requester = new GuzzleAdapter();
             $body = null;
@@ -145,10 +137,9 @@ class LinkdataClient
 
             $response = $requester->makeRequest($uri['method'], $uri['uri'], $headers, $body);
 
-            // Deserialize and return response.
             return $serializator->deserialize($response);
-        } catch (RequestManagerException $e) {
-            throw new LinkdataClientException(\sprintf('Error during call url : %s with %s method', $uri['uri'], \strtoupper($uri['method'])));
+        } catch (ClientHydraException $e) {
+            throw $e;
         }
     }
 }

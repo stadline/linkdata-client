@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Utils;
 
-use Stadline\LinkdataClient\src\Exception\DeserializationException;
-use Stadline\LinkdataClient\src\Exception\SerializationException;
-use Stadline\LinkdataClient\src\Exception\SerializerConfigurationException;
+use ReflectionException;
+use Stadline\LinkdataClient\src\Exception\SerializerException\ConfigurationException;
+use Stadline\LinkdataClient\src\Exception\SerializerException\SerializerException;
 use Stadline\LinkdataClient\src\Type\FormatType;
+use Stadline\LinkdataClient\src\Type\NormContextType;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -18,44 +19,41 @@ class Serializator
     private const HYDRA_COLLECTION_TYPE = 'hydra:Collection';
     private $config;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->config = $this->loadConfiguration();
     }
 
     /**
-     * @throws SerializerConfigurationException
+     * @throws ConfigurationException
      */
     private function getSerializer(): Serializer
     {
         try {
             $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
         } catch (\RuntimeException $e) {
-            throw new SerializerConfigurationException('Unable to instantiate Serializer', $e);
+            throw new ConfigurationException('Unable to instantiate Serializer', $e);
         }
 
         return $serializer;
     }
 
     /**
-     * @throws SerializationException
-     * @throws SerializerConfigurationException
+     * @throws SerializerException
      */
     public function serialize($object): string
     {
-        if (false === strpos(\get_class($object), $this->config->entity_namespace)) {
-            throw new SerializerConfigurationException(\sprintf('Entity %s is not supported by Serializator', \get_class($object)));
-        }
-
+        $this->supportEntity($object);
         $serializer = $this->getSerializer();
 
         try {
             return $serializer->serialize(
                 $object,
                 FormatType::JSON,
-                [\sprintf('%s_denorm', \strtolower((new \ReflectionClass($object))->getShortName()))]
+                [$this->getNormContext($object, NormContextType::DENORN)]
             );
         } catch (NotEncodableValueException $e) {
-            throw new SerializationException(
+            throw new SerializerException(
                 \sprintf('An error occurred during serialization with format %s', FormatType::JSON),
                 $e
             );
@@ -63,15 +61,13 @@ class Serializator
     }
 
     /**
-     * @throws DeserializationException
-     * @throws SerializationException
-     * @throws SerializerConfigurationException
+     * @throws SerializerException
      */
     public function deserialize(string $response)
     {
         $entityName = $this->getEntityName($response);
         $isCollectionResponse = $this->isCollectionResponse($response);
-        $className = \sprintf('%s%s', $this->config->entity_namespace, \ucfirst($entityName));
+        $className = \sprintf('%s\%s', $this->config->entity_namespace, \ucfirst($entityName));
 
         if ($isCollectionResponse) {
             return $this->deserializeCollection($response, $className);
@@ -79,14 +75,15 @@ class Serializator
 
         $serializer = $this->getSerializer();
 
-        try {return $serializer->deserialize(
+        try {
+            return $serializer->deserialize(
                 $response,
                 $className,
                 FormatType::JSON,
-                [\sprintf('%s_norm', \strtolower($entityName))]
+                [$this->getNormContext($entityName, NormContextType::NORM)]
             );
         } catch (NotEncodableValueException $e) {
-            throw new DeserializationException(
+            throw new SerializerException(
                 \sprintf('An error occurred during deserialization with format %s', FormatType::JSON),
                 $e
             );
@@ -94,8 +91,7 @@ class Serializator
     }
 
     /**
-     * @throws SerializationException
-     * @throws SerializerConfigurationException
+     * @throws SerializerException
      */
     private function deserializeCollection(string $response, string $className): array
     {
@@ -107,7 +103,7 @@ class Serializator
             try {
                 $items[] = $serializer->deserialize(\json_encode($item), $className, FormatType::JSON);
             } catch (NotEncodableValueException $e) {
-                throw new SerializationException(
+                throw new SerializerException(
                     \sprintf('An error occurred during deserialization with format %s', FormatType::JSON),
                     $e
                 );
@@ -117,13 +113,6 @@ class Serializator
         return $items;
     }
 
-    /**
-     * Parse JsonLD type to get entity name.
-     *
-     * @param string $response
-     *
-     * @return string
-     */
     private function getEntityName(string $response): string
     {
         $responseJson = \json_decode($response, true);
@@ -138,10 +127,35 @@ class Serializator
         return self::HYDRA_COLLECTION_TYPE === $responseJson['@type'];
     }
 
+    /**
+     * @throws ConfigurationException
+     */
+    private function getNormContext($entity, string $context): string
+    {
+        try {
+            return \sprintf('%s_%s', \strtolower((new \ReflectionClass($entity))->getShortName()), $context);
+        } catch (ReflectionException $e) {
+            $entityName = \is_string($entity) ? $entity : \get_class($entity);
+            throw new ConfigurationException(\sprintf('Unable to retrieve entity %s in %s context', $entityName, $context));
+        }
+    }
+
+    /**
+     * @throws ConfigurationException
+     */
+    private function supportEntity($object): bool
+    {
+        if (false === \strpos(\get_class($object), $this->config->entity_namespace)) {
+            throw new ConfigurationException(\sprintf('Entity %s is not supported by Serializator', \get_class($object)));
+        }
+
+        return true;
+    }
+
     private function loadConfiguration()
     {
-        $json = file_get_contents(__DIR__.'/../Config/config.json');
+        $json = \file_get_contents(__DIR__.'/../Config/config.json');
 
-        return json_decode($json);
+        return \json_decode($json);
     }
 }

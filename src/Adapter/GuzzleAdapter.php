@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Adapter;
 
-use GuzzleHttp\Exception\RequestException;
-use Stadline\LinkdataClient\src\Exception\LinkdataClientNetworkException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use Stadline\LinkdataClient\src\Exception\RequestException\RequestException;
 use Stadline\LinkdataClient\src\Utils\Paginator;
 
 class GuzzleAdapter extends Paginator
@@ -24,8 +23,7 @@ class GuzzleAdapter extends Paginator
     }
 
     /**
-     * @throws LinkdataClientNetworkException
-     * @throws GuzzleException
+     * @throws RequestException
      */
     public function makeRequest(string $method, string $uri, array $headers = [], string $body = null): string
     {
@@ -34,8 +32,8 @@ class GuzzleAdapter extends Paginator
 
         try {
             $response = $client->send($request);
-        } catch (RequestException $e) {
-            throw new LinkdataClientNetworkException(\sprintf('Error while requesting %s with %s method', $method, $uri), $body, $e);
+        } catch (GuzzleException $e) {
+            throw new RequestException(\sprintf('Error while requesting %s with %s method', $method, $uri), $body, $e);
         }
 
         return (string) $response->getBody();
