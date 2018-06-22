@@ -117,6 +117,6 @@ class LinkdataClient extends HydraClient
      */
     public function __call(string $method, array $args)
     {
-        return $this->doRequest($method, $args);
+        return $this->send($method, $args);
     }
 }
