@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Entity;
 
+use Stadline\LinkdataClient\src\Linkdata\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-class Sport
+class Sport extends ProxyObject
 {
     public const ALPINISME = 153;
     public const AQUAGYM = 260;
@@ -116,7 +117,7 @@ class Sport
     private $translatedNames;
 
     /**
-     * @var string
+     * @var Universe
      *
      * @Groups({"sport_norm"})
      */
@@ -183,12 +184,12 @@ class Sport
         $this->translatedNames = $translatedNames;
     }
 
-    public function getUniverse(): ?string
+    public function getUniverse()
     {
-        return $this->universe;
+        return parent::hydrate($this->universe);
     }
 
-    public function setUniverse(?string $universe): void
+    public function setUniverse($universe): void
     {
         $this->universe = $universe;
     }

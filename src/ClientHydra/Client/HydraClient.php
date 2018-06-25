@@ -9,6 +9,7 @@ use Stadline\LinkdataClient\src\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\src\ClientHydra\Type\MethodType;
 use Stadline\LinkdataClient\src\ClientHydra\Utils\Serializator;
 use Stadline\LinkdataClient\src\ClientHydra\Utils\UriConverter;
+use Stadline\LinkdataClient\src\Linkdata\Client\LinkdataClient;
 
 class HydraClient
 {
@@ -24,7 +25,7 @@ class HydraClient
     /**
      * @throws ClientHydraException
      */
-    public function send(string $method, array $args): ?array
+    public function send(string $method, array $args, LinkdataClient $client)
     {
         try {
             $uriConverter = new UriConverter($this->config);
@@ -41,6 +42,7 @@ class HydraClient
             }
 
             $response = $requester->makeRequest($uri['method'], $uri['uri'], $this->headers, $body);
+            $serializator->setClient($client);
 
             return $serializator->deserialize($response);
         } catch (ClientHydraException $e) {

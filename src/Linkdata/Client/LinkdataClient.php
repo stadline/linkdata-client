@@ -7,6 +7,8 @@ namespace Stadline\LinkdataClient\src\Linkdata\Client;
 use Psr\Http\Message\ResponseInterface;
 use Stadline\LinkdataClient\src\ClientHydra\Client\HydraClient;
 use Stadline\LinkdataClient\src\ClientHydra\Exception\ClientHydraException;
+use Stadline\LinkdataClient\src\Linkdata\Proxy\ProxyManager;
+use Stadline\LinkdataClient\src\Linkdata\Proxy\ProxyObject;
 
 /**
  * @method ResponseInterface getActivity(string $id, array $options = [])
@@ -112,11 +114,19 @@ use Stadline\LinkdataClient\src\ClientHydra\Exception\ClientHydraException;
  */
 class LinkdataClient extends HydraClient
 {
+    public function get(string $id): ProxyObject
+    {
+        $proxyManager = new ProxyManager();
+        $proxyManager->setClient($this);
+
+        return $proxyManager->get($id);
+    }
+
     /**
      * @throws ClientHydraException
      */
     public function __call(string $method, array $args)
     {
-        return $this->send($method, $args);
+        return $this->send($method, $args, $this);
     }
 }

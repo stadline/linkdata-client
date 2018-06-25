@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Entity;
 
+use Stadline\LinkdataClient\src\Linkdata\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-class Universe
+class Universe extends ProxyObject
 {
     /**
      * @var int
@@ -75,12 +76,12 @@ class Universe
         $this->translatedNames = $translatedNames;
     }
 
-    public function addSport(Sport $sport): void
+    public function addSport(?string $sport): void
     {
         $this->sports[] = $sport;
     }
 
-    public function removeSport(Sport $sport): void
+    public function removeSport(string $sport): void
     {
         //todo implement the method
     }
