@@ -56,7 +56,12 @@ class Serializator
         $items = [];
 
         foreach ($responseJson['hydra:member'] as $item) {
-            $items[] = $this->getSerializer()->deserialize(\json_encode($item), $className, 'json');
+            $items[] = $this->getSerializer()->deserialize(
+                \json_encode($item),
+                $className,
+                'json',
+                [\sprintf('%s_norm', \strtolower(\explode('\\', $className)[4]))]
+            );
         }
 
         return $items;
