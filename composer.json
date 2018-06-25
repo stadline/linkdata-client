@@ -18,7 +18,10 @@
     "doctrine/annotations": "^1.6"
   },
   "autoload": {
-    "psr-4": { "Stadline\\LinkdataClient\\src\\": "src" }
+    "psr-4": {
+      "Stadline\\LinkdataClient\\src\\ClientHydra\\": "src/ClientHydra",
+      "Stadline\\LinkdataClient\\src\\Linkdata\\": "src/Linkdata"
+    }
   },
   "extra": {
     "branch-alias": {

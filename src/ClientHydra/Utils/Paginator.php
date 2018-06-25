@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\src\Utils;
+namespace Stadline\LinkdataClient\src\ClientHydra\Utils;
 
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Exception\LessThan1MaxPerPageException;
 use Pagerfanta\Exception\NotIntegerMaxPerPageException;
 use Pagerfanta\Pagerfanta;
-use Stadline\LinkdataClient\src\Exception\PaginatorException;
+use Stadline\LinkdataClient\src\ClientHydra\Exception\PaginatorException;
 
 abstract class Paginator extends Serializator
 {

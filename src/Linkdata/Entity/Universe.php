@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\src\Entity;
+namespace Stadline\LinkdataClient\src\Linkdata\Entity;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 

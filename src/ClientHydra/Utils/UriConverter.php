@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\src\Utils;
+namespace Stadline\LinkdataClient\src\ClientHydra\Utils;
 
 use Doctrine\Common\Inflector\Inflector;
-use Stadline\LinkdataClient\src\Exception\LinkdataClientException;
+use Stadline\LinkdataClient\src\ClientHydra\Exception\UriException\FormatException;
 
 class UriConverter
 {
     private $config;
 
-    public function __construct()
+    public function __construct(array $config)
     {
-        $this->config = $this->loadConfiguration();
+        $this->config = $config;
     }
 
     /**
-     * @throws LinkdataClientException
+     * @throws FormatException
      */
-    public function formateUri(string $method, array $args): array
+    public function formatUri(string $method, array $args): array
     {
         $response = [];
 
         if (1 !== \preg_match('/^(?<method>[a-z]+)(?<className>[A-Za-z]+)$/', $method, $matches)) {
-            throw new LinkdataClientException(\sprintf('The method %s is not reconnized.', $method));
+            throw new FormatException(\sprintf('The method %s is not recognized.', $method));
         }
 
         $response['method'] = $matches['method'];
@@ -35,29 +35,22 @@ class UriConverter
         return $response;
     }
 
-    private function loadConfiguration()
-    {
-        $json = \file_get_contents(__DIR__.'/../Config/config.json');
-
-        return \json_decode($json);
-    }
-
     /**
-     * @throws LinkdataClientException
+     * @throws FormatException
      */
-    private function validateClassByName(string $className): string
+    public function validateClassByName(string $className): string
     {
         // first, try to get the singular class
         $class = Inflector::singularize($className);
 
-        if (\class_exists(\sprintf('%s\%s', $this->config->entity_namespace, $class))) {
+        if (\class_exists(\sprintf('%s\%s', $this->config['entity_namespace'], $class))) {
             return $class;
         }
 
         // second, if singular class not found, try to get the class in the plural
         $class = Inflector::pluralize($className);
 
-        if (\class_exists(\sprintf('%s\%s', $this->config->entity_namespace, $class))) {
+        if (\class_exists(\sprintf('%s\%s', $this->config['entity_namespace'], $class))) {
             return $class;
         }
 
@@ -66,7 +59,7 @@ class UriConverter
         \array_pop($splitedClassName);
 
         if (empty($splitedClassName)) {
-            throw new LinkdataClientException('The class you try to retrieve does not exist.');
+            throw new FormatException('The class you try to retrieve does not exist.');
         }
 
         return $this->validateClassByName(\implode($splitedClassName));
@@ -83,6 +76,6 @@ class UriConverter
         $uri = Inflector::pluralize($className);
         $id = null !== $args[0] ? \sprintf('/%s', $args[0]) : '';
 
-        return \sprintf('%s/%s%s', $this->config->base_url, Inflector::tableize($uri), $id);
+        return \sprintf('%s/%s%s', $this->config['base_url'], Inflector::tableize($uri), $id);
     }
 }
