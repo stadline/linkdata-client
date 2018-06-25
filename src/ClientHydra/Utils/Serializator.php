@@ -19,9 +19,9 @@ class Serializator
     private const HYDRA_COLLECTION_TYPE = 'hydra:Collection';
     private $config;
 
-    public function __construct()
+    public function __construct(array $config)
     {
-        $this->config = $this->loadConfiguration();
+        $this->config = $config;
     }
 
     /**
@@ -67,7 +67,7 @@ class Serializator
     {
         $entityName = $this->getEntityName($response);
         $isCollectionResponse = $this->isCollectionResponse($response);
-        $className = \sprintf('%s\%s', $this->config->entity_namespace, \ucfirst($entityName));
+        $className = \sprintf('%s\%s', $this->config['entity_namespace'], \ucfirst($entityName));
 
         if ($isCollectionResponse) {
             return $this->deserializeCollection($response, $className);
@@ -145,17 +145,10 @@ class Serializator
      */
     private function supportEntity($object): bool
     {
-        if (false === \strpos(\get_class($object), $this->config->entity_namespace)) {
+        if (false === \strpos(\get_class($object), $this->config['entity_namespace'])) {
             throw new ConfigurationException(\sprintf('Entity %s is not supported by Serializator', \get_class($object)));
         }
 
         return true;
-    }
-
-    private function loadConfiguration()
-    {
-        $json = \file_get_contents(__DIR__.'/../Config/config.json');
-
-        return \json_decode($json);
     }
 }

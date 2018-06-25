@@ -11,9 +11,9 @@ class UriConverter
 {
     private $config;
 
-    public function __construct()
+    public function __construct(array $config)
     {
-        $this->config = $this->loadConfiguration();
+        $this->config = $config;
     }
 
     /**
@@ -35,13 +35,6 @@ class UriConverter
         return $response;
     }
 
-    private function loadConfiguration()
-    {
-        $json = \file_get_contents(__DIR__.'/../Config/config.json');
-
-        return \json_decode($json);
-    }
-
     /**
      * @throws FormatException
      */
@@ -50,14 +43,14 @@ class UriConverter
         // first, try to get the singular class
         $class = Inflector::singularize($className);
 
-        if (\class_exists(\sprintf('%s\%s', $this->config->entity_namespace, $class))) {
+        if (\class_exists(\sprintf('%s\%s', $this->config['entity_namespace'], $class))) {
             return $class;
         }
 
         // second, if singular class not found, try to get the class in the plural
         $class = Inflector::pluralize($className);
 
-        if (\class_exists(\sprintf('%s\%s', $this->config->entity_namespace, $class))) {
+        if (\class_exists(\sprintf('%s\%s', $this->config['entity_namespace'], $class))) {
             return $class;
         }
 
@@ -83,6 +76,6 @@ class UriConverter
         $uri = Inflector::pluralize($className);
         $id = null !== $args[0] ? \sprintf('/%s', $args[0]) : '';
 
-        return \sprintf('%s/%s%s', $this->config->base_url, Inflector::tableize($uri), $id);
+        return \sprintf('%s/%s%s', $this->config['base_url'], Inflector::tableize($uri), $id);
     }
 }

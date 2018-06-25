@@ -13,10 +13,12 @@ use Stadline\LinkdataClient\src\ClientHydra\Utils\UriConverter;
 class HydraClient
 {
     private $headers;
+    private $config;
 
     public function __construct(array $headers = [])
     {
         $this->headers = $headers;
+        $this->config = $this->loadConfiguration();
     }
 
     /**
@@ -25,11 +27,11 @@ class HydraClient
     public function send(string $method, array $args): ?array
     {
         try {
-            $uriConverter = new UriConverter();
+            $uriConverter = new UriConverter($this->config);
             $uri = $uriConverter->formatUri($method, $args);
 
-            $serializator = new Serializator();
-            $requester = new GuzzleAdapter();
+            $serializator = new Serializator($this->config);
+            $requester = new GuzzleAdapter($this->config);
             $body = null;
 
             // Put or POST, make a serialization with the entity.
@@ -44,5 +46,12 @@ class HydraClient
         } catch (ClientHydraException $e) {
             throw $e;
         }
+    }
+
+    private function loadConfiguration(): array
+    {
+        $json = \file_get_contents(__DIR__.'/../Config/config.json');
+
+        return \json_decode($json, true);
     }
 }

@@ -12,18 +12,23 @@ use Stadline\LinkdataClient\src\ClientHydra\Exception\RequestException\RequestEx
 
 class GuzzleAdapter
 {
+    private $config;
+
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+    }
+
     /**
      * @throws AuthenticationException
      */
     public function getClient(array $args): Client
     {
-        $config = $this->loadConfiguration();
-
         if (!\array_key_exists('authorization', $args['authorization'])) {
             throw new AuthenticationException('Authorization token not found.');
         }
 
-        return new Client(['base_uri' => $config->base_url, 'headers' => [
+        return new Client(['base_uri' => $this->config['base_url'], 'headers' => [
             'Authorization' => \sprintf('Bearer %s', $args['authorization']),
         ]]);
     }
@@ -43,12 +48,5 @@ class GuzzleAdapter
         }
 
         return (string) $response->getBody();
-    }
-
-    private function loadConfiguration()
-    {
-        $json = \file_get_contents(__DIR__.'/../Config/config.json');
-
-        return \json_decode($json);
     }
 }
