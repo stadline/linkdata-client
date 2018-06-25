@@ -101,7 +101,12 @@ class Serializator
 
         foreach ($responseJson['hydra:member'] as $item) {
             try {
-                $items[] = $serializer->deserialize(\json_encode($item), $className, FormatType::JSON);
+                $items[] = $serializer->deserialize(
+                    \json_encode($item),
+                    $className,
+                    FormatType::JSON,
+                    [\sprintf('%s_norm', \strtolower(\explode('\\', $className)[4]))]
+                );
             } catch (NotEncodableValueException $e) {
                 throw new SerializerException(
                     \sprintf('An error occurred during deserialization with format %s', FormatType::JSON),

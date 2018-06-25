@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Entity;
 
+use Symfony\Component\Serializer\Annotation\Groups;
+
 class Sport
 {
     public const ALPINISME = 153;
@@ -102,112 +104,106 @@ class Sport
     /**
      * @var int
      *
-     * @Serializer\SerializedName("id")
-     * @Serializer\Type("int")
+     * @Groups({"sport_norm"})
      */
     private $id;
 
     /**
      * @var array
      *
-     * @Serializer\SerializedName("translatedNames")
-     * @Serializer\Type("array")
+     * @Groups({"sport_norm"})
      */
     private $translatedNames;
 
     /**
      * @var string
      *
-     * @Serializer\SerializedName("universe")
-     * @Serializer\Type("string")
+     * @Groups({"sport_norm"})
      */
     private $universe;
 
     /**
      * @var bool
      *
-     * @Serializer\SerializedName("active")
-     * @Serializer\Type("bool")
+     * @Groups({"sport_norm"})
      */
     private $active = true;
 
     /**
      * @var string
      *
-     * @Serializer\SerializedName("createdAt")
-     * @Serializer\Type("string")
+     * @Groups({"sport_norm"})
      */
     private $createdAt;
 
     /**
      * @var string
      *
-     * @Serializer\SerializedName("updatedAt")
-     * @Serializer\Type("string")
+     * @Groups({"sport_norm"})
      */
     private $updatedAt;
 
-    public function getUpdatedAt(): string
+    public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(string $updatedAt): void
+    public function setUpdatedAt(?string $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
 
-    public function getCreatedAt(): string
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(string $createdAt): void
+    public function setCreatedAt(?string $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
-    public function getTranslatedNames(): array
+    public function getTranslatedNames(): ?array
     {
         return $this->translatedNames;
     }
 
-    public function setTranslatedNames(array $translatedNames): void
+    public function setTranslatedNames(?array $translatedNames): void
     {
         $this->translatedNames = $translatedNames;
     }
 
-    public function getUniverse(): string
+    public function getUniverse(): ?string
     {
         return $this->universe;
     }
 
-    public function setUniverse(string $universe): void
+    public function setUniverse(?string $universe): void
     {
         $this->universe = $universe;
     }
 
-    public function isActive(): bool
+    public function isActive(): ?bool
     {
         return $this->active;
     }
 
-    public function setActive(bool $active): void
+    public function setActive(?bool $active): void
     {
         $this->active = $active;
     }
 
-    public function hasNameByLocale(string $locale): bool
+    public function hasNameByLocale(string $locale): ?bool
     {
         return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
     }

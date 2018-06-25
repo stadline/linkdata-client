@@ -24,7 +24,7 @@ class GuzzleAdapter
      */
     public function getClient(array $args): Client
     {
-        if (!\array_key_exists('authorization', $args['authorization'])) {
+        if (!\array_key_exists('authorization', $args)) {
             throw new AuthenticationException('Authorization token not found.');
         }
 

@@ -4,55 +4,49 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Entity;
 
-use DateTime;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 class Universe
 {
     /**
      * @var int
      *
-     * @Serializer\SerializedName("id")
-     * @Serializer\Type("int")
+     * @Groups({"universe_norm"})
      */
     private $id;
 
     /**
      * @var array
      *
-     * @Serializer\SerializedName("translatedNames")
-     * @Serializer\Type("array")
+     * @Groups({"universe_norm"})
      */
     private $translatedNames;
 
     /**
      * @var array
      *
-     * @Serializer\SerializedName("sports")
-     * @Serializer\Type("array<Stadline\LinkdataClient\src\Linkdata\Entity\Sport>")
+     * @Groups({"universe_norm"})
      */
     private $sports;
 
     /**
      * @var bool
      *
-     * @Serializer\SerializedName("active")
-     * @Serializer\Type("bool")
+     * @Groups({"universe_norm"})
      */
     private $active = true;
 
     /**
-     * @var DateTime
+     * @var string
      *
-     * @Serializer\SerializedName("createdAt")
-     * @Serializer\Type("DateTime")
+     * @Groups({"universe_norm"})
      */
     private $createdAt;
 
     /**
-     * @var DateTime
+     * @var string
      *
-     * @Serializer\SerializedName("updatedAt")
-     * @Serializer\Type("DateTime")
+     * @Groups({"universe_norm"})
      */
     private $updatedAt;
 
@@ -61,22 +55,22 @@ class Universe
         $this->sports = [];
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
-    public function getTranslatedNames(): array
+    public function getTranslatedNames(): ?array
     {
         return $this->translatedNames;
     }
 
-    public function setTranslatedNames(array $translatedNames): void
+    public function setTranslatedNames(?array $translatedNames): void
     {
         $this->translatedNames = $translatedNames;
     }
@@ -96,37 +90,37 @@ class Universe
         return $this->sports;
     }
 
-    public function isActive(): bool
+    public function isActive(): ?bool
     {
         return $this->active;
     }
 
-    public function setActive(bool $active): void
+    public function setActive(?bool $active): void
     {
         $this->active = $active;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(?string $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(DateTime $updatedAt): void
+    public function setUpdatedAt(?string $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
 
-    public function hasNameByLocale(string $locale): bool
+    public function hasNameByLocale(string $locale): ?bool
     {
         return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
     }
