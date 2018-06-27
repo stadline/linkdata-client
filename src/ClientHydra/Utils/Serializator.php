@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\src\ClientHydra\Utils;
 
 use ReflectionException;
-use Stadline\LinkdataClient\src\ClientHydra\Exception\RequestException\AuthenticationException;
 use Stadline\LinkdataClient\src\ClientHydra\Exception\SerializerException\ConfigurationException;
 use Stadline\LinkdataClient\src\ClientHydra\Exception\SerializerException\SerializerException;
 use Stadline\LinkdataClient\src\ClientHydra\Type\FormatType;

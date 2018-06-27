@@ -117,9 +117,8 @@ class LinkdataClient extends HydraClient
     public function get(string $id): ProxyObject
     {
         $proxyManager = new ProxyManager();
-        $proxyManager->setClient($this);
 
-        return $proxyManager->get($id);
+        return $proxyManager->get($id, $this);
     }
 
     /**

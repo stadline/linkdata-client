@@ -50,10 +50,15 @@ class HydraClient
         }
     }
 
-    private function loadConfiguration(): array
+    public function loadConfiguration(): array
     {
         $json = \file_get_contents(__DIR__.'/../Config/config.json');
 
         return \json_decode($json, true);
+    }
+
+    public function getConfig(): array
+    {
+        return $this->config;
     }
 }
