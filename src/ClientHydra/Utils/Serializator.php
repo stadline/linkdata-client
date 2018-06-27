@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\src\ClientHydra\Utils;
 
 use ReflectionException;
+use Stadline\LinkdataClient\src\ClientHydra\Client\HydraClientInterface;
 use Stadline\LinkdataClient\src\ClientHydra\Exception\SerializerException\ConfigurationException;
 use Stadline\LinkdataClient\src\ClientHydra\Exception\SerializerException\SerializerException;
 use Stadline\LinkdataClient\src\ClientHydra\Type\FormatType;
@@ -19,6 +20,7 @@ class Serializator
 {
     private const HYDRA_COLLECTION_TYPE = 'hydra:Collection';
     private $config;
+    private $client;
 
     public function __construct(array $config)
     {
@@ -77,12 +79,18 @@ class Serializator
         $serializer = $this->getSerializer();
 
         try {
-            return $serializer->deserialize(
+            $item = $serializer->deserialize(
                 $response,
                 $className,
                 FormatType::JSON,
                 [$this->getNormContext($entityName, NormContextType::NORM)]
             );
+
+            if ($item instanceof ProxyObject) {
+                $item->setClient($this->client);
+            }
+
+            return $item;
         } catch (NotEncodableValueException $e) {
             throw new SerializerException(
                 \sprintf('An error occurred during deserialization with format %s', FormatType::JSON),
@@ -103,12 +111,18 @@ class Serializator
         foreach ($responseJson['hydra:member'] as $item) {
             try {
                 /* @var ProxyObject $currentItem */
-                $items[] = $serializer->deserialize(
+                $currentItem = $serializer->deserialize(
                     \json_encode($item),
                     $className,
                     FormatType::JSON,
                     [\sprintf('%s_norm', \strtolower(\explode('\\', $className)[4]))]
                 );
+
+                if ($currentItem instanceof ProxyObject) {
+                    $currentItem->setClient($this->client);
+                }
+
+                $items[] = $currentItem;
             } catch (NotEncodableValueException $e) {
                 throw new SerializerException(
                     \sprintf('An error occurred during deserialization with format %s', FormatType::JSON),
@@ -157,5 +171,10 @@ class Serializator
         }
 
         return true;
+    }
+
+    public function setClient(HydraClientInterface $client): void
+    {
+        $this->client = $client;
     }
 }

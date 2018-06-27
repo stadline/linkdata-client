@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Proxy;
 
-use Doctrine\Common\Inflector;
-use Stadline\LinkdataClient\src\Linkdata\Client\LinkdataClient;
+use Doctrine\Common\Inflector\Inflector;
+use Stadline\LinkdataClient\src\ClientHydra\Client\HydraClientInterface;
 
 class ProxyManager
 {
     private $objects = [];
+    private $hydraClient;
 
-    public function get(string $iri, LinkdataClient $linkdataClient): ProxyObject
+    public function __construct(HydraClientInterface $hydraClient)
+    {
+        $this->hydraClient = $hydraClient;
+    }
+
+    public function getProxy(string $iri): ProxyObject
     {
         $entityHash = \sha1($iri);
 
@@ -24,7 +30,7 @@ class ProxyManager
         $id = \explode('/', $iri)[3];
 
         // call client to resolve proxy.
-        $object = $linkdataClient->send($methodToCall, [$id], $linkdataClient);
+        $object = $this->hydraClient->send($methodToCall, [$id]);
         $objects[$entityHash] = $object;
 
         return $object;

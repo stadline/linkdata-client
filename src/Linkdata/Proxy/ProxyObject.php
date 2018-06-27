@@ -4,25 +4,19 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Proxy;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Stadline\LinkdataClient\src\Linkdata\Annotation\Proxy;
-use Stadline\LinkdataClient\src\Linkdata\Client\LinkdataClient;
-use Stadline\LinkdataClient\src\Linkdata\Entity\Universe;
+use Stadline\LinkdataClient\src\ClientHydra\Client\HydraClientInterface;
 
-/**
- * @property Universe $universe
- */
 class ProxyObject
 {
-    /** @var LinkdataClient */
+    /** @var HydraClientInterface */
     private $client;
 
     public function hydrate($iri)
     {
-        return $this->client->get($iri);
+        return $this->client->getProxy($iri);
     }
 
-    public function setClient(LinkdataClient $client): void
+    public function setClient(HydraClientInterface $client): void
     {
         $this->client = $client;
     }

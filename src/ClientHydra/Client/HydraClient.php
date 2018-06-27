@@ -9,9 +9,10 @@ use Stadline\LinkdataClient\src\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\src\ClientHydra\Type\MethodType;
 use Stadline\LinkdataClient\src\ClientHydra\Utils\Serializator;
 use Stadline\LinkdataClient\src\ClientHydra\Utils\UriConverter;
-use Stadline\LinkdataClient\src\Linkdata\Client\LinkdataClient;
+use Stadline\LinkdataClient\src\Linkdata\Proxy\ProxyManager;
+use Stadline\LinkdataClient\src\Linkdata\Proxy\ProxyObject;
 
-class HydraClient
+abstract class HydraClient implements HydraClientInterface
 {
     private $headers;
     private $config;
@@ -20,6 +21,13 @@ class HydraClient
     {
         $this->headers = $headers;
         $this->config = $this->loadConfiguration();
+    }
+
+    public function getProxy(string $iri): ProxyObject
+    {
+        $proxyManager = new ProxyManager($this);
+
+        return $proxyManager->getProxy($iri);
     }
 
     /**
@@ -32,6 +40,7 @@ class HydraClient
             $uri = $uriConverter->formatUri($method, $args);
 
             $serializator = new Serializator($this->config);
+            $serializator->setClient($this);
             $requester = new GuzzleAdapter($this->config);
             $body = null;
 
@@ -49,15 +58,10 @@ class HydraClient
         }
     }
 
-    public function loadConfiguration(): array
+    private function loadConfiguration(): array
     {
         $json = \file_get_contents(__DIR__.'/../Config/config.json');
 
         return \json_decode($json, true);
-    }
-
-    public function getConfig(): array
-    {
-        return $this->config;
     }
 }
