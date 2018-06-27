@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\src\Linkdata\Proxy;
+namespace Stadline\LinkdataClient\src\ClientHydra\Proxy;
 
 use Stadline\LinkdataClient\src\ClientHydra\Client\HydraClientInterface;
 

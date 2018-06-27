@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Entity;
 
-use Stadline\LinkdataClient\src\Linkdata\Proxy\ProxyObject;
+use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 class Universe extends ProxyObject

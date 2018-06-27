@@ -6,11 +6,11 @@ namespace Stadline\LinkdataClient\src\ClientHydra\Client;
 
 use Stadline\LinkdataClient\src\ClientHydra\Adapter\GuzzleAdapter;
 use Stadline\LinkdataClient\src\ClientHydra\Exception\ClientHydraException;
+use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyManager;
+use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\src\ClientHydra\Type\MethodType;
 use Stadline\LinkdataClient\src\ClientHydra\Utils\Serializator;
 use Stadline\LinkdataClient\src\ClientHydra\Utils\UriConverter;
-use Stadline\LinkdataClient\src\Linkdata\Proxy\ProxyManager;
-use Stadline\LinkdataClient\src\Linkdata\Proxy\ProxyObject;
 
 abstract class HydraClient implements HydraClientInterface
 {
