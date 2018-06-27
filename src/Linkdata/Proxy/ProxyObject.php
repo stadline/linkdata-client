@@ -17,24 +17,7 @@ class ProxyObject
     /** @var LinkdataClient */
     private $client;
 
-    public function __get($propertyName)
-    {
-        $annotationReader = new AnnotationReader();
-
-        $reflectionProperty = new \ReflectionProperty($this, $propertyName);
-        $propertyAnnotations = $annotationReader->getPropertyAnnotations($reflectionProperty);
-
-        foreach ($propertyAnnotations as $propertyAnnotation) {
-            if ($propertyAnnotation instanceof Proxy) {
-                // getUniverse
-                $methodToCall = \sprintf('get%s', \ucfirst($propertyName));
-
-                return $this->hydrate($this->{$methodToCall}());
-            }
-        }
-    }
-
-    private function hydrate($iri)
+    public function hydrate($iri)
     {
         return $this->client->get($iri);
     }

@@ -186,9 +186,9 @@ class Sport extends ProxyObject
         $this->translatedNames = $translatedNames;
     }
 
-    public function getUniverse(): string
+    public function getUniverse(): Universe
     {
-        return $this->universe;
+        return $this->hydrate($this->universe);
     }
 
     public function setUniverse($universe): void

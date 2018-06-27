@@ -25,7 +25,7 @@ class HydraClient
     /**
      * @throws ClientHydraException
      */
-    public function send(string $method, array $args, LinkdataClient $client)
+    public function send(string $method, array $args)
     {
         try {
             $uriConverter = new UriConverter($this->config);
@@ -42,7 +42,6 @@ class HydraClient
             }
 
             $response = $requester->makeRequest($uri['method'], $uri['uri'], $this->headers, $body);
-            $serializator->setClient($client);
 
             return $serializator->deserialize($response);
         } catch (ClientHydraException $e) {
