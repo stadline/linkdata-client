@@ -79,7 +79,7 @@ class UriConverter
         return \sprintf('%s/%s%s', $this->config['base_url'], Inflector::tableize($uri), $filters);
     }
 
-    private function formatFilters(?array $args): string
+    private function formatFilters($args): string
     {
         // item case
         if (!\is_array($args)) {

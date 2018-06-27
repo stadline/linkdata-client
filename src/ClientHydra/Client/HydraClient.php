@@ -34,7 +34,7 @@ abstract class HydraClient implements HydraClientInterface
     /**
      * @throws ClientHydraException
      */
-    public function send(string $method, array $args): Paginator
+    public function send(string $method, array $args)
     {
         try {
             $uriConverter = new UriConverter($this->config);
@@ -51,10 +51,15 @@ abstract class HydraClient implements HydraClientInterface
                 $this->headers['Content-Type'] = 'application/json';
             }
 
-            $response = $requester->makeRequest($uri['method'], $uri['uri'], $this->headers, $body);
-            $content = $serializator->deserialize($response);
+            $requestResponse = $requester->makeRequest($uri['method'], $uri['uri'], $this->headers, $body);
+            $content = $serializator->deserialize($requestResponse);
 
-            return new Paginator($content);
+            // If we have to paginate result, process pagination
+            if (1 < \count($content)) {
+                $content = new Paginator($content);
+            }
+
+            return $content;
         } catch (ClientHydraException $e) {
             throw $e;
         }
