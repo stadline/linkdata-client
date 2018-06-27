@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Entity;
 
-use Stadline\LinkdataClient\src\Linkdata\Annotation\Proxy;
 use Stadline\LinkdataClient\src\Linkdata\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -118,9 +117,8 @@ class Sport extends ProxyObject
     private $translatedNames;
 
     /**
-     * @var string
+     * @var Universe
      *
-     * @Proxy
      * @Groups({"sport_norm"})
      */
     private $universe;
