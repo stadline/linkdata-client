@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Entity;
 
+use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-class Activity
+class Activity extends ProxyObject
 {
     /**
      * @var string
@@ -23,14 +24,14 @@ class Activity
     private $name;
 
     /**
-     * @var string
+     * @var User
      *
      * @Groups({"activity_norm", "activity_denorm"})
      */
     protected $user;
 
     /**
-     * @var string
+     * @var Sport
      *
      * @Groups({"activity_norm", "activity_denorm"})
      */
@@ -203,33 +204,27 @@ class Activity
     }
 
     /**
-     * @return string
+     * @return User
      */
-    public function getUser(): ?string
+    public function getUser(): User
     {
-        return $this->user;
+        return $this->hydrate($this->user);
     }
 
-    /**
-     * @param string $user
-     */
-    public function setUser(?string $user): void
+    public function setUser($user): void
     {
         $this->user = $user;
     }
 
     /**
-     * @return string
+     * @return Sport
      */
-    public function getSport(): ?string
+    public function getSport(): Sport
     {
-        return $this->sport;
+        return $this->hydrate($this->sport);
     }
 
-    /**
-     * @param string $sport
-     */
-    public function setSport(?string $sport): void
+    public function setSport($sport): void
     {
         $this->sport = $sport;
     }

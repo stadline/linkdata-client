@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\src\ClientHydra\Utils;
 
 use ReflectionException;
+use Stadline\LinkdataClient\src\ClientHydra\Client\HydraClientInterface;
 use Stadline\LinkdataClient\src\ClientHydra\Exception\SerializerException\ConfigurationException;
 use Stadline\LinkdataClient\src\ClientHydra\Exception\SerializerException\SerializerException;
+use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\src\ClientHydra\Type\FormatType;
 use Stadline\LinkdataClient\src\ClientHydra\Type\NormContextType;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -18,6 +20,7 @@ class Serializator
 {
     private const HYDRA_COLLECTION_TYPE = 'hydra:Collection';
     private $config;
+    private $client;
 
     public function __construct(array $config)
     {
@@ -76,12 +79,18 @@ class Serializator
         $serializer = $this->getSerializer();
 
         try {
-            return $serializer->deserialize(
+            $item = $serializer->deserialize(
                 $response,
                 $className,
                 FormatType::JSON,
                 [$this->getNormContext($entityName, NormContextType::NORM)]
             );
+
+            if ($item instanceof ProxyObject) {
+                $item->setClient($this->client);
+            }
+
+            return $item;
         } catch (NotEncodableValueException $e) {
             throw new SerializerException(
                 \sprintf('An error occurred during deserialization with format %s', FormatType::JSON),
@@ -101,12 +110,19 @@ class Serializator
 
         foreach ($responseJson['hydra:member'] as $item) {
             try {
-                $items[] = $serializer->deserialize(
+                /* @var ProxyObject $currentItem */
+                $currentItem = $serializer->deserialize(
                     \json_encode($item),
                     $className,
                     FormatType::JSON,
                     [\sprintf('%s_norm', \strtolower(\explode('\\', $className)[4]))]
                 );
+
+                if ($currentItem instanceof ProxyObject) {
+                    $currentItem->setClient($this->client);
+                }
+
+                $items[] = $currentItem;
             } catch (NotEncodableValueException $e) {
                 throw new SerializerException(
                     \sprintf('An error occurred during deserialization with format %s', FormatType::JSON),
@@ -138,7 +154,7 @@ class Serializator
     private function getNormContext($entity, string $context): string
     {
         try {
-            return \sprintf('%s_%s', \strtolower((new \ReflectionClass($entity))->getShortName()), $context);
+            return \sprintf('%s_%s', \strtolower($entity), $context);
         } catch (ReflectionException $e) {
             $entityName = \is_string($entity) ? $entity : \get_class($entity);
             throw new ConfigurationException(\sprintf('Unable to retrieve entity %s in %s context', $entityName, $context));
@@ -155,5 +171,10 @@ class Serializator
         }
 
         return true;
+    }
+
+    public function setClient(HydraClientInterface $client): void
+    {
+        $this->client = $client;
     }
 }
