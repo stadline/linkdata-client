@@ -9,6 +9,7 @@ use Stadline\LinkdataClient\src\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\src\ClientHydra\Type\MethodType;
+use Stadline\LinkdataClient\src\ClientHydra\Utils\Paginator;
 use Stadline\LinkdataClient\src\ClientHydra\Utils\Serializator;
 use Stadline\LinkdataClient\src\ClientHydra\Utils\UriConverter;
 
@@ -50,9 +51,15 @@ abstract class HydraClient implements HydraClientInterface
                 $this->headers['Content-Type'] = 'application/json';
             }
 
-            $response = $requester->makeRequest($uri['method'], $uri['uri'], $this->headers, $body);
+            $requestResponse = $requester->makeRequest($uri['method'], $uri['uri'], $this->headers, $body);
+            $content = $serializator->deserialize($requestResponse);
 
-            return $serializator->deserialize($response);
+            // If we have to paginate result, process pagination
+            if (1 < \count($content)) {
+                $content = new Paginator($content);
+            }
+
+            return $content;
         } catch (ClientHydraException $e) {
             throw $e;
         }

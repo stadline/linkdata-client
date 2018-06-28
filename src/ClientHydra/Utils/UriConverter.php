@@ -74,8 +74,29 @@ class UriConverter
     private function generateUri(string $className, array $args): string
     {
         $uri = Inflector::pluralize($className);
-        $id = null !== $args[0] ? \sprintf('/%s', $args[0]) : '';
+        $filters = $this->formatFilters($args[0]);
 
-        return \sprintf('%s/%s%s', $this->config['base_url'], Inflector::tableize($uri), $id);
+        return \sprintf('%s/%s%s', $this->config['base_url'], Inflector::tableize($uri), $filters);
+    }
+
+    private function formatFilters($args): string
+    {
+        // item case
+        if (!\is_array($args)) {
+            return null !== $args ? \sprintf('/%s', $args) : '';
+        }
+
+        // collection case
+        if (!\array_key_exists('filters', $args)) {
+            return '';
+        }
+
+        $response = '?';
+
+        foreach ($args['filters'] as $key => $filter) {
+            $response .= \sprintf('%s=%s&', $key, $filter);
+        }
+
+        return \substr($response, 0, -1);
     }
 }
