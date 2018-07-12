@@ -11,6 +11,7 @@ use Stadline\LinkdataClient\src\ClientHydra\Exception\RequestException\RequestEx
 use Stadline\LinkdataClient\src\ClientHydra\Exception\SerializerException\SerializerException;
 use Stadline\LinkdataClient\src\ClientHydra\Type\HydraType;
 use Stadline\LinkdataClient\src\ClientHydra\Utils\Serializator;
+use Stadline\LinkdataClient\src\ClientHydra\Utils\UriConverter;
 use Stadline\LinkdataClient\src\Linkdata\Adapter\LinkdataAdapter;
 
 class RequestHandler
@@ -18,12 +19,14 @@ class RequestHandler
     private $config;
     private $guzzleAdapter;
     private $serializer;
+    private $uriConverter;
 
     public function __construct(array $config = [])
     {
         $this->config = $config;
         $this->guzzleAdapter = new GuzzleAdapter($config);
         $this->serializer = new Serializator($config);
+        $this->uriConverter = new UriConverter($config);
     }
 
     /**
@@ -43,7 +46,6 @@ class RequestHandler
         $nextPage = (int) $content['extra']['next_page'];
 
         while (0 !== $nextPage) {
-
             $this->setNextPage($args, $nextPage);
             $content = $this->retrieveData($args);
 
@@ -51,7 +53,7 @@ class RequestHandler
             $nextPage = (int) $content['extra']['next_page'];
         }
 
-        $results = array_merge(...$results);
+        $results = \array_merge(...$results);
 
         unset($results['extra']);
 
@@ -94,9 +96,9 @@ class RequestHandler
             $node = $this->serializer->getNodeValues($requestResponse, HydraType::VIEW);
 
             $extra = [
-                'first_page' => null === $node[HydraType::FIRST_PAGE] ? null : \explode('=', $node[HydraType::FIRST_PAGE])[1],
-                'next_page' => null === $node[HydraType::NEXT_PAGE] ? null : \explode('=', $node[HydraType::NEXT_PAGE])[1],
-                'last_page' => null === $node[HydraType::LAST_PAGE] ? null : \explode('=', $node[HydraType::LAST_PAGE])[1],
+                'first_page' => null === $node[HydraType::FIRST_PAGE] ? null : $this->uriConverter->getUriParam('page', $node[HydraType::FIRST_PAGE]),
+                'next_page' => null === $node[HydraType::NEXT_PAGE] ? null : $this->uriConverter->getUriParam('page', $node[HydraType::NEXT_PAGE]),
+                'last_page' => null === $node[HydraType::LAST_PAGE] ? null : $this->uriConverter->getUriParam('page', $node[HydraType::LAST_PAGE]),
             ];
         }
 
@@ -114,15 +116,14 @@ class RequestHandler
 
     private function setNextPage(array &$args, int $nextPage): void
     {
-        $uri = $args['uri'];
-        $page = \strpos($uri, 'page=');
+        $page = $this->uriConverter->getUriParam('page', $args['uri']);
 
-        if (false === $page) {
-            $args['uri'] = \sprintf('%s?page=%s', $args['uri'], $nextPage);
+        if (null === $page) {
+            $this->uriConverter->addUriParam('page', (string) $nextPage, $args['uri']);
 
             return;
         }
 
-        $args['uri'] = \str_replace('%pageNumber%', $nextPage, \sprintf('%s', $args['uri'], 'page=%pageNumber%'));
+        $this->uriConverter->updateUriParamValue('page', (string) $nextPage, $args['uri']);
     }
 }

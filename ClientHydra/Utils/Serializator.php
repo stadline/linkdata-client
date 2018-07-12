@@ -84,9 +84,10 @@ class Serializator
                 [$this->getNormContext($entityName, NormContextType::NORM)]
             );
 
-            if ($item instanceof ProxyObject) {
-                $item->setClient($this->client);
-            }
+            //todo uncomment this part to reactivate Proxy
+//            if ($item instanceof ProxyObject) {
+//                $item->setClient($this->client);
+//            }
 
             return $item;
         } catch (NotEncodableValueException $e) {
@@ -116,9 +117,10 @@ class Serializator
                     [\sprintf('%s_norm', \strtolower(\explode('\\', $className)[4]))]
                 );
 
-                if ($currentItem instanceof ProxyObject) {
-                    $currentItem->setClient($this->client);
-                }
+                //todo uncomment this part to reactivate Proxy
+//                if ($currentItem instanceof ProxyObject) {
+//                    $currentItem->setClient($this->client);
+//                }
 
                 $items[] = $currentItem;
             } catch (NotEncodableValueException $e) {
@@ -172,7 +174,7 @@ class Serializator
     {
         $response = \json_decode($json, true);
 
-        return \array_key_exists($node, $response, true);
+        return \array_key_exists($node, $response);
     }
 
     public function getNodeValues(string $json, string $node): array
