@@ -66,7 +66,7 @@ class Serializator
     /**
      * @throws SerializerException
      */
-    public function deserialize(string $response): array
+    public function deserialize(string $response)
     {
         $entityName = $this->getEntityName($response);
         $isCollectionResponse = $this->isCollectionResponse($response);
@@ -90,7 +90,7 @@ class Serializator
                 $item->setClient($this->client);
             }
 
-            return \json_decode($item, true);
+            return $item;
         } catch (NotEncodableValueException $e) {
             throw new SerializerException(
                 \sprintf('An error occurred during deserialization with format %s', FormatType::JSON),

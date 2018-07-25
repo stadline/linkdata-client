@@ -10,6 +10,7 @@ use Stadline\LinkdataClient\src\ClientHydra\Utils\Paginator;
 use Stadline\LinkdataClient\src\Linkdata\Entity\Activity;
 use Stadline\LinkdataClient\src\Linkdata\Entity\Sport;
 use Stadline\LinkdataClient\src\Linkdata\Entity\Universe;
+use Stadline\LinkdataClient\src\Linkdata\Entity\User;
 
 /**
  * @method Activity            getActivity(string $id, array $options = [])
@@ -41,7 +42,7 @@ use Stadline\LinkdataClient\src\Linkdata\Entity\Universe;
  * @method Job                 getJob(string $id, array $options = [])
  * @method Paginator           getJobs(array $options = [])
  * @method Job                 putJob(Job $job, array $options = [])
- * @method Job                 getUser(Job $job, array $options = [])
+ * @method User                getUser(string $id, array $options = [])
  * @method Paginator           getUsers(array $options = [])
  * @method Paginator           getUserStat(string $id, array $options = [])
  * @method User                putUser(User $user, array $options = [])
