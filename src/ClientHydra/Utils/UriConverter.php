@@ -74,7 +74,7 @@ class UriConverter
     private function generateUri(string $className, array $args): string
     {
         $uri = Inflector::pluralize($className);
-        $filters = $this->formatFilters($args[0]);
+        $filters = $this->formatFilters(\count($args) > 0 ? $args[0] : null);
 
         return \sprintf('%s/%s%s', $this->config['base_url'], Inflector::tableize($uri), $filters);
     }

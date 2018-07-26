@@ -53,7 +53,7 @@ class Serializator
             return $serializer->serialize(
                 $object,
                 FormatType::JSON,
-                [$this->getNormContext($object, NormContextType::DENORN)]
+                [$this->getNormContext(\strtolower(\explode('\\', \get_class($object))[4]), NormContextType::DENORN)]
             );
         } catch (NotEncodableValueException $e) {
             throw new SerializerException(

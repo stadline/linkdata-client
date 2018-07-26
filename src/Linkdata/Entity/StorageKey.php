@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Entity;
 
+use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-class StorageKey
+class StorageKey extends ProxyObject
 {
     /**
      * @var int

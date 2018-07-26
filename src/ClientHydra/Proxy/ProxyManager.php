@@ -11,6 +11,7 @@ class ProxyManager
 {
     private $objects = [];
     private $hydraClient;
+    private $config;
 
     public function __construct(HydraClientInterface $hydraClient)
     {
@@ -26,7 +27,19 @@ class ProxyManager
         }
 
         // resolve method to call.
-        $methodToCall = \sprintf('get%s', \ucfirst(Inflector::singularize(\explode('/', $iri)[2])));
+        $methodToCall = \ucfirst(Inflector::singularize(\explode('/', $iri)[2]));
+        $tempMethodToCall = 'get';
+
+        if (-1 !== \strstr('_', $methodToCall)) {
+            foreach (\explode('_', $methodToCall) as $part) {
+                if ('get' !== $part) {
+                    $tempMethodToCall .= \ucfirst(Inflector::singularize($part));
+                }
+            }
+
+            $methodToCall = $tempMethodToCall;
+        }
+
         $id = \explode('/', $iri)[3];
 
         // call client to resolve proxy.
@@ -34,5 +47,12 @@ class ProxyManager
         $objects[$entityHash] = $object;
 
         return $object;
+    }
+
+    private function loadConfiguration(): array
+    {
+        $json = \file_get_contents(__DIR__.'/../Config/config.json');
+
+        return \json_decode($json, true);
     }
 }
