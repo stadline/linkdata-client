@@ -1,6 +1,9 @@
 sudo: required
 
-services: docker
+language: php
+
+php:
+    - '7.1'
 
 addons:
   apt:
@@ -16,19 +19,17 @@ branches:
 cache:
   directories:
     - $HOME/.composer/cache
-    - $HOME/.cache/docker
 
 # Get only 20 last commits
 git:
   depth: 20
 
 install:
-  - travis_retry docker-compose up -d
-  - docker-compose exec php make install-prod
+  - make install-prod
 
 script:
-  - docker-compose exec php make test-cs-fixer
-  - docker-compose exec php make phpstan
+  - make test-cs-fixer
+  - make phpstan
 
 notifications:
   email:

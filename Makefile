@@ -2,9 +2,8 @@ SHELL = /bin/sh
 .DEFAULT_GOAL := help
 
 .PHONY: install-prod
-install-prod: ## Install project and dependencies
+install: ## Install project and dependencies
 	composer install -o -n --prefer-dist --no-progress --no-suggest --ansi
-	composer dump-autoload --optimize --classmap-authoritative
 
 .PHONY: test-cs-fixer
 test-cs-fixer: ## Launches php-cs-fixer test
