@@ -1,12 +1,16 @@
 {
   "name": "stadline/linkdata-client",
-  "description": "A Symfony4 bundle for Linkdata",
+  "description": "Linkdata API library",
   "type": "symfony-bundle",
   "license": "proprietary",
   "authors": [
     {
       "name": "Raphael Bonini",
       "email": "raphael.bonini@stadline.com"
+    },
+    {
+      "name": "Nicolas Héraly",
+      "email": "nicolas.heraly@stadline.com"
     }
   ],
   "require": {
