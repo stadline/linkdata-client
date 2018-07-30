@@ -8,7 +8,7 @@ On your composer.json add the following :
 ```
     {
     "require": {
-        "stadline/linkdata-client": "~1.0@dev"
+        "stadline/linkdata-client": "1.0.x-dev"
       }
     }
 ```
