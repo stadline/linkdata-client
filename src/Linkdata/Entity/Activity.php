@@ -81,9 +81,6 @@ class Activity extends ProxyObject
     /**
      * @var bool
      *
-     * @Serializer\SerializedName("manual")
-     * @Serializer\Type("boolean")
-     * @Groups({"activity_norm", "activity_denorm"})
      */
     private $manual;
 

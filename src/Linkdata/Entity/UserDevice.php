@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Entity;
 
+use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-class UserDevice
+class UserDevice extends ProxyObject
 {
     /**
      * @var string
@@ -60,6 +61,8 @@ class UserDevice
      */
     private $updatedAt;
 
+    private $deviceModelIri;
+
     public function getId(): ?string
     {
         return $this->id;
@@ -80,11 +83,22 @@ class UserDevice
         $this->serial = $serial;
     }
 
-//
-//    public function getModel(): ?DeviceModel
-//    {
-//        return $this->model;
-//    }
+    public function getModel(): ?DeviceModel
+    {
+        $this->deviceModelIri = $this->model;
+
+        return $this->hydrate($this->model);
+    }
+
+    public function getModelId(): string
+    {
+        if (!$this->deviceModelIri) {
+            $this->deviceModelIri = $this->model;
+        }
+
+        // Parse iri to get id.
+        return explode('/', $this->deviceModelIri)[3];
+    }
 
     public function setModel($model): void
     {
