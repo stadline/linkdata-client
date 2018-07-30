@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\src\Linkdata\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -113,7 +115,6 @@ class DeviceModel extends ProxyObject
      * @var string
      * @Groups({"device_model_norm"})
      */
-
     private $createdAt;
 
     /**
@@ -174,7 +175,7 @@ class DeviceModel extends ProxyObject
 
     public function getBrand(): Brand
     {
-        return $this->brand;
+        return $this->hydrate($this->brand);
     }
 
     public function setBrand($brand): void

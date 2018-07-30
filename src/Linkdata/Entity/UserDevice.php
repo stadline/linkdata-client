@@ -97,7 +97,7 @@ class UserDevice extends ProxyObject
         }
 
         // Parse iri to get id.
-        return explode('/', $this->deviceModelIri)[3];
+        return \explode('/', $this->deviceModelIri)[3];
     }
 
     public function setModel($model): void

@@ -80,7 +80,6 @@ class Activity extends ProxyObject
 
     /**
      * @var bool
-     *
      */
     private $manual;
 
