@@ -1,7 +1,7 @@
 {
   "name": "stadline/linkdata-client",
   "description": "Linkdata API library",
-  "type": "symfony-bundle",
+  "type": "library",
   "license": "proprietary",
   "authors": [
     {
