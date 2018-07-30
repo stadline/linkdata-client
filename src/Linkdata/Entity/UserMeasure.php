@@ -63,7 +63,6 @@ class UserMeasure extends ProxyObject
 
     public function __construct()
     {
-        $this->date = new \DateTime('now');
         $this->dateTimezone = '+00.00';
     }
 
@@ -131,7 +130,7 @@ class UserMeasure extends ProxyObject
         return $this->date;
     }
 
-    public function setDate(DateTime $date): void
+    public function setDate($date): void
     {
         $this->date = $date;
     }
