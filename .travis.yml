@@ -25,7 +25,7 @@ git:
   depth: 20
 
 install:
-  - make install-prod
+  - make install
 
 script:
   - make test-cs-fixer
