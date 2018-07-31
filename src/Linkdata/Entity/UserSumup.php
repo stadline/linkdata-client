@@ -65,6 +65,9 @@ class UserSumup extends ProxyObject
      */
     private $updatedAt;
 
+    private $datatypeIri;
+    private $sportIri;
+
     public function __construct()
     {
         $this->value = 0;
@@ -95,9 +98,24 @@ class UserSumup extends ProxyObject
         $this->user = $user;
     }
 
+    /**
+     * @return Sport
+     */
     public function getSport(): ?Sport
     {
+        $this->sportIri = $this->sport;
+
         return $this->hydrate($this->sport);
+    }
+
+    public function getSportId(): string
+    {
+        if (!$this->sportIri) {
+            $this->sportIri = $this->sport;
+        }
+
+        // Parse iri to get id.
+        return \explode('/', $this->sportIri)[3];
     }
 
     public function setSport($sport): void
@@ -105,9 +123,24 @@ class UserSumup extends ProxyObject
         $this->sport = $sport;
     }
 
+    /**
+     * @return Datatype
+     */
     public function getDatatype(): ?Datatype
     {
+        $this->datatypeIri = $this->datatype;
+
         return $this->hydrate($this->datatype);
+    }
+
+    public function getDatatypeId(): string
+    {
+        if (!$this->datatypeIri) {
+            $this->datatypeIri = $this->datatype;
+        }
+
+        // Parse iri to get id.
+        return \explode('/', $this->datatypeIri)[3];
     }
 
     public function setDatatype($datatype): void
