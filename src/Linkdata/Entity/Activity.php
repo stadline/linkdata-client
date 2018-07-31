@@ -167,6 +167,8 @@ class Activity extends ProxyObject
      */
     private $updatedAt;
 
+    private $sportIri;
+
     /**
      * @return string
      */
@@ -217,7 +219,19 @@ class Activity extends ProxyObject
      */
     public function getSport(): Sport
     {
+        $this->sportIri = $this->sport;
+
         return $this->hydrate($this->sport);
+    }
+
+    public function getSportId(): string
+    {
+        if (!$this->sportIri) {
+            $this->sportIri = $this->sport;
+        }
+
+        // Parse iri to get id.
+        return \explode('/', $this->sportIri)[3];
     }
 
     public function setSport($sport): void

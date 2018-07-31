@@ -2,3 +2,6 @@
 .idea/*
 /nbproject/*
 .php_cs.cache
+Dockerfile
+/docker/*
+docker-*
