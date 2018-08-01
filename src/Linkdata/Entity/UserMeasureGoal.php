@@ -75,12 +75,12 @@ class UserMeasureGoal extends ProxyObject
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
-        return $this->user;
+        return $this->hydrate($this->user);
     }
 
-    public function setUser(User $user): void
+    public function setUser($user): void
     {
         $this->user = $user;
     }
