@@ -8,41 +8,40 @@ use DateTime;
 use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-
 class UserMeasureGoal extends ProxyObject
 {
     /**
      * @var int
-     * @Groups({"user_measure_goal_norm", "user.migration"})
+     * @Groups({"user_measure_goal_norm"})
      */
     private $id;
 
     /**
      * @var User
-     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm", "user.migration"})
+     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
     private $user;
 
     /**
      * @var Datatype
-     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm", "user.migration"})
+     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
     private $datatype;
 
     /**
      * @var float
-     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm", "user.migration"})
+     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
     private $initial;
 
     /**
      * @var float
-     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm", "user.migration"})
+     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
     private $goal;
 
     /**
-     * @var DateTime
+     * @var string
      */
     private $startdate;
 
@@ -52,14 +51,14 @@ class UserMeasureGoal extends ProxyObject
     private $startdateTimezone;
 
     /**
-     * @var DateTime
-     * @Groups({"user_measure_goal_norm", "user.migration"})
+     * @var string
+     * @Groups({"user_measure_goal_norm"})
      */
     private $createdAt;
 
     /**
-     * @var DateTime
-     * @Groups({"user_measure_goal_norm", "user.migration"})
+     * @var string
+     * @Groups({"user_measure_goal_norm"})
      */
     private $updatedAt;
 
@@ -129,7 +128,7 @@ class UserMeasureGoal extends ProxyObject
     }
 
     /**
-     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm", "user.migration"})
+     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
     public function getStartdate(): DateTime
     {
