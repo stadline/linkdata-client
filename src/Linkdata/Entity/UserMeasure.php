@@ -125,11 +125,6 @@ class UserMeasure extends ProxyObject
         );
     }
 
-    public function getDateForTimezonable(): DateTime
-    {
-        return $this->date;
-    }
-
     public function setDate($date): void
     {
         $this->date = $date;

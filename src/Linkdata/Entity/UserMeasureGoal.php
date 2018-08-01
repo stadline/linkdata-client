@@ -41,7 +41,7 @@ class UserMeasureGoal extends ProxyObject
     private $goal;
 
     /**
-     * @var string
+     * @var DateTime
      */
     private $startdate;
 
@@ -75,7 +75,7 @@ class UserMeasureGoal extends ProxyObject
         return $this->id;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
@@ -85,14 +85,14 @@ class UserMeasureGoal extends ProxyObject
         $this->user = $user;
     }
 
-    public function getDatatype(): Datatype
+    public function getDatatype(): ?Datatype
     {
         $this->datatypeIri = $this->datatype;
 
         return $this->hydrate($this->datatype);
     }
 
-    public function getDatatypeId(): string
+    public function getDatatypeId(): ?string
     {
         if (!$this->datatypeIri) {
             $this->datatypeIri = $this->datatype;
@@ -117,7 +117,7 @@ class UserMeasureGoal extends ProxyObject
         $this->initial = $initial;
     }
 
-    public function getGoal(): float
+    public function getGoal(): ?float
     {
         return $this->goal;
     }
@@ -130,7 +130,7 @@ class UserMeasureGoal extends ProxyObject
     /**
      * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
-    public function getStartdate(): DateTime
+    public function getStartdate(): ?DateTime
     {
         return \DateTime::createFromFormat(
             'Y-m-d H:i:s',
@@ -139,17 +139,12 @@ class UserMeasureGoal extends ProxyObject
         );
     }
 
-    public function getStartdateForTimezonable(): DateTime
-    {
-        return $this->startdate;
-    }
-
-    public function setStartdate(DateTime $startdate): void
+    public function setStartdate($startdate): void
     {
         $this->startdate = $startdate;
     }
 
-    public function getStartdateTimezone(): string
+    public function getStartdateTimezone(): ?string
     {
         return $this->startdateTimezone;
     }
@@ -159,22 +154,22 @@ class UserMeasureGoal extends ProxyObject
         $this->startdateTimezone = $startdateTimezone;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(string $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(DateTime $updatedAt): void
+    public function setUpdatedAt(string $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
