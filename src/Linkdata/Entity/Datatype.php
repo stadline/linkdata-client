@@ -9,162 +9,52 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class Datatype extends ProxyObject
 {
-    const ON = 99;
-    const ON_MANUAL = 97;
-    const ACTIVITY = 98;
-    const HRCUR = 1;
-    const HRMAX = 3;
-    const HRAVG = 4;
-    const SPEEDCUR = 6;
-    const SPEEDMAX = 7;
-    const SPEEDAVG = 9;
-    const ELEVATIONCUR = 14;
-    const LAP = 20;
-    const WEIGHT_KILOGRAMS = 22;
-    const CALBURNT = 23;
-    const DURATION = 24;
-    const HEIGHT = 27;
-    const HRREST = 28;
-    const STEPS = 29;
+    // commonly used datatype
+    const HR_CURRENT = 1;
+    const HR_MIN = 2;
+    const HR_MAX = 3;
+    const HR_AVG = 4;
     const DISTANCE = 5;
-    const ASCENT = 18;
-    const DESCENT = 19;
+    const SPEED_CURRENT = 6;
+    const SPEED_MAX = 7;
+    const SPEED_MIN = 8;
+    const SPEED_AVG = 9;
+    const CADENCE_CURRENT = 10;
+    const ELEVATION_CURRENT = 14;
     const ELEVATION_MAX = 15;
     const ELEVATION_MIN = 16;
-    const CADENCECUR = 10;
-    const CADENCEMAX = 11;
-    const CADENCEMIN = 12;
-    const CADENCEAVG = 13;
-    const TIME_IN_ZONE = 42;
-    const EXERCISE_TYPE = 43;
-    const TOTAL_STROKE = 44;
-    const TOTAL_SERVES = 45;
-    const TOTAL_FOREHANDS = 46;
-    const TOTAL_BACKHANDS = 47;
-    const STROKE_TYPE = 48;
-    const STROKE_ZONE_1 = 49;
-    const STROKE_ZONE_2 = 50;
-    const STROKE_ZONE_3 = 51;
-    const STROKE_ZONE = 52;
-    const DECISIVE_STROKE = 53;
-    const CENTERED_FOREHANDS = 59;
-    const CENTERED_BACKHANDS = 60;
-    const CENTERED_SERVES = 61;
-    const BALL_SPEED_CURRENT = 54;
-    const BALL_SPEED_MAX = 56;
-    const BALL_SPEED_AVG = 57;
-    const WINNING_FOREHANDS = 62;
-    const WINNING_BACKHANDS = 64;
-    const LOOSING_FOREHANDS = 63;
-    const LOOSING_BACKHANDS = 65;
-    const WINNING_FIRST_SERVES = 66;
-    const LOOSING_FIRST_SERVES = 69;
-    const WINNING_SECOND_SERVES = 67;
-    const LOOSING_SECOND_SERVES = 68;
-    const TOTAL_WINNING_POINTS = 70;
-    const TOTAL_LOOSING_POINTS = 71;
-    const MAX_CONSECUTIVE_WINNING_POINTS = 72;
-    const TOTAL_FIRST_SERVES = 73;
-    const TOTAL_SECOND_SERVES = 74;
-    const TOTAL_CENTERED_FIRST_SERVES = 75;
-    const TOTAL_CENTERED_SECOND_SERVES = 76;
-    const FIRST_SERVE_BALL_SPEED_MAX = 77;
-    const SECOND_SERVE_BALL_SPEED_MAX = 78;
-    const FIRST_SERVE_BALL_SPEED_AVG = 79;
-    const SECOND_SERVE_BALL_SPEED_AVG = 80;
-    const WIN_ON_FIRST_SERVE = 81;
-    const WIN_ON_SECOND_SERVE = 82;
-    const SUCCESSFUL_FIRST_SERVE_SPEED_MAX = 83;
-    const SUCCESSFUL_FIRST_SERVE_SPEED_AVG = 84;
-    const TOTAL_SUCCESSFULL_FIRST_SERVE = 85;
-    const TOTAL_SUCCESSFULL_CENTERED_FIRST_SERVE = 86;
-    const MATCH_TIME = 87;
-    const TRAINING_TIME = 88;
-    const TOTAL_GAMES = 89;
-    const TOTAL_BREAK_POINTS = 90;
-    const TOTAL_BREAK_POINTS_WON = 91;
-    const TOTAL_VICTORY = 92;
-    const TOTAL_DEFEAT = 93;
-    const TOTAL_MATCH = 95;
-    const TOTAL_TRAINING = 96;
-    const TOTAL_MATCH_FOREHANDS = 104;
-    const TOTAL_MATCH_BACKHANDS = 105;
-    const TOTAL_TRAINING_FOREHANDS = 106;
-    const TOTAL_TRAINING_BACKHANDS = 107;
-    const TOTAL_TRAINING_SERVES = 108;
-    const TOTAL_MATCH_CENTERED_FOREHANDS = 109;
-    const TOTAL_MATCH_CENTERED_BACKHANDS = 110;
-    const TOTAL_TRAINING_CENTERED_FOREHANDS = 111;
-    const TOTAL_TRAINING_CENTERED_BACKHANDS = 112;
-    const TOTAL_TRAINING_CENTERED_SERVES = 113;
-    const TOTAL_TROPHIES = 114;
-    const TRAINING_SERVE_BALL_SPEED_AVG = 115;
-    const TRAINING_SERVE_BALL_SPEED_MAX = 116;
-    const MAX_STROKES_DURING_A_POINT = 117;
-    const MAX_CONSECUTIVE_WINNING_SERVES = 118;
-    const WALKING_TIME = 37;
+    const ASCENT = 18;
+    const DESCENT = 19;
+    const LAP = 20;
+    const BREAK_TIME = 21;
+    const WEIGHT_KILOGRAMS = 22;
+    const CALORIES_BURNT = 23;
+    const DURATION = 24;
+    const HR_PERCENTAGE_MIN = 25;
+    const HR_PERCENTAGE_MAX = 26;
+    const HEIGHT = 27;
+    const HR_REST = 28;
+    const STEP_NUMBER = 29;
     const ACTIVE_TIME = 30;
+    const WALKING_TIME = 37;
     const RUNNING_TIME = 38;
-    const WALKING_DURATION = 119;
-    const INTENSITY_AVG = 127;
-    const TOTAL_SERVES_WITHOUT_EFFECT = 128;
-    const TOTAL_SERVES_WITH_EFFECT = 129;
-    const TOTAL_FOREHANDS_TOPSPIN = 130;
-    const TOTAL_FOREHANDS_SLICE = 131;
-    const TOTAL_FOREHANDS_FLAT = 132;
-    const TOTAL_BACKHANDS_TOPSPIN = 133;
-    const TOTAL_BACKHANDS_SLICE = 134;
-    const TOTAL_BACKHANDS_FLAT = 135;
-    const STROKE_EFFECT = 136;
-    const TOTAL_FIRST_SERVES_WITHOUT_EFFECT = 137;
-    const TOTAL_FIRST_SERVES_WITH_EFFECT = 138;
-    const TOTAL_SECOND_SERVES_WITHOUT_EFFECT = 139;
-    const TOTAL_SECOND_SERVES_WITH_EFFECT = 140;
-    const INTENSITY_AVG_FOREHANDS_TOPSPIN = 141;
-    const INTENSITY_AVG_FOREHANDS_SLICE = 142;
-    const INTENSITY_AVG_FOREHANDS_FLAT = 143;
-    const INTENSITY_AVG_BACKHANDS_TOPSPIN = 144;
-    const INTENSITY_AVG_BACKHANDS_SLICE = 145;
-    const INTENSITY_AVG_BACKHANDS_FLAT = 146;
-    const TOTAL_TRAINING_SERVES_WITHOUT_EFFECT = 147;
-    const TOTAL_TRAINING_SERVES_WITH_EFFECT = 148;
-    const TOTAL_TRAINING_FOREHANDS_TOPSPIN = 149;
-    const TOTAL_TRAINING_FOREHANDS_SLICE = 150;
-    const TOTAL_TRAINING_FOREHANDS_FLAT = 151;
-    const TOTAL_TRAINING_BACKHANDS_TOPSPIN = 152;
-    const TOTAL_TRAINING_BACKHANDS_SLICE = 153;
-    const TOTAL_TRAINING_BACKHANDS_FLAT = 154;
-    const TOTAL_MATCH_FOREHANDS_TOPSPIN = 155;
-    const TOTAL_MATCH_FOREHANDS_SLICE = 156;
-    const TOTAL_MATCH_FOREHANDS_FLAT = 157;
-    const TOTAL_MATCH_BACKHANDS_TOPSPIN = 158;
-    const TOTAL_MATCH_BACKHANDS_SLICE = 159;
-    const TOTAL_MATCH_BACKHANDS_FLAT = 160;
-    const TRAINING_INTENSITY_AVG_FOREHANDS_TOPSPIN = 161;
-    const TRAINING_INTENSITY_AVG_FOREHANDS_SLICE = 162;
-    const TRAINING_INTENSITY_AVG_FOREHANDS_FLAT = 163;
-    const TRAINING_INTENSITY_AVG_BACKHANDS_TOPSPIN = 164;
-    const TRAINING_INTENSITY_AVG_BACKHANDS_SLICE = 165;
-    const TRAINING_INTENSITY_AVG_BACKHANDS_FLAT = 166;
-    const MATCH_INTENSITY_AVG_FOREHANDS_TOPSPIN = 167;
-    const MATCH_INTENSITY_AVG_FOREHANDS_SLICE = 168;
-    const MATCH_INTENSITY_AVG_FOREHANDS_FLAT = 169;
-    const MATCH_INTENSITY_AVG_BACKHANDS_TOPSPIN = 170;
-    const MATCH_INTENSITY_AVG_BACKHANDS_SLICE = 171;
-    const MATCH_INTENSITY_AVG_BACKHANDS_FLAT = 172;
-    const INTENSITY_MAX_FOREHANDS = 173;
-    const INTENSITY_MAX_BACKHANDS = 174;
-    const VMA_PERCENTAGE = 175;
-    const PERCENTAGE_MAX_HR_CURRENT = 176;
-    const RESISTANCE = 177;
-    const POWER_CURRENT = 178;
-    const POWER_MAX = 179;
-    const POWER_AVG = 180;
+    const MUSIC_TRACK = 39;
+    const MODE = 36;
+    const FAT_BURN = 41;
+    const MANUAL_POINTS = 97;
+    const ACTIVITY_NUMBER = 98;
+    const POINTS_EARNED = 99;
+    const RPM_CURRENT = 100;
+    const RPM_AVG = 103;
+    const BIKE_TRAINER_RESISTANCE = 177;
+    const CURRENT_HOME_TRAINER_POWER = 178;
+    const MAXIMUM_HOME_TRAINER_POWER = 179;
+    const AVERAGE_HOME_TRAINER_POWER = 180;
     const WEIGHT = 181;
-    const FAT_PERCENTAGE = 182;
-    const MUSCLE_PERCENTAGE = 184;
-    const BONE_PERCENTAGE = 185;
-    const WATER_PERCENTAGE = 186;
+    const BODY_FAT_PERCENTAGE = 182;
+    const BODY_MUSCLE_PERCENTAGE = 184;
+    const BODY_BONE_PERCENTAGE = 185;
+    const BODY_WATER_PERCENTAGE = 186;
     const PMA_PERCENTAGE = 183;
     const EXERCISE_FLAG = 187;
     const EXERCISE_PHASE_FLAG = 188;
@@ -191,7 +81,69 @@ class Datatype extends ProxyObject
     const STRIDE_LENGTH = 208;
     const STEPS_OBJECTIVE = 209;
     const SLEEP_OBJECTIVE = 210;
-    const LOCATION = 10000;
+
+    // special cases : datatypes that doesn't exist
+    const ELAPSED_TIME = 10000;
+    const SPEED_RATE_CURRENT = 10001;
+    const VERTICAL_SPEED_CURRENT = 10002;
+    const ASCENT_SPEED_AVG = 10003;
+    const DESCENT_SPEED_AVG = 10004;
+    const TIME_OF_DAY = 10005;
+    const LOCATION = 10006;
+    const MONTH_FIRST_LETTER = 10007;
+    const MONTH = 10008;
+    const SPEED_RATE_AVG = 10009;
+    const SPEED_RATE_MAX = 10010;
+    const HR_LITERAL_ZONE = 10011;
+    const ELEVATION_PERCENTAGE = 10012;
+    const ELEVATION_PERCENTAGE_ASCENT = 10013;
+    const ELEVATION_PERCENTAGE_DESCENT = 10014;
+
+    public static $iconNames = [
+        self::HR_CURRENT => 'icon-geonaute-heart',
+        self::HR_MIN => 'icon-geonaute-heart',
+        self::HR_MAX => 'icon-geonaute-heart',
+        self::HR_AVG => 'icon-geonaute-heart',
+        self::DISTANCE => 'icon-geonaute-road',
+        self::SPEED_CURRENT => 'icon-geonaute-perform',
+        self::SPEED_AVG => 'icon-geonaute-perform',
+        self::CADENCE_CURRENT => 'icon-geonaute-step',
+        self::ELEVATION_CURRENT => 'icon-geonaute-mountain',
+        self::ELEVATION_MAX => 'icon-geonaute-mountain',
+        self::ELEVATION_MIN => 'icon-geonaute-mountain',
+        self::ASCENT => 'icon-geonaute-ascent',
+        self::DESCENT => 'icon-geonaute-descent',
+        self::LAP => 'icon-geonaute-time',
+        self::BREAK_TIME => 'icon-geonaute-time',
+        self::WEIGHT_KILOGRAMS => 'icon-geonaute-cal',
+        self::CALORIES_BURNT => 'icon-geonaute-cal',
+        self::DURATION => 'icon-geonaute-time',
+        self::ELAPSED_TIME => 'icon-geonaute-time',
+        self::HR_PERCENTAGE_MIN => 'icon-geonaute-percent',
+        self::HR_PERCENTAGE_MAX => 'icon-geonaute-percent',
+        self::HEIGHT => 'icon-geonaute-cal',
+        self::HR_REST => 'icon-geonaute-heart',
+        self::STEP_NUMBER => 'icon-geonaute-step',
+        self::ACTIVE_TIME => 'icon-geonaute-walk-fast',
+        self::WALKING_TIME => 'icon-geonaute-time',
+        self::RUNNING_TIME => 'icon-geonaute-time',
+        self::FAT_BURN => 'icon-geonaute-cal',
+        self::MANUAL_POINTS => 'icon-geonaute-on',
+        self::POINTS_EARNED => 'icon-geonaute-on',
+        self::RPM_CURRENT => 'icon-geonaute-rpm',
+        self::RPM_AVG => 'icon-geonaute-rpm',
+        self::ACTIVITY_NUMBER => 'icon-geonaute-hightchart',
+        self::SPEED_RATE_CURRENT => 'icon-geonaute-perform',
+        self::ELEVATION_PERCENTAGE => 'icon-geonaute-next',
+        self::ELEVATION_PERCENTAGE_ASCENT => 'icon-geonaute-ascent-arrow',
+        self::ELEVATION_PERCENTAGE_DESCENT => 'icon-geonaute-descent-arrow',
+        self::WEIGHT_KILOGRAMS => 'icon-geonaute-weight',
+        self::WEIGHT => 'icon-geonaute-weight',
+        self::BODY_FAT_PERCENTAGE => 'icon-geonaute-weight',
+        self::CURRENT_HOME_TRAINER_POWER => 'icon-geonaute-power',
+    ];
+
+    public static $userHrMax = 220;
 
     /**
      * @var int
@@ -357,5 +309,19 @@ class Datatype extends ProxyObject
     public function getDescriptionByLocale(string $locale): ?string
     {
         return $this->hasDescriptionByLocale($locale) ? $this->translatedDescriptions[$locale] : null;
+    }
+
+    /**
+     * Return icon for datatype.
+     *
+     * @return string
+     */
+    public static function getIcon($unitId)
+    {
+        if (\array_key_exists($unitId, self::$iconNames)) {
+            return self::$iconNames[$unitId];
+        }
+
+        return '';
     }
 }
