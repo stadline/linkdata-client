@@ -24,8 +24,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Stadline\\LinkdataClient\\src\\ClientHydra\\": "src/ClientHydra",
-      "Stadline\\LinkdataClient\\src\\Linkdata\\": "src/Linkdata"
+      "Stadline\\LinkdataClient\\ClientHydra\\": "ClientHydra",
+      "Stadline\\LinkdataClient\\Linkdata\\": "Linkdata"
     }
   },
   "extra": {
