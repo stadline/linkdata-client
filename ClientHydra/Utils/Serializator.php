@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
-use ReflectionException;
 use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
 use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException\ConfigurationException;
 use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException\SerializerException;
@@ -19,12 +18,13 @@ use Symfony\Component\Serializer\Serializer;
 class Serializator
 {
     private const HYDRA_COLLECTION_TYPE = 'hydra:Collection';
-    private $config;
+
+    private $entityNamespace;
     private $client;
 
-    public function __construct(array $config)
+    public function __construct(string $entityNamespace)
     {
-        $this->config = $config;
+        $this->entityNamespace = $entityNamespace;
     }
 
     /**
@@ -70,7 +70,7 @@ class Serializator
     {
         $entityName = $this->getEntityName($response);
         $isCollectionResponse = $this->isCollectionResponse($response);
-        $className = \sprintf('%s\%s', $this->config['entity_namespace'], \ucfirst($entityName));
+        $className = \sprintf('%s\%s', $this->entityNamespace, \ucfirst($entityName));
 
         if ($isCollectionResponse) {
             return $this->deserializeCollection($response, $className);
@@ -148,17 +148,9 @@ class Serializator
         return self::HYDRA_COLLECTION_TYPE === $responseJson['@type'];
     }
 
-    /**
-     * @throws ConfigurationException
-     */
     private function getNormContext($entity, string $context): string
     {
-        try {
-            return \sprintf('%s_%s', \strtolower($entity), $context);
-        } catch (ReflectionException $e) {
-            $entityName = \is_string($entity) ? $entity : \get_class($entity);
-            throw new ConfigurationException(\sprintf('Unable to retrieve entity %s in %s context', $entityName, $context));
-        }
+        return \sprintf('%s_%s', \strtolower($entity), $context);
     }
 
     /**
@@ -166,7 +158,7 @@ class Serializator
      */
     private function supportEntity($object): bool
     {
-        if (false === \strpos(\get_class($object), $this->config['entity_namespace'])) {
+        if (false === \strpos(\get_class($object), $this->entityNamespace)) {
             throw new ConfigurationException(\sprintf('Entity %s is not supported by Serializator', \get_class($object)));
         }
 

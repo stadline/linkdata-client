@@ -9,18 +9,11 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use Stadline\LinkdataClient\ClientHydra\Exception\RequestException\RequestException;
 
-class GuzzleAdapter
+class GuzzleAdapter implements AdapterInterface
 {
-    private $config;
-
-    public function __construct(array $config)
+    private function getClient(string $baseUrl, string $authorisation): Client
     {
-        $this->config = $config;
-    }
-
-    public function getClient(string $authorisation): Client
-    {
-        return new Client(['base_uri' => $this->config['base_url'], 'headers' => [
+        return new Client(['base_uri' => $baseUrl, 'headers' => [
             'Authorization' => \sprintf('Bearer %s', $authorisation),
         ]]);
     }
@@ -28,9 +21,9 @@ class GuzzleAdapter
     /**
      * @throws RequestException
      */
-    public function makeRequest(string $method, string $uri, array $headers = [], string $body = null): string
+    public function makeRequest(string $method, string $baseUrl, string $uri, array $headers = [], string $body = null): string
     {
-        $client = $this->getClient($headers['authorization']);
+        $client = $this->getClient($baseUrl, $headers['authorization']);
         $request = new Request($method, $uri, $headers, $body);
 
         try {

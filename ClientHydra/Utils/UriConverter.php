@@ -9,11 +9,13 @@ use Stadline\LinkdataClient\ClientHydra\Exception\UriException\FormatException;
 
 class UriConverter
 {
-    private $config;
+    private $baseUrl;
+    private $entityNamespace;
 
-    public function __construct(array $config)
+    public function __construct(string $baseUrl, string $entityNamespace)
     {
-        $this->config = $config;
+        $this->baseUrl = $baseUrl;
+        $this->entityNamespace = $entityNamespace;
     }
 
     /**
@@ -43,14 +45,14 @@ class UriConverter
         // first, try to get the singular class
         $class = Inflector::singularize($className);
 
-        if (\class_exists(\sprintf('%s\%s', $this->config['entity_namespace'], $class))) {
+        if (\class_exists(\sprintf('%s\%s', $this->entityNamespace, $class))) {
             return $class;
         }
 
         // second, if singular class not found, try to get the class in the plural
         $class = Inflector::pluralize($className);
 
-        if (\class_exists(\sprintf('%s\%s', $this->config['entity_namespace'], $class))) {
+        if (\class_exists(\sprintf('%s\%s', $this->entityNamespace, $class))) {
             return $class;
         }
 
@@ -76,7 +78,7 @@ class UriConverter
         $uri = Inflector::pluralize($className);
         $filters = $this->formatFilters(\count($args) > 0 ? $args[0] : null);
 
-        return \sprintf('%s/%s%s', $this->config['base_url'], Inflector::tableize($uri), $filters);
+        return \sprintf('%s/%s%s', $this->baseUrl, Inflector::tableize($uri), $filters);
     }
 
     private function formatFilters($args): string
