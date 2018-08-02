@@ -11,7 +11,6 @@ class ProxyManager
 {
     private $objects = [];
     private $hydraClient;
-    private $config;
 
     public function __construct(HydraClientInterface $hydraClient)
     {
@@ -47,12 +46,5 @@ class ProxyManager
         $objects[$entityHash] = $object;
 
         return $object;
-    }
-
-    private function loadConfiguration(): array
-    {
-        $json = \file_get_contents(__DIR__.'/../Config/config.json');
-
-        return \json_decode($json, true);
     }
 }
