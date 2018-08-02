@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\src\ClientHydra\Exception\HandlerException;
+namespace Stadline\LinkdataClient\ClientHydra\Exception\HandlerException;
 
-use Stadline\LinkdataClient\src\ClientHydra\Exception\ClientHydraException;
+use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Throwable;
 
 class HandlerException extends ClientHydraException

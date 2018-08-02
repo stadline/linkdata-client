@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\src\Linkdata\Adapter;
+namespace Stadline\LinkdataClient\Linkdata\Adapter;
 
 use Pagerfanta\Adapter\AdapterInterface;
 

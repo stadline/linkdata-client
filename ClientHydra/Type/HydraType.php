@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\src\ClientHydra\Type;
+namespace Stadline\LinkdataClient\ClientHydra\Type;
 
 final class HydraType
 {

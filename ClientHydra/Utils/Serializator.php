@@ -9,6 +9,7 @@ use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException\Configurat
 use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException\SerializerException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Type\FormatType;
+use Stadline\LinkdataClient\ClientHydra\Type\HydraType;
 use Stadline\LinkdataClient\ClientHydra\Type\NormContextType;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;

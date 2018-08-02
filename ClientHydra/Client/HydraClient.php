@@ -4,35 +4,31 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
-use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
+use Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
-use Stadline\LinkdataClient\ClientHydra\Utils\Paginator;
 use Stadline\LinkdataClient\ClientHydra\Utils\Serializator;
 use Stadline\LinkdataClient\ClientHydra\Utils\UriConverter;
 
 abstract class HydraClient implements HydraClientInterface
 {
-    private $adapter;
     private $uriConverter;
     private $serializator;
+    private $requestHandler;
     private $headers;
-    private $baseUrl;
 
     public function __construct(
-        AdapterInterface $adapter,
         UriConverter $uriConverter,
         Serializator $serializator,
-        array $headers,
-        string $baseUrl
+        RequestHandler $requestHandler,
+        array $headers
     ) {
-        $this->adapter = $adapter;
         $this->uriConverter = $uriConverter;
         $this->serializator = $serializator;
+        $this->requestHandler = $requestHandler;
         $this->headers = $headers;
-        $this->baseUrl = $baseUrl;
     }
 
     public function getProxy(string $iri): ProxyObject
@@ -57,14 +53,14 @@ abstract class HydraClient implements HydraClientInterface
             $this->headers['Content-Type'] = 'application/json';
         }
 
-        $requestResponse = $this->adapter->makeRequest($uri['method'], $this->baseUrl, $uri['uri'], $this->headers, $body);
-        $content = $this->serializator->deserialize($requestResponse);
+        $requestArgs = [
+            'method' => $uri['method'],
+            'uri' => $uri['uri'],
+            'headers' => $this->headers,
+            'body' => $body,
+            'maxResult' => $args['maxResult'],
+        ];
 
-        // If we have to paginate result, process pagination
-        if (1 < \count($content)) {
-            $content = new Paginator($content);
-        }
-
-        return $content;
+        return $this->requestHandler->handleRequest($requestArgs);
     }
 }

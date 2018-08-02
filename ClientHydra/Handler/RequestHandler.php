@@ -2,31 +2,35 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\src\ClientHydra\Handler;
+namespace Stadline\LinkdataClient\ClientHydra\Handler;
 
-use Pagerfanta\Pagerfanta;
-use Stadline\LinkdataClient\src\ClientHydra\Adapter\GuzzleAdapter;
-use Stadline\LinkdataClient\src\ClientHydra\Exception\HandlerException\HandlerException;
-use Stadline\LinkdataClient\src\ClientHydra\Exception\RequestException\RequestException;
-use Stadline\LinkdataClient\src\ClientHydra\Exception\SerializerException\SerializerException;
-use Stadline\LinkdataClient\src\ClientHydra\Type\HydraType;
-use Stadline\LinkdataClient\src\ClientHydra\Utils\Serializator;
-use Stadline\LinkdataClient\src\ClientHydra\Utils\UriConverter;
-use Stadline\LinkdataClient\src\Linkdata\Adapter\LinkdataAdapter;
+use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
+use Stadline\LinkdataClient\ClientHydra\Exception\HandlerException\HandlerException;
+use Stadline\LinkdataClient\ClientHydra\Exception\RequestException\RequestException;
+use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException\SerializerException;
+use Stadline\LinkdataClient\ClientHydra\Type\HydraType;
+use Stadline\LinkdataClient\ClientHydra\Utils\Paginator;
+use Stadline\LinkdataClient\ClientHydra\Utils\Serializator;
+use Stadline\LinkdataClient\ClientHydra\Utils\UriConverter;
+use Stadline\LinkdataClient\Linkdata\Adapter\LinkdataAdapter;
 
 class RequestHandler
 {
-    private $config;
-    private $guzzleAdapter;
+    private $adapter;
     private $serializer;
     private $uriConverter;
+    private $maxResultPerPage;
 
-    public function __construct(array $config = [])
-    {
-        $this->config = $config;
-        $this->guzzleAdapter = new GuzzleAdapter($config);
-        $this->serializer = new Serializator($config);
-        $this->uriConverter = new UriConverter($config);
+    public function __construct(
+        AdapterInterface $adapter,
+        Serializator $serializator,
+        UriConverter $uriConverter,
+        string $maxResultPerPage
+    ) {
+        $this->adapter = $adapter;
+        $this->serializer = $serializator;
+        $this->uriConverter = $uriConverter;
+        $this->maxResultPerPage = $maxResultPerPage;
     }
 
     /**
@@ -39,7 +43,7 @@ class RequestHandler
         $nbResult = $this->getNbResult($content);
 
         if ($nbResult <= 1) {
-            return  $content[0];
+            return $content[0];
         }
 
         $results[] = $content;
@@ -58,8 +62,8 @@ class RequestHandler
         unset($results['extra']);
 
         $adapter = new LinkdataAdapter($results);
-        $paginator = new Pagerfanta($adapter);
-        $paginator->setMaxPerPage($this->config['max_result_per_page']);
+        $paginator = new Paginator($adapter);
+        $paginator->setMaxPerPage($this->maxResultPerPage);
 
         return $paginator;
     }
@@ -70,7 +74,7 @@ class RequestHandler
     private function retrieveData(array $args): array
     {
         try {
-            $requestResponse = $this->guzzleAdapter->makeRequest(
+            $requestResponse = $this->adapter->makeRequest(
                 $args['method'],
                 $args['uri'],
                 $args['headers'],
