@@ -42,7 +42,7 @@ class UriConverter
     private function generateUri(string $className, array $args): string
     {
         $uri = Inflector::pluralize($className);
-        $filters = $this->formatFilters(\count($args) > 0 ? $args[0] : null);
+        $filters = $this->formatFilters(\count($args) > 0 ? $args[0] : '');
 
         return \sprintf('%s/%s%s', $this->baseUrl, Inflector::tableize($uri), $filters);
     }
@@ -50,8 +50,13 @@ class UriConverter
     private function formatFilters($args): string
     {
         // item case
-        if (!\is_array($args)) {
+        if (!\is_array($args) && !\is_object($args)) {
             return null !== $args ? \sprintf('/%s', $args) : '';
+        }
+
+        // item case (object)
+        if (\is_object($args)) {
+            return \sprintf('/%s', $args->getId());
         }
 
         // collection case
