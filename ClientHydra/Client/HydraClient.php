@@ -36,33 +36,29 @@ abstract class HydraClient implements HydraClientInterface
      */
     public function send(string $method, array $args)
     {
-        try {
-            $uriConverter = new UriConverter($this->config);
-            $uri = $uriConverter->formatUri($method, $args);
+        $uriConverter = new UriConverter($this->config);
+        $uri = $uriConverter->formatUri($method, $args);
 
-            $serializator = new Serializator($this->config);
-            $serializator->setClient($this);
-            $requester = new GuzzleAdapter($this->config);
-            $body = null;
+        $serializator = new Serializator($this->config);
+        $serializator->setClient($this);
+        $requester = new GuzzleAdapter($this->config);
+        $body = null;
 
-            // Put or POST, make a serialization with the entity.
-            if (\in_array($uri['method'], [MethodType::POST, MethodType::PUT], true) && \count($args[1]) > 0) {
-                $body = $serializator->serialize($args[1][0]);
-                $this->headers['Content-Type'] = 'application/json';
-            }
-
-            $requestResponse = $requester->makeRequest($uri['method'], $uri['uri'], $this->headers, $body);
-            $content = $serializator->deserialize($requestResponse);
-
-            // If we have to paginate result, process pagination
-            if (1 < \count($content)) {
-                $content = new Paginator($content);
-            }
-
-            return $content;
-        } catch (ClientHydraException $e) {
-            throw $e;
+        // Put or POST, make a serialization with the entity.
+        if (\in_array($uri['method'], [MethodType::POST, MethodType::PUT], true) && \count($args[1]) > 0) {
+            $body = $serializator->serialize($args[1][0]);
+            $this->headers['Content-Type'] = 'application/json';
         }
+
+        $requestResponse = $requester->makeRequest($uri['method'], $uri['uri'], $this->headers, $body);
+        $content = $serializator->deserialize($requestResponse);
+
+        // If we have to paginate result, process pagination
+        if (1 < \count($content)) {
+            $content = new Paginator($content);
+        }
+
+        return $content;
     }
 
     private function loadConfiguration(): array
