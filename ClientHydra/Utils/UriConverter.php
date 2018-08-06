@@ -6,6 +6,7 @@ namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
 use Doctrine\Common\Inflector\Inflector;
 use Stadline\LinkdataClient\ClientHydra\Exception\UriException\FormatException;
+use Stadline\LinkdataClient\ClientHydra\Type\UriType;
 
 class UriConverter
 {
@@ -32,7 +33,7 @@ class UriConverter
         }
 
         $response['method'] = $matches['method'];
-        $this->uriResolver->validateClassByName($matches['className'], $this->config['entity_namespace']);
+        $this->uriResolver->validateClassByName($matches['className'], $this->entityNamespace);
 
         $response['uri'] = $this->generateUri($matches['className'], $args);
 
@@ -56,17 +57,19 @@ class UriConverter
 
         // item case (object)
         if (\is_object($args)) {
-            return \sprintf('/%s', $args->getId());
+            $myClass = new \ReflectionClass($args);
+
+            return $myClass->hasMethod('getId') ? \sprintf('/%s', $myClass->{'getId'}()) : '';
         }
 
         // collection case
-        if (!\array_key_exists('filters', $args)) {
+        if (!\array_key_exists(UriType::FILTERS, $args)) {
             return '';
         }
 
         $response = '?';
 
-        foreach ($args['filters'] as $key => $filter) {
+        foreach ($args[UriType::FILTERS] as $key => $filter) {
             $response .= \sprintf('%s=%s&', $key, $filter);
         }
 

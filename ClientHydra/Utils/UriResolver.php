@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\src\ClientHydra\Utils;
+namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
 use Doctrine\Common\Inflector\Inflector;
-use Stadline\LinkdataClient\src\ClientHydra\Exception\UriException\FormatException;
+use Stadline\LinkdataClient\ClientHydra\Exception\UriException\FormatException;
 
 class UriResolver
 {
@@ -29,7 +29,7 @@ class UriResolver
         }
 
         // third, if singular and plural class not found, try to parse it to retrieve the correct name
-        $splitedClassName = $this->parse($className);
+        $splitedClassName = $this->parseUri($className);
         \array_pop($splitedClassName);
 
         if (empty($splitedClassName)) {
@@ -39,7 +39,7 @@ class UriResolver
         return $this->validateClassByName(\implode($splitedClassName), $namespace);
     }
 
-    private function parse(string $className): array
+    private function parseUri(string $className): array
     {
         // get each part of the uri by uppercase
         return \preg_split('/(?=[A-Z])/', $className, 0, PREG_SPLIT_NO_EMPTY);
