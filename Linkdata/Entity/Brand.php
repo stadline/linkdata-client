@@ -7,6 +7,7 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 class Brand extends ProxyObject
 {
@@ -23,7 +24,6 @@ class Brand extends ProxyObject
 
     /**
      * @var array
-     *
      * @Groups({"brand_norm"})
      */
     private $translatedNames;
