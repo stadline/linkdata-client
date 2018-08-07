@@ -101,9 +101,15 @@ class RequestHandler
             $node = $this->serializer->getNodeValues($requestResponse, HydraType::VIEW);
 
             $extra = [
-                'first_page' => null === $node[HydraType::FIRST_PAGE] ? null : $this->uriConverter->getUriParam('page', $node[HydraType::FIRST_PAGE]),
-                'next_page' => null === $node[HydraType::NEXT_PAGE] ? null : $this->uriConverter->getUriParam('page', $node[HydraType::NEXT_PAGE]),
-                'last_page' => null === $node[HydraType::LAST_PAGE] ? null : $this->uriConverter->getUriParam('page', $node[HydraType::LAST_PAGE]),
+                'first_page' => $this->serializer->hasNode(\json_encode($node), HydraType::FIRST_PAGE) ?
+                    $this->uriConverter->getUriParam('page', $node[HydraType::FIRST_PAGE]) :
+                    null,
+                'next_page' => $this->serializer->hasNode(\json_encode($node), HydraType::NEXT_PAGE) ?
+                    $this->uriConverter->getUriParam('page', $node[HydraType::NEXT_PAGE]) :
+                    null,
+                'last_page' => $this->serializer->hasNode(\json_encode($node), HydraType::LAST_PAGE) ?
+                    $this->uriConverter->getUriParam('page', $node[HydraType::LAST_PAGE]) :
+                    null,
             ];
         }
 
