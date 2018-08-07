@@ -67,13 +67,13 @@ class UserRecord extends ProxyObject
     private $value;
 
     /**
-     * @var DateTime
+     * @var string
      * @Groups({"user_record_norm"})
      */
     private $createdAt;
 
     /**
-     * @var DateTime
+     * @var string
      * @Groups({"user_record_norm"})
      */
     private $updatedAt;
@@ -87,22 +87,24 @@ class UserRecord extends ProxyObject
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
-        return $this->user;
+        return $this->hydrate($this->user);
     }
 
-    public function setUser(User $user): void
+    public function setUser($user): void
     {
         $this->user = $user;
     }
 
     public function getDatatype(): ?Datatype
     {
-        return $this->datatype;
+        $this->datatypeIri = $this->datatype;
+
+        return $this->hydrate($this->datatype);
     }
 
-    public function setDatatype(Datatype $datatype): void
+    public function setDatatype($datatype): void
     {
         $this->datatype = $datatype;
     }
@@ -129,10 +131,12 @@ class UserRecord extends ProxyObject
 
     public function getSport(): ?Sport
     {
-        return $this->sport;
+        $this->sportIri = $this->sport;
+
+        return $this->hydrate($this->sport);
     }
 
-    public function setSport(Sport $sport): void
+    public function setSport($sport): void
     {
         $this->sport = $sport;
     }
@@ -179,10 +183,12 @@ class UserRecord extends ProxyObject
 
     public function getActivity(): ?Activity
     {
-        return $this->activity;
+        $this->activityIri = $this->activity;
+
+        return $this->hydrate($this->activity);
     }
 
-    public function setActivity(Activity $activity): void
+    public function setActivity($activity): void
     {
         $this->activity = $activity;
     }
