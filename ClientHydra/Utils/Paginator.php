@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
-use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\AdapterInterface;
 use Pagerfanta\Exception\LessThan1MaxPerPageException;
 use Pagerfanta\Exception\NotIntegerMaxPerPageException;
 use Pagerfanta\Exception\OutOfRangeCurrentPageException;
@@ -13,10 +13,8 @@ use Stadline\LinkdataClient\ClientHydra\Exception\PaginatorException\PaginatorEx
 
 class Paginator extends Pagerfanta
 {
-    public function __construct(array $data = [])
+    public function __construct(AdapterInterface $adapter)
     {
-        $adapter = new ArrayAdapter($data);
-
         parent::__construct($adapter);
     }
 

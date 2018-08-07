@@ -9,6 +9,7 @@ use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException\Configurat
 use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException\SerializerException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Type\FormatType;
+use Stadline\LinkdataClient\ClientHydra\Type\HydraType;
 use Stadline\LinkdataClient\ClientHydra\Type\NormContextType;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
@@ -17,8 +18,6 @@ use Symfony\Component\Serializer\Serializer;
 
 class Serializator
 {
-    private const HYDRA_COLLECTION_TYPE = 'hydra:Collection';
-
     private $entityNamespace;
     private $client;
 
@@ -145,7 +144,7 @@ class Serializator
     {
         $responseJson = \json_decode($response, true);
 
-        return self::HYDRA_COLLECTION_TYPE === $responseJson['@type'];
+        return HydraType::COLLECTION === $responseJson['@type'];
     }
 
     private function getNormContext($entity, string $context): string
@@ -168,5 +167,19 @@ class Serializator
     public function setClient(HydraClientInterface $client): void
     {
         $this->client = $client;
+    }
+
+    public function hasNode(string $json, string $node): bool
+    {
+        $response = \json_decode($json, true);
+
+        return \array_key_exists($node, $response);
+    }
+
+    public function getNodeValues(string $json, string $node): array
+    {
+        $response = \json_decode($json, true);
+
+        return $response[$node];
     }
 }

@@ -75,4 +75,69 @@ class UriConverter
 
         return \substr($response, 0, -1);
     }
+
+    public function getUriParam(string $needle, string $uri): ?string
+    {
+        $query = \parse_url($uri, PHP_URL_QUERY);
+
+        if (null === $query) {
+            return null;
+        }
+
+        \parse_str($query, $output);
+
+        return $output[$needle] ?? null;
+    }
+
+    public function addUriParam(string $key, string $value, string &$uri): void
+    {
+        $url = \parse_url($uri);
+
+        if (null === $url['query']) {
+            $output = [$key => $value];
+        } else {
+            \parse_str($url['query'], $output);
+            $output = \array_merge($output, [$key => $value]);
+        }
+
+        $url['query'] = \http_build_query($output);
+
+        $response = '';
+
+        foreach ($url as $part) {
+            if ($url['scheme'] === $part) {
+                $response .= \sprintf('%s://', $part);
+            } elseif ($url['query'] === $part) {
+                $response .= \sprintf('?%s', $part);
+            } else {
+                $response .= $part;
+            }
+        }
+
+        $uri = $response;
+    }
+
+    public function updateUriParamValue(string $key, string $value, string &$uri): void
+    {
+        $url = \parse_url($uri);
+
+        \parse_str($url['query'], $output);
+        $output[$key] = $value;
+
+        $url['query'] = \http_build_query($output);
+
+        $response = '';
+
+        foreach ($url as $part) {
+            if ($url['scheme'] === $part) {
+                $response .= \sprintf('%s://', $part);
+            } elseif ($url['query'] === $part) {
+                $response .= \sprintf('?%s', $part);
+            } else {
+                $response .= $part;
+            }
+        }
+
+        $uri = $response;
+    }
 }

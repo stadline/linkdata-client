@@ -4,35 +4,32 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
-use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
+use Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
+use Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
-use Stadline\LinkdataClient\ClientHydra\Utils\Paginator;
 use Stadline\LinkdataClient\ClientHydra\Utils\Serializator;
 use Stadline\LinkdataClient\ClientHydra\Utils\UriConverter;
 
 abstract class HydraClient implements HydraClientInterface
 {
-    private $adapter;
     private $uriConverter;
     private $serializator;
+    private $requestHandler;
     private $headers;
-    private $baseUrl;
+    private $config;
 
-    public function __construct(
-        AdapterInterface $adapter,
-        UriConverter $uriConverter,
-        Serializator $serializator,
-        array $headers,
-        string $baseUrl
-    ) {
-        $this->adapter = $adapter;
-        $this->uriConverter = $uriConverter;
-        $this->serializator = $serializator;
+    public function __construct(array $headers)
+    {
+        $this->config = $this->loadConfiguration();
+        $this->uriConverter = new UriConverter($this->config['base_url'], $this->config['entity_namespace']);
+        $this->serializator = new Serializator($this->config['entity_namespace']);
+
+        $adapter = new GuzzleAdapter();
+        $this->requestHandler = new RequestHandler($adapter, $this->serializator, $this->uriConverter, $this->config['max_result_per_page']);
         $this->headers = $headers;
-        $this->baseUrl = $baseUrl;
     }
 
     public function getProxy(string $iri): ProxyObject
@@ -57,14 +54,22 @@ abstract class HydraClient implements HydraClientInterface
             $this->headers['Content-Type'] = 'application/json';
         }
 
-        $requestResponse = $this->adapter->makeRequest($uri['method'], $this->baseUrl, $uri['uri'], $this->headers, $body);
-        $content = $this->serializator->deserialize($requestResponse);
+        $requestArgs = [
+            'method' => $uri['method'],
+            'baseUrl' => $this->config['base_url'],
+            'uri' => $uri['uri'],
+            'headers' => $this->headers,
+            'body' => $body,
+            'maxResult' => $args['maxResult'],
+        ];
 
-        // If we have to paginate result, process pagination
-        if (1 < \count($content)) {
-            $content = new Paginator($content);
-        }
+        return $this->requestHandler->handleRequest($requestArgs);
+    }
 
-        return $content;
+    private function loadConfiguration(): array
+    {
+        $json = \file_get_contents(__DIR__.'/../Config/config.json');
+
+        return \json_decode($json, true);
     }
 }
