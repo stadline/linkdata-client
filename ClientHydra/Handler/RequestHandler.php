@@ -42,30 +42,34 @@ class RequestHandler
         $content = $this->retrieveData($args);
         $nbResult = $this->getNbResult($content);
 
-        if ($nbResult <= 1) {
+        if ($nbResult > 1) {
+            $results[] = $content;
+            $nextPage = (int) $content['extra']['next_page'];
+
+            while (0 !== $nextPage) {
+                $this->setNextPage($args, $nextPage);
+                $content = $this->retrieveData($args);
+
+                $results[] = $content;
+                $nextPage = (int) $content['extra']['next_page'];
+            }
+
+            $results = \array_merge(...$results);
+
+            unset($results['extra']);
+
+            $adapter = new LinkdataAdapter($results);
+            $paginator = new Paginator($adapter);
+            $paginator->setMaxPerPage($this->maxResultPerPage);
+
+            return $paginator;
+        }
+
+        if (1 === $nbResult) {
             return $content[0];
         }
 
-        $results[] = $content;
-        $nextPage = (int) $content['extra']['next_page'];
-
-        while (0 !== $nextPage) {
-            $this->setNextPage($args, $nextPage);
-            $content = $this->retrieveData($args);
-
-            $results[] = $content;
-            $nextPage = (int) $content['extra']['next_page'];
-        }
-
-        $results = \array_merge(...$results);
-
-        unset($results['extra']);
-
-        $adapter = new LinkdataAdapter($results);
-        $paginator = new Paginator($adapter);
-        $paginator->setMaxPerPage($this->maxResultPerPage);
-
-        return $paginator;
+        return [];
     }
 
     /**
@@ -89,6 +93,10 @@ class RequestHandler
             $content = $this->serializer->deserialize($requestResponse);
         } catch (SerializerException $e) {
             throw new HandlerException('An error occurred during deserialization.', $e);
+        }
+
+        if (empty($content)) {
+            return [];
         }
 
         $extra = [
