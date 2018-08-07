@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\src\Linkdata\Entity;
+namespace Stadline\LinkdataClient\Linkdata\Entity;
 
-use Stadline\LinkdataClient\src\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 class UserRecord extends ProxyObject
