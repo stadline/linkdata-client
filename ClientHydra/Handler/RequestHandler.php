@@ -76,6 +76,7 @@ class RequestHandler
         try {
             $requestResponse = $this->adapter->makeRequest(
                 $args['method'],
+                $args['baseUrl'],
                 $args['uri'],
                 $args['headers'],
                 $args['body']

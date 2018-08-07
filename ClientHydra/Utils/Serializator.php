@@ -85,10 +85,9 @@ class Serializator
                 [$this->getNormContext($entityName, NormContextType::NORM)]
             );
 
-            //todo uncomment this part to reactivate Proxy
-//            if ($item instanceof ProxyObject) {
-//                $item->setClient($this->client);
-//            }
+            if ($item instanceof ProxyObject) {
+                $item->setClient($this->client);
+            }
 
             return $item;
         } catch (NotEncodableValueException $e) {
@@ -118,10 +117,9 @@ class Serializator
                     [\sprintf('%s_norm', \strtolower(\explode('\\', $className)[4]))]
                 );
 
-                //todo uncomment this part to reactivate Proxy
-//                if ($currentItem instanceof ProxyObject) {
-//                    $currentItem->setClient($this->client);
-//                }
+                if ($currentItem instanceof ProxyObject) {
+                    $currentItem->setClient($this->client);
+                }
 
                 $items[] = $currentItem;
             } catch (NotEncodableValueException $e) {

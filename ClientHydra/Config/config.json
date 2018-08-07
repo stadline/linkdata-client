@@ -1,4 +1,5 @@
 {
     "base_url": "http://35.159.15.229/v2",
-    "entity_namespace": "Stadline\\LinkdataClient\\\Linkdata\\Entity"
+    "entity_namespace": "Stadline\\LinkdataClient\\Linkdata\\Entity",
+    "max_result_per_page": "20"
 }

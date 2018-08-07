@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
+use Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
@@ -18,16 +19,16 @@ abstract class HydraClient implements HydraClientInterface
     private $serializator;
     private $requestHandler;
     private $headers;
+    private $config;
 
-    public function __construct(
-        UriConverter $uriConverter,
-        Serializator $serializator,
-        RequestHandler $requestHandler,
-        array $headers
-    ) {
-        $this->uriConverter = $uriConverter;
-        $this->serializator = $serializator;
-        $this->requestHandler = $requestHandler;
+    public function __construct(array $headers)
+    {
+        $this->config = $this->loadConfiguration();
+        $this->uriConverter = new UriConverter($this->config['base_url'], $this->config['entity_namespace']);
+        $this->serializator = new Serializator($this->config['entity_namespace']);
+
+        $adapter = new GuzzleAdapter();
+        $this->requestHandler = new RequestHandler($adapter, $this->serializator, $this->uriConverter, $this->config['max_result_per_page']);
         $this->headers = $headers;
     }
 
@@ -55,6 +56,7 @@ abstract class HydraClient implements HydraClientInterface
 
         $requestArgs = [
             'method' => $uri['method'],
+            'baseUrl' => $this->config['base_url'],
             'uri' => $uri['uri'],
             'headers' => $this->headers,
             'body' => $body,
@@ -62,5 +64,12 @@ abstract class HydraClient implements HydraClientInterface
         ];
 
         return $this->requestHandler->handleRequest($requestArgs);
+    }
+
+    private function loadConfiguration(): array
+    {
+        $json = \file_get_contents(__DIR__.'/../Config/config.json');
+
+        return \json_decode($json, true);
     }
 }
