@@ -11,7 +11,7 @@ test-cs-fixer: ## Launches php-cs-fixer test
 
 .PHONY: phpstan
 phpstan: ## Launches phpstan test
-	php -d memory_limit=256M vendor/bin/phpstan analyse -l5 --ansi src
+	php -d memory_limit=256M vendor/bin/phpstan analyse -l5 --ansi ClientHydra
 
 .PHONY: local-requirements
 local-requirements: ## Launches requirements test
