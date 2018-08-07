@@ -60,7 +60,6 @@ abstract class HydraClient implements HydraClientInterface
             'uri' => $uri['uri'],
             'headers' => $this->headers,
             'body' => $body,
-            'maxResult' => $args['maxResult'],
         ];
 
         return $this->requestHandler->handleRequest($requestArgs);
