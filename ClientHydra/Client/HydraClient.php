@@ -6,6 +6,7 @@ namespace Stadline\LinkdataClient\ClientHydra\Client;
 
 use Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
+use Stadline\LinkdataClient\ClientHydra\Handler\PaginationHandler;
 use Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
@@ -26,9 +27,10 @@ abstract class HydraClient implements HydraClientInterface
         $this->config = $this->loadConfiguration();
         $this->uriConverter = new UriConverter($this->config['base_url'], $this->config['entity_namespace']);
         $this->serializator = new Serializator($this->config['entity_namespace']);
+        $paginationHandler = new PaginationHandler($this->serializator, $this->uriConverter, $this->config['max_result_per_page']);
 
         $adapter = new GuzzleAdapter();
-        $this->requestHandler = new RequestHandler($adapter, $this->serializator, $this->uriConverter, $this->config['max_result_per_page']);
+        $this->requestHandler = new RequestHandler($adapter, $this->serializator, $paginationHandler);
         $this->headers = $headers;
     }
 
