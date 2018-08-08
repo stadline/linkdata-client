@@ -78,6 +78,11 @@ class UserSumup extends ProxyObject
         return $this->id;
     }
 
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
+
     public function getType(): string
     {
         return $this->type;

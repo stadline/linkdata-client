@@ -87,6 +87,11 @@ class UserRecord extends ProxyObject
         return $this->id;
     }
 
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
+
     public function getUser(): User
     {
         return $this->hydrate($this->user);
