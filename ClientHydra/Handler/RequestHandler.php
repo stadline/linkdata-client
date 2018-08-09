@@ -40,10 +40,6 @@ class RequestHandler
 
         $nbResult = $this->getNbResult($content);
 
-        if (1 > $nbResult) {
-            return [];
-        }
-
         if ($nbResult > 1) {
             $results[] = $content;
             $nextPage = (int) $content['extra']['next_page'];
@@ -59,9 +55,15 @@ class RequestHandler
             $results = \array_merge(...$results);
 
             unset($results['extra']);
+
+            return $this->paginationHandler->handlePagination($results);
         }
 
-        return $this->paginationHandler->handlePagination($results);
+        if (1 === $nbResult) {
+            return $content[0];
+        }
+
+        return [];
     }
 
     /**
