@@ -68,6 +68,12 @@ class Serializator
     public function deserialize(string $response)
     {
         $entityName = $this->getEntityName($response);
+
+        // EntityName does not match, it's a custom action (We decode json).
+        if (!$entityName) {
+            return \json_decode($response, true);
+        }
+
         $isCollectionResponse = $this->isCollectionResponse($response);
         $className = \sprintf('%s\%s', $this->entityNamespace, \ucfirst($entityName));
 
@@ -75,10 +81,8 @@ class Serializator
             return $this->deserializeCollection($response, $className);
         }
 
-        $serializer = $this->getSerializer();
-
         try {
-            $item = $serializer->deserialize(
+            $item = $this->getSerializer()->deserialize(
                 $response,
                 $className,
                 FormatType::JSON,
