@@ -68,14 +68,18 @@ class Serializator
     public function deserialize(string $response)
     {
         $entityName = $this->getEntityName($response);
+
+        if (!$entityName) {
+            return \json_decode($response, true);
+        }
+
+        $serializer = $this->getSerializer();
         $isCollectionResponse = $this->isCollectionResponse($response);
         $className = \sprintf('%s\%s', $this->entityNamespace, \ucfirst($entityName));
 
         if ($isCollectionResponse) {
             return $this->deserializeCollection($response, $className);
         }
-
-        $serializer = $this->getSerializer();
 
         try {
             $item = $serializer->deserialize(
