@@ -82,8 +82,7 @@ class Serializator
         }
 
         try {
-            $serializer = $this->getSerializer();
-            $item = $serializer->deserialize(
+            $item = $this->getSerializer()->deserialize(
                 $response,
                 $className,
                 FormatType::JSON,
