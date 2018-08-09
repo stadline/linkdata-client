@@ -69,6 +69,7 @@ class Serializator
     {
         $entityName = $this->getEntityName($response);
 
+        // EntityName does not match, it's a custom action (We decode json).
         if (!$entityName) {
             return \json_decode($response, true);
         }
