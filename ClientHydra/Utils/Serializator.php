@@ -74,7 +74,6 @@ class Serializator
             return \json_decode($response, true);
         }
 
-        $serializer = $this->getSerializer();
         $isCollectionResponse = $this->isCollectionResponse($response);
         $className = \sprintf('%s\%s', $this->entityNamespace, \ucfirst($entityName));
 
@@ -83,6 +82,7 @@ class Serializator
         }
 
         try {
+            $serializer = $this->getSerializer();
             $item = $serializer->deserialize(
                 $response,
                 $className,
