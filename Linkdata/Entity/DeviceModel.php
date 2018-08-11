@@ -173,7 +173,7 @@ class DeviceModel extends ProxyObject
         $this->translatedNames = $translatedNames;
     }
 
-    public function getBrand(): Brand
+    public function getBrand()
     {
         return $this->hydrate($this->brand);
     }

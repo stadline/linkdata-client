@@ -49,11 +49,15 @@ class Serializator
         $serializer = $this->getSerializer();
 
         try {
-            return $serializer->serialize(
+            $object->setHydrate(false);
+            $item = $serializer->serialize(
                 $object,
                 FormatType::JSON,
                 [$this->getNormContext(\strtolower(\explode('\\', \get_class($object))[4]), NormContextType::DENORN)]
             );
+            $object->setHydrate(true);
+
+            return $item;
         } catch (NotEncodableValueException $e) {
             throw new SerializerException(
                 \sprintf('An error occurred during serialization with format %s', FormatType::JSON),
