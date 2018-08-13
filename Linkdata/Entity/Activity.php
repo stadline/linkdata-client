@@ -202,9 +202,9 @@ class Activity extends ProxyObject
     }
 
     /**
-     * @return User
+     * @return string|User
      */
-    public function getUser(): User
+    public function getUser()
     {
         return $this->hydrate($this->user);
     }
@@ -215,9 +215,9 @@ class Activity extends ProxyObject
     }
 
     /**
-     * @return Sport
+     * @return Sport|string
      */
-    public function getSport(): Sport
+    public function getSport()
     {
         $this->sportIri = $this->sport;
 

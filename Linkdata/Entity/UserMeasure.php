@@ -71,7 +71,7 @@ class UserMeasure extends ProxyObject
         return $this->id;
     }
 
-    public function getUser(): User
+    public function getUser()
     {
         return $this->hydrate($this->user);
     }
@@ -81,7 +81,7 @@ class UserMeasure extends ProxyObject
         $this->user = $user;
     }
 
-    public function getDatatype(): ?Datatype
+    public function getDatatype()
     {
         $this->datatypeIri = $this->datatype;
 

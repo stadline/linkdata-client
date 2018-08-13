@@ -113,7 +113,7 @@ class GlobalChallenge extends ProxyObject
         $this->id = $id;
     }
 
-    public function getTargetDatatype(): ?Datatype
+    public function getTargetDatatype()
     {
         return $this->hydrate($this->targetDatatype);
     }
