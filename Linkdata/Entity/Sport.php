@@ -314,7 +314,7 @@ class Sport extends ProxyObject
         $this->translatedNames = $translatedNames;
     }
 
-    public function getUniverse(): Universe
+    public function getUniverse()
     {
         return $this->hydrate($this->universe);
     }

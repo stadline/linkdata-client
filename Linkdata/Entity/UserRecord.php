@@ -92,7 +92,7 @@ class UserRecord extends ProxyObject
         $this->id = $id;
     }
 
-    public function getUser(): User
+    public function getUser()
     {
         return $this->hydrate($this->user);
     }
@@ -102,7 +102,7 @@ class UserRecord extends ProxyObject
         $this->user = $user;
     }
 
-    public function getDatatype(): ?Datatype
+    public function getDatatype()
     {
         $this->datatypeIri = $this->datatype;
 
@@ -134,7 +134,7 @@ class UserRecord extends ProxyObject
         $this->value = $value;
     }
 
-    public function getSport(): ?Sport
+    public function getSport()
     {
         $this->sportIri = $this->sport;
 
@@ -186,7 +186,7 @@ class UserRecord extends ProxyObject
         $this->updatedAt = $updatedAt;
     }
 
-    public function getActivity(): ?Activity
+    public function getActivity()
     {
         $this->activityIri = $this->activity;
 
