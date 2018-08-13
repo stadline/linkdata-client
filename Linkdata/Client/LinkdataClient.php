@@ -6,6 +6,7 @@ namespace Stadline\LinkdataClient\Linkdata\Client;
 
 use Stadline\LinkdataClient\ClientHydra\Client\HydraClient;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
+use Stadline\LinkdataClient\ClientHydra\Exception\HandlerException\HandlerException;
 use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
 use Stadline\LinkdataClient\ClientHydra\Utils\Paginator;
 use Stadline\LinkdataClient\Linkdata\Entity\Activity;
@@ -127,9 +128,13 @@ class LinkdataClient extends HydraClient
 
     public function getActivityDatastream(string $activityId)
     {
-        return $this->send(MethodType::GET, [
-            'customUri' => \sprintf('/activities/%s/datastream', $activityId),
-        ]);
+        try {
+            return $this->send(MethodType::GET, [
+                'customUri' => \sprintf('/activities/%s/datastream', $activityId),
+            ]);
+        } catch (HandlerException $e) {
+            return [];
+        }
     }
 
     public function getSimilarActivities(string $activityId, $datatypeId)
@@ -141,8 +146,12 @@ class LinkdataClient extends HydraClient
 
     public function getActivityLocations(string $activityId)
     {
-        return $this->send(MethodType::GET, [
-            'customUri' => \sprintf('/activities/%s/locations', $activityId),
-        ]);
+        try {
+            return $this->send(MethodType::GET, [
+                'customUri' => \sprintf('/activities/%s/locations', $activityId),
+            ]);
+        } catch (HandlerException $e) {
+            return [];
+        }
     }
 }

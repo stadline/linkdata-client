@@ -46,7 +46,13 @@ abstract class HydraClient implements HydraClientInterface
      */
     public function send(string $method, array $args)
     {
-        $uri = $this->uriConverter->formatUri($method, $args);
+        if (isset($args['customUri'])) {
+            $uri['uri'] = \sprintf('%s%s', $this->config['base_url'], $args['customUri']);
+            $uri['method'] = $method;
+        } else {
+            $uri = $this->uriConverter->formatUri($method, $args);
+        }
+
         $this->serializator->setClient($this);
         $body = null;
 

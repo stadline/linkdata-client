@@ -142,9 +142,13 @@ class Serializator
         return $items;
     }
 
-    private function getEntityName(string $response): string
+    private function getEntityName(string $response): ?string
     {
         $responseJson = \json_decode($response, true);
+
+        if (!isset($responseJson['@context'])) {
+            return null;
+        }
 
         return \explode('/', $responseJson['@context'])[3];
     }
