@@ -121,13 +121,11 @@ class UserMeasure extends ProxyObject
     /**
      * @Groups({"user_measure_norm", "user_measure_denorm"})
      */
-    public function getDate(): DateTime
+    public function getDate()
     {
-        return \DateTime::createFromFormat(
-            'Y-m-d H:i:s',
-            $this->date->format('Y-m-d H:i:s'),
-            new \DateTimeZone($this->dateTimezone)
-        );
+        $date = new \DateTime($this->date);
+
+        return $date->format('Y-m-d H:i:s');
     }
 
     public function setDate($date): void

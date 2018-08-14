@@ -57,9 +57,7 @@ class UriConverter
 
         // item case (object)
         if (\is_object($args)) {
-            $myClass = new \ReflectionClass($args);
-
-            return $myClass->hasMethod('getId') ? \sprintf('/%s', $myClass->{'getId'}()) : '';
+            return \method_exists($args, 'getId') ? \sprintf('/%s', $args->getId()) : '';
         }
 
         // collection case

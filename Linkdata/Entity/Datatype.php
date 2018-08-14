@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
+use Geonaute\LinkdataBundle\Utils\RelatedValue;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -144,6 +145,7 @@ class Datatype extends ProxyObject
     ];
 
     public static $userHrMax = 220;
+    public static $userHrRest = 120;
 
     /**
      * @var int
@@ -323,5 +325,47 @@ class Datatype extends ProxyObject
         }
 
         return '';
+    }
+
+    /**
+     * Returns related datatype value.
+     */
+    public static function getRelatedValue($value, $unitId)
+    {
+        switch ($unitId) {
+            case self::SPEED_AVG:
+            case self::SPEED_CURRENT:
+            case self::SPEED_MIN:
+            case self::SPEED_MAX:
+                return self::computeSpeedRate($value);
+            case self::HR_AVG:
+            case self::HR_CURRENT:
+            case self::HR_MIN:
+            case self::HR_MAX:
+                return self::computeHrPercentageMax($value);
+            default:
+                return null;
+        }
+    }
+
+    public static function computeSpeedRate($rawValue)
+    {
+        $speedValue = (float) (string) $rawValue;
+        if ($speedValue > 0) {
+            return new RelatedValue(1 / $speedValue, self::SPEED_RATE_CURRENT);
+        }
+    }
+
+    public static function computeHrPercentageMax($rawValue)
+    {
+        $hrValue = (float) (string) $rawValue;
+        $userHrMax = static::$userHrMax;
+        $userHrRest = static::$userHrRest;
+        // handle 0 case
+        if ($userHrMax === $userHrRest) {
+            return new RelatedValue(0, self::HR_PERCENTAGE_MAX);
+        }
+
+        return new RelatedValue((($hrValue - $userHrRest) / ($userHrMax - $userHrRest)) * 100, self::HR_PERCENTAGE_MAX);
     }
 }

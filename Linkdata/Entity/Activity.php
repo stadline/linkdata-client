@@ -242,9 +242,9 @@ class Activity extends ProxyObject
     /**
      * @return string
      */
-    public function getUserDevice(): ?string
+    public function getUserDevice()
     {
-        return $this->userDevice;
+        return $this->hydrate($this->userDevice);
     }
 
     /**
