@@ -154,4 +154,15 @@ class LinkdataClient extends HydraClient
             return [];
         }
     }
+
+    public function getActivityGpx(string $activityId): string
+    {
+        try {
+            return $this->send(MethodType::GET, [
+                'customUri' => \sprintf('/activities/%s.gpx', $activityId),
+            ]);
+        } catch (HandlerException $e) {
+            return '';
+        }
+    }
 }

@@ -57,7 +57,7 @@ class UriConverter
 
         // item case (object)
         if (\is_object($args)) {
-            return \method_exists($args, 'getId') ? \sprintf('/%s', $args->getId()) : '';
+            return \method_exists($args, 'getId') ? \sprintf('/%s', $args->{'getId'}()) : '';
         }
 
         // collection case
