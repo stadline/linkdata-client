@@ -239,12 +239,9 @@ class Activity extends ProxyObject
         $this->sport = $sport;
     }
 
-    /**
-     * @return string
-     */
     public function getUserDevice()
     {
-        return $this->hydrate($this->userDevice);
+        return null === $this->userDevice ? null : $this->hydrate($this->userDevice);
     }
 
     /**
