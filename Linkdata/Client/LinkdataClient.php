@@ -141,6 +141,9 @@ class LinkdataClient extends HydraClient
     {
         return $this->send(MethodType::GET, [
             'customUri' => \sprintf('/activities/%s/similar/%s', $activityId, $datatypeId),
+            'filters' => [
+                'limit' => 3,
+            ],
         ]);
     }
 

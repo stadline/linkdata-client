@@ -83,6 +83,11 @@ class RequestHandler
             throw new HandlerException('An error occurred during processing request.', $e);
         }
 
+        // special case: extension ".gpx" is passed to uri, we return response without deserelization.
+        if (\strstr($args['uri'], '.gpx')) {
+            return [$requestResponse];
+        }
+
         try {
             $content = $this->serializer->deserialize($requestResponse);
         } catch (SerializerException $e) {
