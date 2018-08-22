@@ -168,4 +168,11 @@ class LinkdataClient extends HydraClient
             return '';
         }
     }
+
+    public function getShareStatistics(string $id): array
+    {
+        return $this->send(MethodType::GET, [
+            'customUri' => \sprintf('/share_users_stats/%s', $id),
+        ]);
+    }
 }

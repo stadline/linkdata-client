@@ -57,8 +57,8 @@ abstract class HydraClient implements HydraClientInterface
         $body = null;
 
         // Put or POST, make a serialization with the entity.
-        if (\in_array($uri['method'], [MethodType::POST, MethodType::PUT], true) && \is_object($args[0])) {
-            $body = $this->serializator->serialize($args[0]);
+        if (\in_array($uri['method'], [MethodType::POST, MethodType::PUT], true) && isset($args[0])) {
+            $body = $this->serializator->serialize(MethodType::POST === $uri['method'] ? $args[0][0] : $args[0]);
             $this->headers['Content-Type'] = 'application/json';
         }
 
