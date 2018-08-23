@@ -13,6 +13,9 @@ use Stadline\LinkdataClient\Linkdata\Entity\Activity;
 use Stadline\LinkdataClient\Linkdata\Entity\Sport;
 use Stadline\LinkdataClient\Linkdata\Entity\Universe;
 use Stadline\LinkdataClient\Linkdata\Entity\User;
+use Stadline\LinkdataClient\Linkdata\Entity\UserDevice;
+use Stadline\LinkdataClient\Linkdata\Entity\UserMeasure;
+use Stadline\LinkdataClient\Linkdata\Entity\UserMeasureGoal;
 use Stadline\LinkdataClient\Linkdata\Entity\UserStorage;
 use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
 
@@ -155,7 +158,7 @@ class LinkdataClient extends HydraClient
         }
     }
 
-    public function getActivityGpx(string $activityId): string
+    public function getActivityGpx(string $activityId)
     {
         try {
             return $this->send(MethodType::GET, [
