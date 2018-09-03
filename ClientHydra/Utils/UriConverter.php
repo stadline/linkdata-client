@@ -91,7 +91,7 @@ class UriConverter
     {
         $url = \parse_url($uri);
 
-        if (null === $url['query']) {
+        if (!\array_key_exists('query', $url) || null === $url['query']) {
             $output = [$key => $value];
         } else {
             \parse_str($url['query'], $output);
