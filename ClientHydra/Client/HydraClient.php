@@ -10,6 +10,7 @@ use Stadline\LinkdataClient\ClientHydra\Handler\PaginationHandler;
 use Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Type\FormatType;
 use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
 use Stadline\LinkdataClient\ClientHydra\Utils\Serializator;
 use Stadline\LinkdataClient\ClientHydra\Utils\UriConverter;
@@ -57,7 +58,7 @@ abstract class HydraClient implements HydraClientInterface
         $body = null;
 
         // Put or POST, make a serialization with the entity.
-        if (\in_array($uri['method'], [MethodType::POST, MethodType::PUT], true) && isset($args[0])) {
+        if (isset($args[0]) && \in_array($uri['method'], [MethodType::POST, MethodType::PUT], true)) {
             $body = $this->serializator->serialize(MethodType::POST === $uri['method'] ? $args[0][0] : $args[0]);
             $this->headers['Content-Type'] = 'application/json';
         }
