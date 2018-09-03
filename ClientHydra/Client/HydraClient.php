@@ -10,7 +10,6 @@ use Stadline\LinkdataClient\ClientHydra\Handler\PaginationHandler;
 use Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
-use Stadline\LinkdataClient\ClientHydra\Type\FormatType;
 use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
 use Stadline\LinkdataClient\ClientHydra\Utils\Serializator;
 use Stadline\LinkdataClient\ClientHydra\Utils\UriConverter;

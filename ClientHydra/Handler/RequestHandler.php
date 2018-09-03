@@ -34,21 +34,22 @@ class RequestHandler
         $results = [[]];
         $content = $this->retrieveData($args);
 
+        // Item Case
         if (\is_object($content)) {
             return $content;
         }
 
-        $nbResult = $this->getNbResult($content);
+        $nbResult = $this->getNbResult($content[0]);
 
         if ($nbResult > 1) {
-            $results[] = $content;
+            $results[] = $content[0];
             $nextPage = (int) $content['extra']['next_page'];
 
             while (0 !== $nextPage) {
                 $this->paginationHandler->setNextPage($args, $nextPage);
                 $content = $this->retrieveData($args);
 
-                $results[] = $content;
+                $results[] = $content[0];
                 $nextPage = (int) $content['extra']['next_page'];
             }
 
@@ -84,7 +85,7 @@ class RequestHandler
         }
 
         // special case: extension ".gpx" is passed to uri, we return response without deserialization.
-        if (array_key_exists('haveToDeserialize', $args) && false === $args['haveToDeserialize']) {
+        if (\array_key_exists('haveToDeserialize', $args) && false === $args['haveToDeserialize']) {
             return [$requestResponse];
         }
 

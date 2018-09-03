@@ -6,7 +6,6 @@ namespace Stadline\LinkdataClient\Linkdata\Client;
 
 use Stadline\LinkdataClient\ClientHydra\Client\HydraClient;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
-use Stadline\LinkdataClient\ClientHydra\Exception\HandlerException\HandlerException;
 use Stadline\LinkdataClient\ClientHydra\Type\FormatType;
 use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
 use Stadline\LinkdataClient\ClientHydra\Utils\Paginator;
