@@ -41,7 +41,7 @@ class UserMeasureGoal extends ProxyObject
     private $goal;
 
     /**
-     * @var DateTime
+     * @var string
      */
     private $startdate;
 
@@ -135,13 +135,9 @@ class UserMeasureGoal extends ProxyObject
     /**
      * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
-    public function getStartdate(): ?DateTime
+    public function getStartdate(): ?string
     {
-        return \DateTime::createFromFormat(
-            'Y-m-d H:i:s',
-            $this->startdate->format('Y-m-d H:i:s'),
-            new \DateTimeZone($this->startdateTimezone)
-        );
+        return $this->startdate;
     }
 
     public function setStartdate($startdate): void
