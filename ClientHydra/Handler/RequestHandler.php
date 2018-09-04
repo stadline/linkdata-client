@@ -39,7 +39,7 @@ class RequestHandler
             return $content;
         }
 
-        $nbResult = $this->getNbResult($content[0]);
+        $nbResult = \array_key_exists(0, $content) ? $this->getNbResult($content[0]) : 0;
 
         if ($nbResult > 1) {
             $results[] = $content[0];
