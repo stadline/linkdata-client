@@ -78,6 +78,11 @@ class UserSumup extends ProxyObject
         return $this->id;
     }
 
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
+
     public function getType(): string
     {
         return $this->type;
@@ -88,7 +93,7 @@ class UserSumup extends ProxyObject
         $this->type = $type;
     }
 
-    public function getUser(): User
+    public function getUser()
     {
         return $this->hydrate($this->user);
     }
@@ -101,7 +106,7 @@ class UserSumup extends ProxyObject
     /**
      * @return Sport
      */
-    public function getSport(): ?Sport
+    public function getSport()
     {
         $this->sportIri = $this->sport;
 
@@ -126,7 +131,7 @@ class UserSumup extends ProxyObject
     /**
      * @return Datatype
      */
-    public function getDatatype(): ?Datatype
+    public function getDatatype()
     {
         $this->datatypeIri = $this->datatype;
 

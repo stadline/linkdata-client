@@ -47,4 +47,16 @@ class Paginator extends Pagerfanta
             throw new PaginatorException(\sprintf('the page %s is out of range.', $currentPage), $e);
         }
     }
+
+    public static function getAllResults(self $data): array
+    {
+        $results = [];
+
+        while ($data->hasNextPage()) {
+            $results[] = $data->getCurrentPageResults();
+            $data->setCurrentPage($data->getNextPage());
+        }
+
+        return \array_merge(...$results);
+    }
 }

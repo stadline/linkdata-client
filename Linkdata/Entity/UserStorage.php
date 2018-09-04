@@ -50,7 +50,12 @@ class UserStorage extends ProxyObject
         return $this->id;
     }
 
-    public function getUser(): User
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getUser()
     {
         return $this->hydrate($this->user);
     }
@@ -70,7 +75,7 @@ class UserStorage extends ProxyObject
         $this->user = $user;
     }
 
-    public function getStorageKey(): StorageKey
+    public function getStorageKey()
     {
         return $this->hydrate($this->storageKey);
     }

@@ -170,6 +170,22 @@ class Activity extends ProxyObject
     private $sportIri;
 
     /**
+     * Temp storage for locations.
+     *
+     * @var array
+     * @Groups({"activity_norm"})
+     */
+    private $locations;
+
+    /**
+     * Temp storage for datastream.
+     *
+     * @var array
+     * @Groups({"activity_norm"})
+     */
+    private $datastream;
+
+    /**
      * @return string
      */
     public function getId(): ?string
@@ -202,9 +218,9 @@ class Activity extends ProxyObject
     }
 
     /**
-     * @return User
+     * @return string|User
      */
-    public function getUser(): User
+    public function getUser()
     {
         return $this->hydrate($this->user);
     }
@@ -215,9 +231,9 @@ class Activity extends ProxyObject
     }
 
     /**
-     * @return Sport
+     * @return Sport|string
      */
-    public function getSport(): Sport
+    public function getSport()
     {
         $this->sportIri = $this->sport;
 
@@ -239,12 +255,9 @@ class Activity extends ProxyObject
         $this->sport = $sport;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserDevice(): ?string
+    public function getUserDevice()
     {
-        return $this->userDevice;
+        return null === $this->userDevice ? null : $this->hydrate($this->userDevice);
     }
 
     /**
@@ -589,5 +602,45 @@ class Activity extends ProxyObject
     public function setUpdatedAt(?string $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSportIri()
+    {
+        return $this->sportIri;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLocations(): ?array
+    {
+        return $this->locations;
+    }
+
+    /**
+     * @param array $locations
+     */
+    public function setLocations(?array $locations): void
+    {
+        $this->locations = $locations;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDatastream(): ?array
+    {
+        return $this->datastream;
+    }
+
+    /**
+     * @param array $datastream
+     */
+    public function setDatastream(?array $datastream): void
+    {
+        $this->datastream = $datastream;
     }
 }

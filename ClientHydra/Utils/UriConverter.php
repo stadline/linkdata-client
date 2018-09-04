@@ -57,9 +57,7 @@ class UriConverter
 
         // item case (object)
         if (\is_object($args)) {
-            $myClass = new \ReflectionClass($args);
-
-            return $myClass->hasMethod('getId') ? \sprintf('/%s', $myClass->{'getId'}()) : '';
+            return \method_exists($args, 'getId') ? \sprintf('/%s', $args->{'getId'}()) : '';
         }
 
         // collection case
@@ -93,7 +91,7 @@ class UriConverter
     {
         $url = \parse_url($uri);
 
-        if (null === $url['query']) {
+        if (!\array_key_exists('query', $url) || null === $url['query']) {
             $output = [$key => $value];
         } else {
             \parse_str($url['query'], $output);

@@ -8,10 +8,12 @@ final class FormatType
 {
     public const JSON = 'json';
     public const JSONLD = 'json-ld';
+    public const GPX = 'gpx';
 
     /** @var array */
-    private static $formats = [
+    public static $authorized_formats = [
         self::JSON => 'json',
         self::JSONLD => 'jsonld',
+        self::GPX => 'gpx',
     ];
 }

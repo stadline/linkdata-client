@@ -49,11 +49,15 @@ class Serializator
         $serializer = $this->getSerializer();
 
         try {
-            return $serializer->serialize(
+            $object->setHydrate(false);
+            $item = $serializer->serialize(
                 $object,
                 FormatType::JSON,
                 [$this->getNormContext(\strtolower(\explode('\\', \get_class($object))[4]), NormContextType::DENORN)]
             );
+            $object->setHydrate(true);
+
+            return $item;
         } catch (NotEncodableValueException $e) {
             throw new SerializerException(
                 \sprintf('An error occurred during serialization with format %s', FormatType::JSON),
@@ -68,14 +72,19 @@ class Serializator
     public function deserialize(string $response)
     {
         $entityName = $this->getEntityName($response);
+
+        // EntityName does not match, it's a custom action (We decode json).
+        if (!$entityName) {
+            return \json_decode($response, true);
+        }
+
+        $serializer = $this->getSerializer();
         $isCollectionResponse = $this->isCollectionResponse($response);
         $className = \sprintf('%s\%s', $this->entityNamespace, \ucfirst($entityName));
 
         if ($isCollectionResponse) {
             return $this->deserializeCollection($response, $className);
         }
-
-        $serializer = $this->getSerializer();
 
         try {
             $item = $serializer->deserialize(
@@ -133,9 +142,13 @@ class Serializator
         return $items;
     }
 
-    private function getEntityName(string $response): string
+    private function getEntityName(string $response): ?string
     {
         $responseJson = \json_decode($response, true);
+
+        if (!isset($responseJson['@context'])) {
+            return null;
+        }
 
         return \explode('/', $responseJson['@context'])[3];
     }

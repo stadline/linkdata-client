@@ -83,7 +83,7 @@ class UserDevice extends ProxyObject
         $this->serial = $serial;
     }
 
-    public function getModel(): ?DeviceModel
+    public function getModel()
     {
         $this->deviceModelIri = $this->model;
 

@@ -46,13 +46,19 @@ abstract class HydraClient implements HydraClientInterface
      */
     public function send(string $method, array $args)
     {
-        $uri = $this->uriConverter->formatUri($method, $args);
+        if (isset($args['customUri'])) {
+            $uri['uri'] = \sprintf('%s%s', $this->config['base_url'], $args['customUri']);
+            $uri['method'] = $method;
+        } else {
+            $uri = $this->uriConverter->formatUri($method, $args);
+        }
+
         $this->serializator->setClient($this);
         $body = null;
 
         // Put or POST, make a serialization with the entity.
-        if (\in_array($uri['method'], [MethodType::POST, MethodType::PUT], true) && \count($args[1]) > 0) {
-            $body = $this->serializator->serialize($args[1][0]);
+        if (isset($args[0]) && \in_array($uri['method'], [MethodType::POST, MethodType::PUT], true)) {
+            $body = $this->serializator->serialize(MethodType::POST === $uri['method'] ? $args[0][0] : $args[0]);
             $this->headers['Content-Type'] = 'application/json';
         }
 
