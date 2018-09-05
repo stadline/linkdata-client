@@ -41,7 +41,13 @@ class RequestHandler
 
         $nbResult = \array_key_exists(0, $content) ? $this->getNbResult($content[0]) : 0;
 
-        if ($nbResult > 1) {
+        if ($nbResult >= 1) {
+            if (1 === $nbResult) {
+                unset($content['extra']);
+
+                return $this->paginationHandler->handlePagination($content[0]);
+            }
+
             $results[] = $content[0];
             $nextPage = (int) $content['extra']['next_page'];
 
@@ -61,11 +67,7 @@ class RequestHandler
             return $this->paginationHandler->handlePagination($results);
         }
 
-        if (1 === $nbResult) {
-            return $content[0];
-        }
-
-        return [];
+        return $this->paginationHandler->handlePagination([]);
     }
 
     /**
