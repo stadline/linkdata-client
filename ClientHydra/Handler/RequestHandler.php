@@ -46,6 +46,7 @@ class RequestHandler
             $nextPage = (int) $content['extra']['next_page'];
 
             while (0 !== $nextPage) {
+                \rtrim($args['uri'], '/');
                 $this->paginationHandler->setNextPage($args, $nextPage);
                 $content = $this->retrieveData($args);
 
