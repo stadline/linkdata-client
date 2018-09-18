@@ -5,7 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="linkata_client.client" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
+        <service id="linkdata_client.client" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
             <argument>%linkdata_client.base_url%</argument>
             <argument>%linkdata_client.max_result_per_page%</argument>
         </service>
