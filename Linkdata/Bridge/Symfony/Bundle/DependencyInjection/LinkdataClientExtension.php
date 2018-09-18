@@ -22,6 +22,6 @@ class LinkdataClientExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('api.xml');
+        $loader->load('client.xml');
     }
 }
