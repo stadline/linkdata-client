@@ -11,19 +11,12 @@ use Stadline\LinkdataClient\ClientHydra\Exception\RequestException\RequestExcept
 
 class GuzzleAdapter implements AdapterInterface
 {
-    private function getClient(string $baseUrl, string $authorisation): Client
-    {
-        return new Client(['base_uri' => $baseUrl, 'headers' => [
-            'Authorization' => \sprintf('Bearer %s', $authorisation),
-        ]]);
-    }
-
     /**
      * @throws RequestException
      */
     public function makeRequest(string $method, string $baseUrl, string $uri, array $headers = [], string $body = null): string
     {
-        $client = $this->getClient($baseUrl, $headers['authorization']);
+        $client = new Client(['base_uri' => $baseUrl]);
         $request = new Request($method, $uri, $headers, $body);
 
         try {
@@ -32,6 +25,6 @@ class GuzzleAdapter implements AdapterInterface
             throw new RequestException(\sprintf('Error while requesting %s with %s method', $uri, $method), $body, $e);
         }
 
-        return (string) $response->getBody();
+        return (string)$response->getBody();
     }
 }
