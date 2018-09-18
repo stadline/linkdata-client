@@ -8,6 +8,7 @@
         <service id="linkdata_client.client" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
             <argument>%linkdata_client.base_url%</argument>
             <argument>%linkdata_client.max_result_per_page%</argument>
+            <argument>%linkdata_client.entity_namespace%</argument>
         </service>
     </services>
 

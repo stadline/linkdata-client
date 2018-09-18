@@ -23,7 +23,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
     private $baseUrl;
 
-    public function __construct(string $baseUrl, int $maxResultPerPage = 30)
+    public function __construct(string $baseUrl, int $maxResultPerPage, string $entityNamespace)
     {
         // Header default value
         $this->headers = [
@@ -32,7 +32,6 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
         $this->baseUrl = $baseUrl;
 
-        $entityNamespace = \sprintf("%s\Entity", (new \ReflectionObject($this))->getNamespaceName());
         $this->uriConverter = new UriConverter($this->baseUrl, $entityNamespace);
         $this->serializator = new Serializator($entityNamespace);
         $paginationHandler = new PaginationHandler($this->serializator, $this->uriConverter, $maxResultPerPage);
