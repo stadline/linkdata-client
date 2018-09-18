@@ -36,7 +36,7 @@ class UriResolver
             throw new FormatException('The class you try to retrieve does not exist.');
         }
 
-        return $this->validateClassByName(\implode($splitedClassName), $namespace);
+        return $this->validateClassByName(\implode('', $splitedClassName), $namespace);
     }
 
     private function parseUri(string $className): array

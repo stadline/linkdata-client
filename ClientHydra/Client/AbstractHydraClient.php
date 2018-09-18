@@ -14,24 +14,31 @@ use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
 use Stadline\LinkdataClient\ClientHydra\Utils\Serializator;
 use Stadline\LinkdataClient\ClientHydra\Utils\UriConverter;
 
-abstract class HydraClient implements HydraClientInterface
+abstract class AbstractHydraClient implements HydraClientInterface
 {
     private $uriConverter;
     private $serializator;
     private $requestHandler;
     private $headers;
-    private $config;
 
-    public function __construct(array $headers)
+    private $baseUrl;
+
+    public function __construct(string $baseUrl, int $maxResultPerPage = 30)
     {
-        $this->config = $this->loadConfiguration();
-        $this->uriConverter = new UriConverter($this->config['base_url'], $this->config['entity_namespace']);
-        $this->serializator = new Serializator($this->config['entity_namespace']);
-        $paginationHandler = new PaginationHandler($this->serializator, $this->uriConverter, $this->config['max_result_per_page']);
+        // Header default value
+        $this->headers = [
+            'Content-Type' => 'application/ld+json',
+        ];
+
+        $this->baseUrl = $baseUrl;
+
+        $entityNamespace = \sprintf("%s\Entity", (new \ReflectionObject($this))->getNamespaceName());
+        $this->uriConverter = new UriConverter($this->baseUrl, $entityNamespace);
+        $this->serializator = new Serializator($entityNamespace);
+        $paginationHandler = new PaginationHandler($this->serializator, $this->uriConverter, $maxResultPerPage);
 
         $adapter = new GuzzleAdapter();
         $this->requestHandler = new RequestHandler($adapter, $this->serializator, $paginationHandler);
-        $this->headers = $headers;
     }
 
     public function getProxy(string $iri): ProxyObject
@@ -47,7 +54,7 @@ abstract class HydraClient implements HydraClientInterface
     public function send(string $method, array $args)
     {
         if (isset($args['customUri'])) {
-            $uri['uri'] = \sprintf('%s%s', $this->config['base_url'], $args['customUri']);
+            $uri['uri'] = \sprintf('%s%s', $this->baseUrl, $args['customUri']);
             $uri['method'] = $method;
         } else {
             $uri = $this->uriConverter->formatUri($method, $args);
@@ -59,12 +66,11 @@ abstract class HydraClient implements HydraClientInterface
         // Put or POST, make a serialization with the entity.
         if (isset($args[0]) && \in_array($uri['method'], [MethodType::POST, MethodType::PUT], true)) {
             $body = $this->serializator->serialize(MethodType::POST === $uri['method'] ? $args[0][0] : $args[0]);
-            $this->headers['Content-Type'] = 'application/json';
         }
 
         $requestArgs = [
             'method' => $uri['method'],
-            'baseUrl' => $this->config['base_url'],
+            'baseUrl' => $this->baseUrl,
             'uri' => $uri['uri'],
             'headers' => $this->headers,
             'body' => $body,
@@ -73,10 +79,20 @@ abstract class HydraClient implements HydraClientInterface
         return $this->requestHandler->handleRequest($requestArgs);
     }
 
-    private function loadConfiguration(): array
+    /**
+     * @throws ClientHydraException
+     */
+    public function __call(string $method, array $args)
     {
-        $json = \file_get_contents(__DIR__.'/../Config/config.json');
+        return $this->send($method, $args);
+    }
 
-        return \json_decode($json, true);
+    public function setHeader(string $name, ?string $value): void
+    {
+        if (null !== $value) {
+            $this->headers[$name] = $value;
+        } else {
+            unset($this->headers[$name]);
+        }
     }
 }

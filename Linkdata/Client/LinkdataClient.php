@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Client;
 
-use Stadline\LinkdataClient\ClientHydra\Client\HydraClient;
+use Stadline\LinkdataClient\ClientHydra\Client\AbstractHydraClient;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Type\FormatType;
 use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
@@ -126,16 +126,8 @@ use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
  * @method UserSumup           getUserSumup(string $id, array $options = [])
  * @method Paginator           getUserSumups(array $options = [])
  */
-class LinkdataClient extends HydraClient
+class LinkdataClient extends AbstractHydraClient
 {
-    /**
-     * @throws ClientHydraException
-     */
-    public function __call(string $method, array $args)
-    {
-        return $this->send($method, $args);
-    }
-
     public function getActivityDatastream(string $activityId)
     {
         try {

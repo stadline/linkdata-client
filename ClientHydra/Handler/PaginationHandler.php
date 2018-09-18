@@ -16,7 +16,7 @@ class PaginationHandler
     private $uriConverter;
     private $maxResultPerPage;
 
-    public function __construct(Serializator $serializator, UriConverter $uriConverter, string $maxResultPerPage)
+    public function __construct(Serializator $serializator, UriConverter $uriConverter, int $maxResultPerPage)
     {
         $this->serializer = $serializator;
         $this->uriConverter = $uriConverter;
