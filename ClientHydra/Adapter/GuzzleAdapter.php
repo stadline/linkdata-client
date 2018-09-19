@@ -25,6 +25,6 @@ class GuzzleAdapter implements AdapterInterface
             throw new RequestException(\sprintf('Error while requesting %s with %s method', $uri, $method), $body, $e);
         }
 
-        return (string)$response->getBody();
+        return (string) $response->getBody();
     }
 }
