@@ -52,6 +52,10 @@ class Paginator extends Pagerfanta
     {
         $results = [];
 
+        if (!$data->hasNextPage()) {
+            return $data->getCurrentPageResults();
+        }
+
         while ($data->hasNextPage()) {
             $results[] = $data->getCurrentPageResults();
             $data->setCurrentPage($data->getNextPage());
