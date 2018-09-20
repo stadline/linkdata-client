@@ -168,7 +168,6 @@ class LinkdataClient extends AbstractHydraClient
         try {
             return $this->send(MethodType::GET, [
                 'customUri' => \sprintf('/activities/%s.%s', $activityId, FormatType::GPX),
-                'haveToDeserialize' => false,
             ]);
         } catch (ClientHydraException $e) {
             return '';

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
 use Doctrine\Common\Inflector\Inflector;
-use Stadline\LinkdataClient\ClientHydra\Exception\UriException\FormatException;
+use Stadline\LinkdataClient\ClientHydra\Exception\FormatException;
 
 class UriResolver
 {

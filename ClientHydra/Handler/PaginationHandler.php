@@ -25,8 +25,9 @@ class PaginationHandler
 
     public function handlePagination(array $content): Paginator
     {
-        $adapter = new LinkdataAdapter($content);
-        $paginator = new Paginator($adapter);
+        $paginator = new Paginator(
+            new LinkdataAdapter($content)
+        );
         $paginator->setMaxPerPage($this->maxResultPerPage);
 
         return $paginator;

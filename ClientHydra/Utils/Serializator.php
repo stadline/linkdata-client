@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
-use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
-use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException\ConfigurationException;
-use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException\SerializerException;
+use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
+use Stadline\LinkdataClient\ClientHydra\Exception\ConfigurationException;
+use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException;
+use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
+use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Type\FormatType;
 use Stadline\LinkdataClient\ClientHydra\Type\HydraType;
@@ -19,43 +21,32 @@ use Symfony\Component\Serializer\Serializer;
 class Serializator
 {
     private $entityNamespace;
-    private $client;
-
-    public function __construct(string $entityNamespace)
+    private $proxyManager;
+    private $serializer;
+    
+    public function __construct(string $entityNamespace, ProxyManager $proxyManager)
     {
         $this->entityNamespace = $entityNamespace;
-    }
+        $this->proxyManager = $proxyManager;
 
-    /**
-     * @throws ConfigurationException
-     */
-    private function getSerializer(): Serializer
-    {
-        try {
-            $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
-        } catch (\RuntimeException $e) {
-            throw new ConfigurationException('Unable to instantiate Serializer', $e);
-        }
-
-        return $serializer;
+        $this->serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
     }
 
     /**
      * @throws SerializerException
      */
-    public function serialize($object): string
+    public function serialize(ProxyObject $object): string
     {
         $this->supportEntity($object);
-        $serializer = $this->getSerializer();
 
         try {
-            $object->setHydrate(false);
-            $item = $serializer->serialize(
+            $object->setHydrated(false);
+            $item = $this->serializer->serialize(
                 $object,
                 FormatType::JSON,
                 [$this->getNormContext(\strtolower(\explode('\\', \get_class($object))[4]), NormContextType::DENORN)]
             );
-            $object->setHydrate(true);
+            $object->setHydrated(true);
 
             return $item;
         } catch (NotEncodableValueException $e) {
@@ -69,34 +60,40 @@ class Serializator
     /**
      * @throws SerializerException
      */
-    public function deserialize(string $response)
+    public function deserialize(JsonResponse $response, array $context = [])
     {
-        $entityName = $this->getEntityName($response);
-
         // EntityName does not match, it's a custom action (We decode json).
-        if (!$entityName) {
-            return \json_decode($response, true);
+        if (!$entityName = $response->getEntityName()) {
+            return $response->getContent();
         }
 
-        $serializer = $this->getSerializer();
-        $isCollectionResponse = $this->isCollectionResponse($response);
         $className = \sprintf('%s\%s', $this->entityNamespace, \ucfirst($entityName));
 
-        if ($isCollectionResponse) {
-            return $this->deserializeCollection($response, $className);
+        if ($response->isCollection()) {
+            return $this->deserializeCollection($response, $className, $context);
         }
 
+        return $this->deserializeObject($response, $className, $context);
+    }
+
+    /**
+     * @throws SerializerException
+     */
+    public function deserializeObject(JsonResponse $response, string $className, array $context = []): ProxyObject
+    {
         try {
-            $item = $serializer->deserialize(
-                $response,
+            $item = $this->serializer->deserialize(
+                json_encode($responseJson),
                 $className,
                 FormatType::JSON,
-                [$this->getNormContext($entityName, NormContextType::NORM)]
+                [$this->getNormContext(\explode('\\', $className)[4], NormContextType::NORM)]
             );
 
-            if ($item instanceof ProxyObject) {
-                $item->setClient($this->client);
+            if (!$item instanceof ProxyObject) {
+                throw new \RuntimeException('Deserialize object must be a ProxyObject instance');
             }
+
+            $this->proxyManager->addObject($className, $item);
 
             return $item;
         } catch (NotEncodableValueException $e) {
@@ -110,53 +107,36 @@ class Serializator
     /**
      * @throws SerializerException
      */
-    private function deserializeCollection(string $response, string $className): array
+    private function deserializeCollection(JsonResponse $response, string $className, array $context = []): ProxyCollection
     {
-        $serializer = $this->getSerializer();
-        $responseJson = \json_decode($response, true);
-        $items = [];
+        $collection = new ProxyCollection();
 
-        foreach ($responseJson['hydra:member'] as $item) {
-            try {
-                /* @var ProxyObject $currentItem */
-                $currentItem = $serializer->deserialize(
-                    \json_encode($item),
-                    $className,
-                    FormatType::JSON,
-                    [\sprintf('%s_norm', \strtolower(\explode('\\', $className)[4]))]
-                );
+        try {
+            foreach ($responseJson['hydra:member'] as $item) {
 
-                if ($currentItem instanceof ProxyObject) {
-                    $currentItem->setClient($this->client);
-                }
-
-                $items[] = $currentItem;
-            } catch (NotEncodableValueException $e) {
-                throw new SerializerException(
-                    \sprintf('An error occurred during deserialization with format %s', FormatType::JSON),
-                    $e
-                );
+                $items[] = $this->deserializeObject($item, $className);
             }
+        } catch (NotEncodableValueException $e) {
+            throw new SerializerException(
+                \sprintf('An error occurred during deserialization with format %s', FormatType::JSON),
+                $e
+            );
         }
+        return $collection;
 
-        return $items;
     }
 
-    private function getEntityName(string $response): ?string
+    private function getEntityName(array $responseJson): ?string
     {
-        $responseJson = \json_decode($response, true);
-
         if (!isset($responseJson['@context'])) {
             return null;
         }
 
-        return \explode('/', $responseJson['@context'])[3];
+        return \explode('/', $responseJson['@context'])[3] ?? null;
     }
 
-    private function isCollectionResponse(string $response): bool
+    private function isCollectionResponse(array $responseJson): bool
     {
-        $responseJson = \json_decode($response, true);
-
         return HydraType::COLLECTION === $responseJson['@type'];
     }
 
@@ -177,22 +157,13 @@ class Serializator
         return true;
     }
 
-    public function setClient(HydraClientInterface $client): void
+    public function hasNode(array $response, string $node): bool
     {
-        $this->client = $client;
-    }
-
-    public function hasNode(string $json, string $node): bool
-    {
-        $response = \json_decode($json, true);
-
         return \array_key_exists($node, $response);
     }
 
-    public function getNodeValues(string $json, string $node): array
+    public function getNodeValues(array $response, string $node): array
     {
-        $response = \json_decode($json, true);
-
         return $response[$node];
     }
 }

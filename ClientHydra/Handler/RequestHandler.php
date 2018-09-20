@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\ClientHydra\Handler;
 
 use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
-use Stadline\LinkdataClient\ClientHydra\Exception\HandlerException\HandlerException;
-use Stadline\LinkdataClient\ClientHydra\Exception\RequestException\RequestException;
-use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException\SerializerException;
+use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
+use Stadline\LinkdataClient\ClientHydra\Adapter\RawResponse;
+use Stadline\LinkdataClient\ClientHydra\Exception\HandlerException;
+use Stadline\LinkdataClient\ClientHydra\Exception\RequestException;
+use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException;
 use Stadline\LinkdataClient\ClientHydra\Utils\Serializator;
 
 class RequestHandler
 {
     private $adapter;
-    private $serializer;
+    private $serializator;
     private $paginationHandler;
 
     public function __construct(
@@ -22,7 +24,7 @@ class RequestHandler
         PaginationHandler $paginationHandler
     ) {
         $this->adapter = $adapter;
-        $this->serializer = $serializator;
+        $this->serializator = $serializator;
         $this->paginationHandler = $paginationHandler;
     }
 
@@ -75,7 +77,6 @@ class RequestHandler
         try {
             $requestResponse = $this->adapter->makeRequest(
                 $args['method'],
-                $args['baseUrl'],
                 $args['uri'],
                 $args['headers'],
                 $args['body']
@@ -84,24 +85,24 @@ class RequestHandler
             throw new HandlerException('An error occurred during processing request.', $e);
         }
 
-        // special case: extension ".gpx" is passed to uri, we return response without deserialization.
-        if (\array_key_exists('haveToDeserialize', $args) && false === $args['haveToDeserialize']) {
-            return [$requestResponse];
+        // Not json : cannot be deserialize
+        if (!$requestResponse instanceof JsonResponse) {
+            return $requestResponse->getContent();
         }
 
         try {
-            $content = $this->serializer->deserialize($requestResponse);
+            $content = $this->serializator->deserialize($requestResponse);
         } catch (SerializerException $e) {
             throw new HandlerException('An error occurred during deserialization.', $e);
         }
 
         if (empty($content)) {
-            return [];
+            return $content;
         }
 
-        if ($this->paginationHandler->haveToPaginate($content)) {
-            return $this->paginationHandler->addExtraNode($content, $requestResponse);
-        }
+//        if ($this->paginationHandler->haveToPaginate($content)) {
+//            return $this->paginationHandler->addExtraNode($content, $requestResponse);
+//        }
 
         return $content;
     }

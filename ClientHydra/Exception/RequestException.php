@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Exception\RequestException;
+namespace Stadline\LinkdataClient\ClientHydra\Exception;
 
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Throwable;

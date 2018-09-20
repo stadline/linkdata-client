@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
-use Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
-use Stadline\LinkdataClient\ClientHydra\Handler\PaginationHandler;
 use Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
 use Stadline\LinkdataClient\ClientHydra\Utils\Serializator;
 use Stadline\LinkdataClient\ClientHydra\Utils\UriConverter;
@@ -21,30 +17,16 @@ abstract class AbstractHydraClient implements HydraClientInterface
     private $requestHandler;
     private $headers;
 
-    private $baseUrl;
-
-    public function __construct(string $baseUrl, int $maxResultPerPage, string $entityNamespace)
+    public function __construct(UriConverter $uriConverter, RequestHandler $requestHandler, Serializator $serializator) //,  int $maxResultPerPage, string $entityNamespace)
     {
         // Header default value
         $this->headers = [
             'Content-Type' => 'application/ld+json',
         ];
 
-        $this->baseUrl = $baseUrl;
-
-        $this->uriConverter = new UriConverter($this->baseUrl, $entityNamespace);
-        $this->serializator = new Serializator($entityNamespace);
-        $paginationHandler = new PaginationHandler($this->serializator, $this->uriConverter, $maxResultPerPage);
-
-        $adapter = new GuzzleAdapter();
-        $this->requestHandler = new RequestHandler($adapter, $this->serializator, $paginationHandler);
-    }
-
-    public function getProxy(string $iri): ProxyObject
-    {
-        $proxyManager = new ProxyManager($this);
-
-        return $proxyManager->getProxy($iri);
+        $this->uriConverter = $uriConverter;
+        $this->serializator = $serializator;
+        $this->requestHandler = $requestHandler;
     }
 
     /**
@@ -59,7 +41,6 @@ abstract class AbstractHydraClient implements HydraClientInterface
             $uri = $this->uriConverter->formatUri($method, $args);
         }
 
-        $this->serializator->setClient($this);
         $body = null;
 
         // Put or POST, make a serialization with the entity.
@@ -69,7 +50,6 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
         $requestArgs = [
             'method' => $uri['method'],
-            'baseUrl' => $this->baseUrl,
             'uri' => $uri['uri'],
             'headers' => $this->headers,
             'body' => $body,
