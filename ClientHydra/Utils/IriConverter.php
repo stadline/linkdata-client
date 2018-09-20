@@ -37,17 +37,26 @@ class IriConverter
 
     public function generateCollectionUri(string $className, array $filters = []): string
     {
-        $this->generateUri();
+        return $this->generateUri($className, ['filters' => $filters]);
     }
 
     public function generateObjectUri(string $className, $id): string
     {
-        $this->generateUri();
+        return $this->generateUri($className, ['id' => $id]);
     }
 
-    protected function generateUri($parameters): string
+    protected function generateUri($className, $parameters = []): string
     {
+        $uri = Inflector::pluralize($className);
+        $filters = $this->formatFilters($parameters['filters'] && \count($parameters['filters']) > 0 ? $parameters['filters'] : '');
 
+        $uri = \sprintf('%s/%s%s', $this->baseUri, Inflector::tableize($uri), $filters);
+
+        if (isset($parameters['id'])) {
+            $uri .= sprintf('/%s', $parameters['id']);
+        }
+
+        return $uri;
     }
 
     private function getClassShortName($classNameOrObject): string
