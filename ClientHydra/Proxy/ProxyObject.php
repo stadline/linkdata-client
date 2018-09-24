@@ -19,10 +19,10 @@ class ProxyObject
     private $iriConverter;
 
     /* internal metadata */
-    private $hydrated;
-    private $iri;
-    private $className;
-    private $id;
+    private $_hydrated;
+    private $_iri;
+    private $_className;
+    private $_id;
 
     public function __construct(
         IriConverter $iriConverter,
@@ -35,14 +35,15 @@ class ProxyObject
     {
         $this->proxyManager = $proxyManager;
         $this->serializer = $serializer;
-        $this->iriConverter = $iriConverter;
+        $this->_iriConverter = $iriConverter;
 
-        $this->className = $className;
-        $this->id = $id;
-        $this->iri = $this->iriConverter->getIriFromClassNameAndId($this->className, $this->id);
-        $this->hydrated = false;
+        $this->_className = $className;
+        $this->_id = $id;
+        $this->_iri = $this->_iriConverter->getIriFromClassNameAndId($this->_className, $this->_id);
+        $this->_hydrated = false;
 
         if (null !== $data) {
+            dump('hydrate !!!!!');
             $this->_hydrate($data);
         }
     }
@@ -54,12 +55,12 @@ class ProxyObject
     public function _hydrate(?array $data = null): void
     {
 // WHY ?
-//        if (!$this->hydrated) {
+//        if (!$this->_hydrated) {
 //            return $iri;
 //        }
 
         // already hydrated : ignore
-        if (true === $this->hydrated) {
+        if (true === $this->_hydrated) {
             return;
         }
 
@@ -67,7 +68,7 @@ class ProxyObject
         if (null === $data) {
             $requestResponse = $this->proxyManager->getAdapter()->makeRequest(
                 'GET',
-                $this->iri
+                $this->_iri
             );
 
             if (!$requestResponse instanceof JsonResponse) {
@@ -82,15 +83,15 @@ class ProxyObject
 
     public function _refresh(array $data)
     {
-        $this->serializer->deserialize(json_encode($data), $this->className, 'json', [
+        $this->serializer->deserialize(json_encode($data), $this->_className, 'json', [
             'object_to_populate' => $this,
             'groups' => [HydraParser::getDenormContext($data)]
         ]);
-        $this->hydrated = true;
+        $this->_hydrated = true;
     }
 
     public function _isHydrated(): bool
     {
-        return $this->hydrated;
+        return $this->_hydrated;
     }
 }

@@ -35,7 +35,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess
 
         $this->objects = [];
 
-        $this->currentIteratorPosition = 0;
+        $this->currentIteratorPosition = -1;
         $this->nextPageUri = $iriConverter->generateCollectionUri($classname, $filters);
     }
 
@@ -127,7 +127,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess
 
     public function valid()
     {
-        return null !== $this->objects[$this->currentIteratorPosition];
+        return isset($this->objects[$this->currentIteratorPosition]);
     }
 
     public function rewind()
