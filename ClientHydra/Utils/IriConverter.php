@@ -9,9 +9,11 @@ use Stadline\LinkdataClient\ClientHydra\Type\UriType;
 class IriConverter
 {
     private $baseUri;
+    private $entityNamespace;
 
-    public function __construct(string $baseUri = '')
+    public function __construct(string $entityNamespace, string $baseUri = '')
     {
+        $this->entityNamespace = $entityNamespace;
         $this->baseUri = $baseUri;
     }
 
@@ -28,6 +30,11 @@ class IriConverter
         return explode('/', $iri)[2];
     }
 
+    public function getEntityNamespace(): string
+    {
+        return $this->entityNamespace;
+    }
+
     public function getIriFromClassNameAndId(string $className, $id): string
     {
         return sprintf('/%s/%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($className)), $id);
@@ -40,7 +47,7 @@ class IriConverter
 
     public function getClassnameFromIri(string $iri): string
     {
-        return Inflector::singularize(explode('/', $iri)[2]);
+        return $this->entityNamespace.'\\'.Inflector::singularize(explode('/', $iri)[2]);
     }
 
     public function generateCollectionUri(string $className, array $filters = []): string

@@ -67,7 +67,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
 
         /** @var ProxyObject $object */
         $object = parent::denormalize($data, $realclass, $format, $context);
-        $object->setProxyManager($this->proxyManager);
+//        $object->setProxyManager($this->proxyManager);
 
         return $object;
     }

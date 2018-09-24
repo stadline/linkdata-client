@@ -18,10 +18,22 @@
         <service id="linkdata_client.proxy_manager" class="Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager">
             <argument type="service" id="linkdata_client.adapter" />
             <argument type="service" id="linkdata_client.iri_converter" />
+            <argument type="service" id="serializer" />
         </service>
 
         <service id="linkdata_client.iri_converter" class="Stadline\LinkdataClient\ClientHydra\Utils\IriConverter">
+            <argument>%linkdata_client.entity_namespace%</argument>
             <argument>%linkdata_client.iri_prefix%</argument>
+        </service>
+
+        <service id="linkdata_client.proxy_object_normalizer" class="Stadline\LinkdataClient\ClientHydra\Serializer\ProxyObjectNormalizer">
+            <call method="setEntityNamespace">
+                <argument>%linkdata_client.entity_namespace%</argument>
+            </call>
+            <call method="setProxyManager">
+                <argument type="service">linkdata_client.proxy_manager</argument>
+            </call>
+            <tag name="serializer.normalizer" />
         </service>
 
         <!--<service id="linkdata_client.uri_converter" class="Stadline\LinkdataClient\ClientHydra\Utils\UriConverter">-->
