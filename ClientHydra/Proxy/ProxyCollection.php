@@ -6,7 +6,7 @@ use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class ProxyCollection implements \Iterator
+class ProxyCollection implements \Iterator, \ArrayAccess
 {
     /** @var ProxyObject[] */
     private $objects;
@@ -133,5 +133,42 @@ class ProxyCollection implements \Iterator
     public function rewind()
     {
         $this->currentIteratorPosition = 0;
+    }
+
+    public function offsetExists($offset): bool
+    {
+        if (!is_int($offset)) {
+            throw new \RuntimeException('Cannot use non int offset in ProxyCollection');
+        }
+
+        if ($offset > $this->currentIteratorPosition && $this->nextPageUri !== null) {
+            $this->hydrateNextElements();
+            return $this->offsetExists($offset);
+        }
+
+        return isset($this->objects[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        if (!is_int($offset)) {
+            throw new \RuntimeException('Cannot use non int offset in ProxyCollection');
+        }
+        if ($offset > $this->currentIteratorPosition && $this->nextPageUri !== null) {
+            $this->hydrateNextElements();
+            return $this->offsetGet($offset);
+        }
+
+        return $this->objects[$offset] ?? null;
+    }
+
+    public function offsetSet($offset, $value): void
+    {
+        throw new \RuntimeException('Cannot set object in a ProxyCollection');
+    }
+
+    public function offsetUnset($offset): void
+    {
+        throw new \RuntimeException('Cannot unset object in a ProxyCollection');
     }
 }
