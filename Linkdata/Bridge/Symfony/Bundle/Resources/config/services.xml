@@ -31,7 +31,7 @@
                 <argument>%linkdata_client.entity_namespace%</argument>
             </call>
             <call method="setProxyManager">
-                <argument type="service">linkdata_client.proxy_manager</argument>
+                <argument type="service" id="linkdata_client.proxy_manager" />
             </call>
             <tag name="serializer.normalizer" />
         </service>
