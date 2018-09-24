@@ -4,6 +4,7 @@ namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
 use Doctrine\Common\Inflector\Inflector;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Type\UriType;
 
 class IriConverter
 {
@@ -65,6 +66,32 @@ class IriConverter
         }
 
         return $uri;
+    }
+
+    private function formatFilters($args): string
+    {
+        // item case
+        if (!\is_array($args) && !\is_object($args)) {
+            return null !== $args ? \sprintf('/%s', $args) : '';
+        }
+
+        // item case (object)
+        if (\is_object($args)) {
+            return \method_exists($args, 'getId') ? \sprintf('/%s', $args->{'getId'}()) : '';
+        }
+
+        // collection case
+        if (!\array_key_exists(UriType::FILTERS, $args)) {
+            return '';
+        }
+
+        $response = '?';
+
+        foreach ($args[UriType::FILTERS] as $key => $filter) {
+            $response .= \sprintf('%s=%s&', $key, $filter);
+        }
+
+        return \substr($response, 0, -1);
     }
 
     private function getClassShortName($classNameOrObject): string
