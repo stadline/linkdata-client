@@ -92,11 +92,12 @@ class ProxyCollection implements \Iterator
             if ($this->proxyManager->hasObject($member['@id'])) {
                 $object = $this->proxyManager->getObjectFromIri($member['@id']);
             } else {
-                $object = new ProxyObject(
+                $className = $this->iriConverter->getClassnameFromIri($member['@id']);
+                $object = new $className(
                     $this->iriConverter,
                     $this->serializer,
                     $this->proxyManager,
-                    $this->iriConverter->getClassnameFromIri($member['@id']),
+                    $className,
                     $this->iriConverter->getObjectIdFromIri($member['@id']),
                     $member
                 );
