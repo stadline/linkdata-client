@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
-use GuzzleHttp\Handler\Proxy;
 use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;

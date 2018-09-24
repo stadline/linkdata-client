@@ -8,42 +8,55 @@
         <service id="linkdata_client.adapter" alias="linkdata_client.adapter_guzzle" />
 
         <service id="linkdata_client.client" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
-            <argument>%linkdata_client.max_result_per_page%</argument>
-            <argument>%linkdata_client.entity_namespace%</argument>
-        </service>
-
-        <service id="linkdata_client.uri_converter" class="Stadline\LinkdataClient\ClientHydra\Utils\UriConverter">
-            <argument>%linkdata_client.base_url%</argument>
-            <argument>%linkdata_client.entity_namespace%</argument>
-            <argument type="service" id="linkdata_client.uri_resolver" />
-        </service>
-
-        <service id="linkdata_client.uri_resolver" class="Stadline\LinkdataClient\ClientHydra\Utils\UriResolver">
+            <argument type="service" id="linkdata_client.proxy_manager" />
         </service>
 
         <service id="linkdata_client.adapter_guzzle" class="Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter">
             <argument>%linkdata_client.base_url%</argument>
         </service>
 
-        <service id="linkdata_client.request_handler" class="Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler">
-            <argument type="service" id="linkdata_client.adapter" />
-            <argument type="service" id="linkdata_client.serializator" />
-            <argument type="service" id="linkdata_client.pagination_handler" />
-        </service>
-
         <service id="linkdata_client.proxy_manager" class="Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager">
-            <argument type="service" id="linkdata_client.client" />
+            <argument type="service" id="linkdata_client.adapter" />
+            <argument type="service" id="linkdata_client.iri_converter" />
+            <argument type="service" id="serializer" />
         </service>
 
-        <service id="linkdata_client.serializator" class="Stadline\LinkdataClient\ClientHydra\Utils\Serializator">
-            <argument>%linkdata_client.entity_namespace%</argument>
-            <argument type="service" id="linkdata_client.proxy_manager" />
+        <service id="linkdata_client.iri_converter" class="Stadline\LinkdataClient\ClientHydra\Utils\IriConverter">
+            <argument>%linkdata_client.iri_prefix%</argument>
         </service>
 
-        <service id="linkdata_client.pagination_handler">
-            <argument type="service" id="linkdata_client.serializator" />
-            <argument type="service" id="linkdata_client.uri_converter" />
-            <argument>%linkdata_client.max_result_per_page%</argument>
-        </service>
+        <!--<service id="linkdata_client.uri_converter" class="Stadline\LinkdataClient\ClientHydra\Utils\UriConverter">-->
+            <!--<argument>%linkdata_client.base_url%</argument>-->
+            <!--<argument>%linkdata_client.entity_namespace%</argument>-->
+            <!--<argument type="service" id="linkdata_client.uri_resolver" />-->
+        <!--</service>-->
+
+        <!--<service id="linkdata_client.uri_resolver" class="Stadline\LinkdataClient\ClientHydra\Utils\UriResolver">-->
+        <!--</service>-->
+
+        <!--<service id="linkdata_client.adapter_guzzle" class="Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter">-->
+            <!--<argument>%linkdata_client.base_url%</argument>-->
+        <!--</service>-->
+
+        <!--<service id="linkdata_client.request_handler" class="Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler">-->
+            <!--<argument type="service" id="linkdata_client.adapter" />-->
+            <!--<argument type="service" id="linkdata_client.serializator" />-->
+            <!--<argument type="service" id="linkdata_client.pagination_handler" />-->
+        <!--</service>-->
+
+        <!--<service id="linkdata_client.proxy_manager" class="Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager">-->
+            <!--<argument type="service" id="linkdata_client.client" />-->
+        <!--</service>-->
+
+        <!--<service id="linkdata_client.serializator" class="Stadline\LinkdataClient\ClientHydra\Utils\Serializator">-->
+            <!--<argument>%linkdata_client.entity_namespace%</argument>-->
+            <!--<argument type="service" id="linkdata_client.proxy_manager" />-->
+        <!--</service>-->
+
+        <!--<service id="linkdata_client.pagination_handler">-->
+            <!--<argument type="service" id="linkdata_client.serializator" />-->
+            <!--<argument type="service" id="linkdata_client.uri_converter" />-->
+            <!--<argument>%linkdata_client.max_result_per_page%</argument>-->
+        <!--</service>-->
     </services>
 </container>

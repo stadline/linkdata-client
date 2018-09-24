@@ -5,63 +5,49 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
-use Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
-use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
 use Stadline\LinkdataClient\ClientHydra\Type\UriType;
-use Stadline\LinkdataClient\ClientHydra\Utils\Serializator;
-use Stadline\LinkdataClient\ClientHydra\Utils\UriConverter;
 
 abstract class AbstractHydraClient implements HydraClientInterface
 {
-    private $uriConverter;
-    private $serializator;
-    private $requestHandler;
-    private $headers;
     private $proxyManager;
 
-    public function __construct(UriConverter $uriConverter, RequestHandler $requestHandler, Serializator $serializator, ProxyManager $proxyManager) //,  int $maxResultPerPage, string $entityNamespace)
+    public function __construct(
+        ProxyManager $proxyManager
+    )
     {
-        // Header default value
-        $this->headers = [
-            'Content-Type' => 'application/ld+json',
-        ];
-
-        $this->uriConverter = $uriConverter;
-        $this->serializator = $serializator;
-        $this->requestHandler = $requestHandler;
         $this->proxyManager = $proxyManager;
     }
 
-    /**
-     * @throws ClientHydraException
-     */
-    public function send(string $method, array $args)
-    {
-        if (isset($args['customUri'])) {
-            $uri['uri'] = \sprintf('%s%s', $this->baseUrl, $args['customUri']);
-            $uri['method'] = $method;
-        } else {
-            $uri = $this->uriConverter->formatUri($method, $args);
-        }
-
-        $body = null;
-
-        // Put or POST, make a serialization with the entity.
-        if (isset($args[0]) && \in_array($uri['method'], [MethodType::POST, MethodType::PUT], true)) {
-            $body = $this->serializator->serialize(MethodType::POST === $uri['method'] ? $args[0][0] : $args[0]);
-        }
-
-        $requestArgs = [
-            'method' => $uri['method'],
-            'uri' => $uri['uri'],
-            'headers' => $this->headers,
-            'body' => $body,
-        ];
-
-        return $this->requestHandler->handleRequest($requestArgs);
-    }
+//    /**
+//     * @throws ClientHydraException
+//     */
+//    public function send(string $method, array $args)
+//    {
+//        if (isset($args['customUri'])) {
+//            $uri['uri'] = \sprintf('%s%s', $this->baseUrl, $args['customUri']);
+//            $uri['method'] = $method;
+//        } else {
+//            $uri = $this->uriConverter->formatUri($method, $args);
+//        }
+//
+//        $body = null;
+//
+//        // Put or POST, make a serialization with the entity.
+//        if (isset($args[0]) && \in_array($uri['method'], [MethodType::POST, MethodType::PUT], true)) {
+//            $body = $this->serializator->serialize(MethodType::POST === $uri['method'] ? $args[0][0] : $args[0]);
+//        }
+//
+//        $requestArgs = [
+//            'method' => $uri['method'],
+//            'uri' => $uri['uri'],
+//            'headers' => $this->headers,
+//            'body' => $body,
+//        ];
+//
+//        return $this->requestHandler->handleRequest($requestArgs);
+//    }
 
     public function call(string $method, array $args)
     {
@@ -76,11 +62,12 @@ abstract class AbstractHydraClient implements HydraClientInterface
             case 'get':
                 return $this->callGet($className, $args);
             case 'put':
-                return $this->callPut($className, $args);
+                return $this->callPut($args);
             case 'delete':
-                return $this->callDelete($className, $args);
+                $this->callDelete($className, $args);
+                return null;
             case 'post':
-                return $this->callPost($className, $args);
+                return $this->callPost($args);
         }
 
         throw new \RuntimeException('Cannot determine method to call');
@@ -92,15 +79,6 @@ abstract class AbstractHydraClient implements HydraClientInterface
     public function __call(string $method, array $args)
     {
         return $this->call($method, $args);
-    }
-
-    public function setHeader(string $name, ?string $value): void
-    {
-        if (null !== $value) {
-            $this->headers[$name] = $value;
-        } else {
-            unset($this->headers[$name]);
-        }
     }
 
     private function callGet(string $classname, array $args)
@@ -136,7 +114,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
         $this->proxyManager->deleteObject($className, $args[0]);
     }
 
-    private function callPost($className, array $args)
+    private function callPost(array $args)
     {
         if (!$args[0] instanceof ProxyObject) {
             throw new \RuntimeException('Post require a proxy object in parameter');

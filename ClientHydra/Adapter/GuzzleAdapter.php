@@ -12,6 +12,9 @@ use Stadline\LinkdataClient\ClientHydra\Exception\RequestException;
 class GuzzleAdapter implements AdapterInterface
 {
     private $client;
+    private $defaultHeaders = [
+        'Content-Type' => 'application/ld+json'
+    ];
 
     public function __construct(string $baseUrl)
     {
@@ -23,6 +26,8 @@ class GuzzleAdapter implements AdapterInterface
      */
     public function makeRequest(string $method, string $uri, array $headers = [], string $body = null): ResponseInterface
     {
+        $headers = \array_merge($this->defaultHeaders, $headers);
+
         try {
             $response = $this->client->send(
                 new Request($method, $uri, $headers, $body)
@@ -38,5 +43,10 @@ class GuzzleAdapter implements AdapterInterface
         }
 
         return new RawResponse($contentType, (string)$response->getBody());
+    }
+
+    public function setDefaultHeader(string $key, string $value): void
+    {
+        $this->defaultHeaders[$key] = $value;
     }
 }

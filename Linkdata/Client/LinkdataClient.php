@@ -183,4 +183,12 @@ class LinkdataClient extends AbstractHydraClient
             'customUri' => \sprintf('/share_users_stats/%s', $id),
         ]);
     }
+
+    /**
+     * @throws ClientHydraException
+     */
+    public function send(string $method, array $args)
+    {
+        // TODO: Implement send() method.
+    }
 }
