@@ -5,7 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="linkdata_client.adapter" alias="linkdata_client.adapter_guzzle"></service>
+        <service id="linkdata_client.adapter" alias="linkdata_client.adapter_guzzle" />
 
         <service id="linkdata_client.client" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
             <argument>%linkdata_client.max_result_per_page%</argument>

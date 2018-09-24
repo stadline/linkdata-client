@@ -13,6 +13,4 @@ interface HydraClientInterface
      * @throws ClientHydraException
      */
     public function send(string $method, array $args);
-
-    public function getProxy(string $iri): ProxyObject;
 }

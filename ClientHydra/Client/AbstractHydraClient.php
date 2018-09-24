@@ -91,7 +91,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
      */
     public function __call(string $method, array $args)
     {
-        return $this->send($method, $args);
+        return $this->call($method, $args);
     }
 
     public function setHeader(string $name, ?string $value): void
