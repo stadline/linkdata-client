@@ -146,7 +146,7 @@ class ProxyManager
             $iri
         );
 
-        \unset($this->objects[$iri]);
+        unset($this->objects[$iri]);
     }
 
     public function postObject(ProxyObject $object): ProxyObject
