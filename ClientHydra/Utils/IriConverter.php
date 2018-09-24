@@ -25,7 +25,7 @@ class IriConverter
      */
     public function getObjectIdFromIri(string $iri)
     {
-
+        return explode('/', $iri)[2];
     }
 
     public function getIriFromClassNameAndId(string $className, $id): string
