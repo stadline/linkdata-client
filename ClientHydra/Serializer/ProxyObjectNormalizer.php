@@ -83,6 +83,10 @@ class ProxyObjectNormalizer extends ObjectNormalizer
      */
     public function supportsDenormalization($data, $type, $format = null)
     {
+        if ($format !== 'json') {
+            return false;
+        }
+
         return ProxyObject::class === $type && \is_array($data) && HydraParser::isHydraObjectResponse($data);
     }
 }

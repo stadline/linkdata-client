@@ -82,7 +82,7 @@ class ProxyObject
 
     public function _refresh(array $data)
     {
-        $this->serializer->deserialize($data, $this->className, null, array('object_to_populate' => $this, 'groups' => [HydraParser::getDenormContext($data)]));
+        $this->serializer->deserialize(json_encode($data), $this->className, 'json', array('object_to_populate' => $this, 'groups' => [HydraParser::getDenormContext($data)]));
         $this->hydrated = true;
     }
 

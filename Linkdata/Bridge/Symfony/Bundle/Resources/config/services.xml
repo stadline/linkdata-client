@@ -18,7 +18,7 @@
         <service id="linkdata_client.proxy_manager" class="Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager">
             <argument type="service" id="linkdata_client.adapter" />
             <argument type="service" id="linkdata_client.iri_converter" />
-            <argument type="service" id="serializer" />
+            <argument type="service" id="Symfony\Component\Serializer\SerializerInterface" />
         </service>
 
         <service id="linkdata_client.iri_converter" class="Stadline\LinkdataClient\ClientHydra\Utils\IriConverter">

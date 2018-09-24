@@ -47,7 +47,7 @@ class IriConverter
 
     public function getClassnameFromIri(string $iri): string
     {
-        return $this->entityNamespace.'\\'.Inflector::singularize(explode('/', $iri)[2]);
+        return $this->entityNamespace.'\\'.Inflector::classify(Inflector::singularize(explode('/', $iri)[2]));
     }
 
     public function generateCollectionUri(string $className, array $filters = []): string
