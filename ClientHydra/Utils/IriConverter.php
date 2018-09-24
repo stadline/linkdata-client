@@ -8,12 +8,11 @@ use Stadline\LinkdataClient\ClientHydra\Type\UriType;
 
 class IriConverter
 {
-    private $baseUri = '/v2';
-    private $uriResolver;
+    private $baseUri;
 
-    public function __construct(UriResolver $uriResolver)
+    public function __construct(string $baseUri = '')
     {
-        $this->uriResolver = $uriResolver;
+        $this->baseUri = $baseUri;
     }
 
     public function getIriFromObject(ProxyObject $object): string
@@ -34,7 +33,7 @@ class IriConverter
         return sprintf('/%s/%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($className)), $id);
     }
 
-    public function getCollectionIriFromClassName(string $className, $id): string
+    public function getCollectionIriFromClassName(string $className): string
     {
         return sprintf('/%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($className)));
     }
