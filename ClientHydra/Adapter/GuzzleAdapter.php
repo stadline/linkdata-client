@@ -37,6 +37,7 @@ class GuzzleAdapter implements AdapterInterface
         }
 
         $contentType = $response->getHeader('Content-Type')[0] ?? 'unknown';
+        $contentType = explode(';', $contentType)[0];
 
         if (\in_array($contentType, ['application/ld+json', 'application/json'])) {
             return new JsonResponse((string)$response->getBody());

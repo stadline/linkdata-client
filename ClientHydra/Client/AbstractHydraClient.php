@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
+use Stadline\LinkdataClient\ClientHydra\Exception\FormatException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Type\UriType;
@@ -13,9 +14,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
 {
     private $proxyManager;
 
-    public function __construct(
-        ProxyManager $proxyManager
-    )
+    public function __construct(ProxyManager $proxyManager)
     {
         $this->proxyManager = $proxyManager;
     }
@@ -55,7 +54,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
             throw new FormatException(\sprintf('The method %s is not recognized.', $method));
         }
 
-        $method = $matches['method'];
+        $method = strtolower($matches['method']);
         $className = $matches['className'];
 
         switch ($method) {
