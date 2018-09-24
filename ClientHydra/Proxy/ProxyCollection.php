@@ -6,7 +6,7 @@ use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class ProxyCollection implements \Iterator, Traversable
+class ProxyCollection implements \Iterator
 {
     /** @var ProxyObject[] */
     private $objects;
