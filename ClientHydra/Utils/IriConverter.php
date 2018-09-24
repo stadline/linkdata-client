@@ -19,7 +19,7 @@ class IriConverter
 
     public function getIriFromObject(ProxyObject $object): string
     {
-        return sprintf('/%s/%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($object)), $object->getId());
+        return sprintf('%s/%s/%s', $this->baseUri, Inflector::tableize(Inflector::pluralize($this->getClassShortName($object))), $object->getId());
     }
 
     /**
@@ -37,7 +37,7 @@ class IriConverter
 
     public function getIriFromClassNameAndId(string $className, $id): string
     {
-        return sprintf('%s/%s/%s', $this->baseUri, Inflector::camelize(Inflector::pluralize($this->getClassShortName($className))), $id);
+        return sprintf('%s/%s/%s', $this->baseUri, Inflector::tableize(Inflector::pluralize($this->getClassShortName($className))), $id);
     }
 
     public function getCollectionIriFromClassName(string $className): string

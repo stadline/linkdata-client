@@ -6,6 +6,7 @@ namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
 use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
+use Stadline\LinkdataClient\ClientHydra\Type\FormatType;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -32,28 +33,36 @@ class ProxyManager
 
     public function getObjectFromIri(string $iri): ?ProxyObject
     {
+        $object =  $this->getProxyFromIri($iri);
+        $object->_hydrate();
+
+        return $object;
+    }
+
+    public function getProxyFromIri(string $iri): ?ProxyObject
+    {
         // check if object already store
         if (isset($this->objects[$iri])) {
-            $this->objects[$iri]->_hydrate();
             return $this->objects[$iri];
         }
 
-        $proxyObject = new ProxyObject(
+        $className = $this->iriConverter->getClassnameFromIri($iri);
+        $proxyObject = new $className(
             $this->iriConverter,
             $this->serializer,
             $this,
-            $this->iriConverter->getClassnameFromIri($iri),
+            $className,
             $this->iriConverter->getObjectIdFromIri($iri)
         );
-        $proxyObject->_hydrate();
-
         $this->objects[$iri] = $proxyObject;
+
         return $proxyObject;
     }
 
     public function getObject(string $className, $id): ?ProxyObject
     {
         $iri = $this->iriConverter->getIriFromClassNameAndId($className, $id);
+
         return $this->getObjectFromIri($iri);
     }
 
@@ -112,12 +121,13 @@ class ProxyManager
     public function putObject(ProxyObject $object): ProxyObject
     {
         $response = $this->adapter->makeRequest(
-            'UPDATE',
+            'PUT',
             $this->iriConverter->getIriFromObject($object),
+            [],
             $this->serializer->serialize(
                 $object,
                 FormatType::JSON,
-                ['groups' => [HydraParser::getNormContext()]]
+                ['groups' => [HydraParser::getNormContext($object)], 'classContext' => get_class($object)]
             )
         );
 

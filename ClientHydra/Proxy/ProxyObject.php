@@ -30,7 +30,7 @@ class ProxyObject
         ProxyManager $proxyManager,
         string $className,
         $id,
-        ?array $data
+        ?array $data = null
     )
     {
         $this->proxyManager = $proxyManager;
@@ -43,7 +43,6 @@ class ProxyObject
         $this->_hydrated = false;
 
         if (null !== $data) {
-            dump('hydrate !!!!!');
             $this->_hydrate($data);
         }
     }
@@ -93,5 +92,10 @@ class ProxyObject
     public function _isHydrated(): bool
     {
         return $this->_hydrated;
+    }
+
+    protected function getProxyManager(): ProxyManager
+    {
+        return $this->proxyManager;
     }
 }

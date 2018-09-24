@@ -89,19 +89,8 @@ class ProxyCollection implements \Iterator, \ArrayAccess
 
         // Members
         foreach ($data['hydra:member'] as $member) {
-            if ($this->proxyManager->hasObject($member['@id'])) {
-                $object = $this->proxyManager->getObjectFromIri($member['@id']);
-            } else {
-                $className = $this->iriConverter->getClassnameFromIri($member['@id']);
-                $object = new $className(
-                    $this->iriConverter,
-                    $this->serializer,
-                    $this->proxyManager,
-                    $className,
-                    $this->iriConverter->getObjectIdFromIri($member['@id']),
-                    $member
-                );
-            }
+            $object = $this->proxyManager->getProxyFromIri($member['@id']);
+            $object->_hydrate($member);
             $this->objects[] = $object;
         }
 

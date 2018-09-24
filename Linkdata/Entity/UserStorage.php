@@ -11,37 +11,37 @@ class UserStorage extends ProxyObject
 {
     /**
      * @var string
-     * @Groups({"user_storage_norm"})
+     * @Groups({"userstorage_norm", "userstorage_denorm})
      */
     protected $id;
 
     /**
      * @var User
-     * @Groups({"user_storage_norm"})
+     * @Groups({"userstorage_norm", "userstorage_denorm})
      */
     protected $user;
 
     /**
      * @var string
-     * @Groups({"user_storage_norm"})
+     * @Groups({"userstorage_norm", "userstorage_denorm})
      */
     protected $value;
 
     /**
      * @var StorageKey
-     * @Groups({"user_storage_norm"})
+     * @Groups({"userstorage_norm", "userstorage_denorm})
      */
     protected $storageKey;
 
     /**
      * @var string
-     * @Groups({"user_storage_norm"})
+     * @Groups({"userstorage_norm", "userstorage_denorm})
      */
     private $createdAt;
 
     /**
      * @var string
-     * @Groups({"user_storage_norm"})
+     * @Groups({"userstorage_norm", "userstorage_denorm})
      */
     private $updatedAt;
 
@@ -57,7 +57,9 @@ class UserStorage extends ProxyObject
 
     public function getUser()
     {
-        return $this->hydrate($this->user);
+        $this->user->_hydrate();
+
+        return $this->user;
     }
 
     public function getValue(): ?string
@@ -72,16 +74,26 @@ class UserStorage extends ProxyObject
 
     public function setUser($user): void
     {
+        if (is_string($user)) {
+            $user = $this->getProxyManager()->getProxyFromIri($user);
+        }
+
         $this->user = $user;
     }
 
     public function getStorageKey()
     {
-        return $this->hydrate($this->storageKey);
+        $this->storageKey->_hydrate();
+
+        return $this->storageKey;
     }
 
     public function setStorageKey($storageKey): void
     {
+        if (is_string($storageKey)) {
+            $storageKey = $this->getProxyManager()->getProxyFromIri($storageKey);
+        }
+
         $this->storageKey = $storageKey;
     }
 

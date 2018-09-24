@@ -5,6 +5,7 @@ namespace Stadline\LinkdataClient\ClientHydra\Serializer;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
+use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\Exception\BadMethodCallException;
 use Symfony\Component\Serializer\Exception\ExtraAttributesException;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
@@ -19,6 +20,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
     private $proxyManager;
     /** @var string */
     private $entityNamespace;
+    /** @var IriConverter */
+    private $iriConverter;
 
     public function setProxyManager(ProxyManager $proxyManager): void
     {
@@ -28,6 +31,20 @@ class ProxyObjectNormalizer extends ObjectNormalizer
     public function setEntityNamespace(string $entityNamespace): void
     {
         $this->entityNamespace = $entityNamespace;
+    }
+
+    public function setIriConverter(IriConverter $iriConverter): void
+    {
+        $this->iriConverter = $iriConverter;
+    }
+
+    public function normalize($object, $format = null, array $context = array())
+    {
+        if (($context['classContext'] ?? null) === get_class($object)) {
+            return parent::normalize($object, $format, $context);
+        }
+
+        return $this->iriConverter->getIriFromObject($object);
     }
 
     /**
@@ -54,20 +71,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             throw new InvalidArgumentException('ProxyObjectDenormalizer::denormalize requires an array in parameter');
         }
 
-        if ($this->proxyManager->hasObject($data['@id'])) {
-            return $this->proxyManager->getObject($data['@id']);
-        }
-
-        $realclass = \sprintf('%s\%s', $this->entityNamespace, HydraParser::getType($data));
-
-        $reflectionClass = new \ReflectionClass($realclass);
-        if (!$reflectionClass->isSubclassOf(ProxyObject::class)) {
-            throw new RuntimeException(sprintf('%s must be a a subclass of ProxyObject', $realclass));
-        }
-
         /** @var ProxyObject $object */
-        $object = parent::denormalize($data, $realclass, $format, $context);
-//        $object->setProxyManager($this->proxyManager);
+        $object = parent::denormalize($data, $class, $format, $context);
 
         return $object;
     }
@@ -87,6 +92,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             return false;
         }
 
-        return ProxyObject::class === $type && \is_array($data2) && HydraParser::isHydraObjectResponse($data2);
+        $reflectionClass = new \ReflectionClass($type);
+
+        return $reflectionClass->isSubclassOf(ProxyObject::class) && \is_array($data) && HydraParser::isHydraObjectResponse($data);
     }
 }

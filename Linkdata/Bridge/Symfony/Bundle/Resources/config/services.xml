@@ -33,6 +33,9 @@
             <call method="setProxyManager">
                 <argument type="service" id="linkdata_client.proxy_manager" />
             </call>
+            <call method="setIriConverter">
+                <argument type="service" id="linkdata_client.iri_converter" />
+            </call>
             <tag name="serializer.normalizer" />
         </service>
 
