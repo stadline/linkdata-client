@@ -21,13 +21,15 @@ class ProxyManager
 
     public function __construct(
         AdapterInterface $adapter,
-        IriConverter $iriConverter,
-        SerializerInterface $serializer
+        IriConverter $iriConverter
     )
     {
         $this->adapter = $adapter;
         $this->iriConverter = $iriConverter;
-        $this->serializer = $serializer;
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+
+        $this->serializer = new Serializer($normalizers, $encoders);
     }
 
     public function getObjectFromIri(string $iri): ?ProxyObject
