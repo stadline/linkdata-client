@@ -2,6 +2,8 @@
 
 namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
+use Doctrine\Common\Inflector\Inflector;
+use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Type\NormContextType;
 
 class HydraParser
@@ -40,9 +42,14 @@ class HydraParser
         return $content['@type'] ?? null;
     }
 
-    public static function getNormContext(array $content): string
+    /**
+     * @param ProxyObject $object
+     * @return string
+     */
+    public static function getNormContext(ProxyObject $object): string
     {
-        return \sprintf('%s_%s', \strtolower(self::getType($content)), NormContextType::NORM);
+        $e = \explode('\\', \get_class($object));
+        return \sprintf('%s_%s', Inflector::tableize(\end($e)), NormContextType::NORM);
     }
 
     public static function getDenormContext(array $content): string

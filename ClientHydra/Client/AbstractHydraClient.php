@@ -6,7 +6,10 @@ namespace Stadline\LinkdataClient\ClientHydra\Client;
 
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler;
+use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
+use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
+use Stadline\LinkdataClient\ClientHydra\Type\UriType;
 use Stadline\LinkdataClient\ClientHydra\Utils\Serializator;
 use Stadline\LinkdataClient\ClientHydra\Utils\UriConverter;
 
@@ -16,8 +19,9 @@ abstract class AbstractHydraClient implements HydraClientInterface
     private $serializator;
     private $requestHandler;
     private $headers;
+    private $proxyManager;
 
-    public function __construct(UriConverter $uriConverter, RequestHandler $requestHandler, Serializator $serializator) //,  int $maxResultPerPage, string $entityNamespace)
+    public function __construct(UriConverter $uriConverter, RequestHandler $requestHandler, Serializator $serializator, ProxyManager $proxyManager) //,  int $maxResultPerPage, string $entityNamespace)
     {
         // Header default value
         $this->headers = [
@@ -27,6 +31,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
         $this->uriConverter = $uriConverter;
         $this->serializator = $serializator;
         $this->requestHandler = $requestHandler;
+        $this->proxyManager = $proxyManager;
     }
 
     /**
@@ -58,6 +63,29 @@ abstract class AbstractHydraClient implements HydraClientInterface
         return $this->requestHandler->handleRequest($requestArgs);
     }
 
+    public function call(string $method, array $args)
+    {
+        if (1 !== \preg_match('/^(?<method>[a-z]+)(?<className>[A-Za-z]+)$/', $method, $matches)) {
+            throw new FormatException(\sprintf('The method %s is not recognized.', $method));
+        }
+
+        $method = $matches['method'];
+        $className = $matches['className'];
+
+        switch ($method) {
+            case 'get':
+                return $this->callGet($className, $args);
+            case 'put':
+                return $this->callPut($className, $args);
+            case 'delete':
+                return $this->callDelete($className, $args);
+            case 'post':
+                return $this->callPost($className, $args);
+        }
+
+        throw new \RuntimeException('Cannot determine method to call');
+    }
+
     /**
      * @throws ClientHydraException
      */
@@ -73,5 +101,47 @@ abstract class AbstractHydraClient implements HydraClientInterface
         } else {
             unset($this->headers[$name]);
         }
+    }
+
+    private function callGet(string $classname, array $args)
+    {
+        // collection case
+        if (!isset($args[0]) || \is_array($args[0])) {
+            return $this->proxyManager->getCollection($classname, $args[0][UriType::FILTERS] ?? null);
+        }
+
+        // item (string | int) case
+        if (\is_int($args[0]) || \is_string($args[0])) {
+            return $this->proxyManager->getObject($classname, $args[0]);
+        }
+
+        throw new \RuntimeException('Unknown error during call get');
+    }
+
+    private function callPut(array $args)
+    {
+        if (!$args[0] instanceof ProxyObject) {
+            throw new \RuntimeException('Put require a proxy object in parameter');
+        }
+
+        return $this->proxyManager->putObject($args[0]);
+    }
+
+    private function callDelete($className, array $args): void
+    {
+        if (!\is_string($args[0]) || !\is_int($args[0])) {
+            throw new \RuntimeException('Delete require a string or an int in parameter');
+        }
+
+        $this->proxyManager->deleteObject($className, $args[0]);
+    }
+
+    private function callPost($className, array $args)
+    {
+        if (!$args[0] instanceof ProxyObject) {
+            throw new \RuntimeException('Post require a proxy object in parameter');
+        }
+
+        return $this->proxyManager->postObject($args[0]);
     }
 }

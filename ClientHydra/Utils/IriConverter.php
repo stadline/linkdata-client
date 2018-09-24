@@ -20,6 +20,14 @@ class IriConverter
         return sprintf('/%s/%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($object)), $object->getId());
     }
 
+    /**
+     * @return string|int
+     */
+    public function getObjectIdFromIri(string $iri)
+    {
+
+    }
+
     public function getIriFromClassNameAndId(string $className, $id): string
     {
         return sprintf('/%s/%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($className)), $id);

@@ -3,7 +3,6 @@
 namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
-use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -15,6 +14,8 @@ class ProxyCollection implements \Iterator
     private $proxyManager;
     /** @var SerializerInterface */
     private $serializer;
+    /** @var IriConverter */
+    private $iriConverter;
 
     /* Internal metadata */
     private $currentIteratorPosition;
@@ -30,6 +31,7 @@ class ProxyCollection implements \Iterator
     {
         $this->proxyManager = $proxyManager;
         $this->serializer = $serializer;
+        $this->iriConverter = $iriConverter;
 
         $this->objects = [];
 
@@ -80,31 +82,37 @@ class ProxyCollection implements \Iterator
         );
 
         if (!$requestResponse instanceof JsonResponse) {
-            throw new \RuntimeException('Cannot hydrate collection witn non json response');
+            throw new \RuntimeException('Cannot hydrate collection with non json response');
         }
 
-        $json = \json_decode($requestResponse, true);
+        $data = $requestResponse->getContent();
 
         // Members
-        foreach ($json['hydra:member'] as $member) {
+        foreach ($data['hydra:member'] as $member) {
             if ($this->proxyManager->hasObject($member['@id'])) {
                 $object = $this->proxyManager->getObjectFromIri($member['@id']);
             } else {
-                $object = $this->serializer->deserialize($member, ProxyObject::class, null, ['groups' => [HydraParser::getDenormContext($member)]]);
+                $object = new ProxyObject(
+                    $this->iriConverter,
+                    $this->serializer,
+                    $this->proxyManager,
+                    $this->iriConverter->getClassnameFromIri($member['@id']),
+                    $this->iriConverter->getObjectIdFromIri($member['@id']),
+                    $member
+                );
             }
             $this->objects[] = $object;
         }
 
         // Update metadata
-        if (null !== ($json['hydra:view']['hydra:next'] ?? null)) {
-            $this->nextPageUri = $json['hydra:view']['hydra:next'];
+        if (null !== ($data['hydra:view']['hydra:next'] ?? null)) {
+            $this->nextPageUri = $data['hydra:view']['hydra:next'];
         } else {
             $this->nextPageUri = null;
         }
 
-        return \count($json['hydra:member']);
+        return \count($data['hydra:member']);
     }
-
 
     public function current()
     {

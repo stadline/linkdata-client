@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
+use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -50,7 +51,7 @@ class ProxyObject
      * Hydrate an object with an IRI given.
      * If hydrate is set to false, it returns the IRI given.
      */
-    public function _hydrate(?array $data): void
+    public function _hydrate(?array $data = null): void
     {
 // WHY ?
 //        if (!$this->hydrated) {
@@ -68,10 +69,25 @@ class ProxyObject
                 'GET',
                 $this->iri
             );
-            $data = \json_decode($requestResponse, true);
+
+            if (!$requestResponse instanceof JsonResponse) {
+                throw new \RuntimeException('Cannot hydrate object with non json response');
+            }
+
+            $data = $requestResponse->getContent();
         }
 
-        $this->serializer->deserialize($data, $this->iriConverter->getClassnameFromIri($this->iri), null, array('object_to_populate' => $this, 'groups' => [HydraParser::getDenormContext($data)]));
+        $this->_refresh($data);
+    }
+
+    public function _refresh(array $data)
+    {
+        $this->serializer->deserialize($data, $this->className, null, array('object_to_populate' => $this, 'groups' => [HydraParser::getDenormContext($data)]));
         $this->hydrated = true;
+    }
+
+    public function _isHydrated(): bool
+    {
+        return $this->hydrated;
     }
 }
