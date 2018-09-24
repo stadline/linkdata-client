@@ -87,6 +87,9 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             return false;
         }
 
+        dump($data); die;
+        $data = json_decode($data, true);
+
         return ProxyObject::class === $type && \is_array($data) && HydraParser::isHydraObjectResponse($data);
     }
 }

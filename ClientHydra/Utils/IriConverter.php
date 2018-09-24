@@ -27,7 +27,7 @@ class IriConverter
      */
     public function getObjectIdFromIri(string $iri)
     {
-        return explode('/', $iri)[2];
+        return explode('/', substr($iri, strlen($this->baseUri)))[2];
     }
 
     public function getEntityNamespace(): string
@@ -37,12 +37,12 @@ class IriConverter
 
     public function getIriFromClassNameAndId(string $className, $id): string
     {
-        return sprintf('/%s/%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($className)), $id);
+        return sprintf('%s/%s/%s', $this->baseUri, Inflector::camelize(Inflector::pluralize($this->getClassShortName($className))), $id);
     }
 
     public function getCollectionIriFromClassName(string $className): string
     {
-        return sprintf('/%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($className)));
+        return sprintf('%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($className)));
     }
 
     public function getClassnameFromIri(string $iri): string
