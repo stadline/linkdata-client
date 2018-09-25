@@ -7,8 +7,10 @@ namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 
-class ProxyCollection implements \Iterator, \ArrayAccess
+class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 {
+    private const INITAL_CURSOR_POSITION = 0;
+
     /** @var ProxyObject[] */
     private $objects;
     /** @var ProxyManager */
@@ -26,78 +28,78 @@ class ProxyCollection implements \Iterator, \ArrayAccess
     ) {
         $this->proxyManager = $proxyManager;
         $this->objects = [];
-        $this->currentIteratorPosition = -1;
+        $this->currentIteratorPosition = self::INITAL_CURSOR_POSITION;
         $this->nextPageUri = $iriConverter->generateCollectionUri($classname, $filters);
     }
 
     public function hasNext(): bool
     {
-        if (isset($this->objects[$this->currentIteratorPosition + 1])) {
-            return true;
-        }
-
-        if (null !== $this->nextPageUri) {
-            return 0 < $this->hydrateNextElements();
-        }
-
-        return false;
+        return $this->offsetExists($this->currentIteratorPosition + 1);
     }
 
-    public function next()
+    private function isHydratationFinished(): bool
+    {
+        return null === $this->nextPageUri;
+    }
+
+    public function next(): void
     {
         ++$this->currentIteratorPosition;
-        if (isset($this->objects[$this->currentIteratorPosition])) {
-            return $this->objects[$this->currentIteratorPosition];
-        }
-
-        // currently on last iteration
-        if (null !== $this->nextPageUri && 0 === $this->hydrateNextElements()) {
-            // reset iterator to last value
-            --$this->currentIteratorPosition;
-            // no new elements : game over !
-            return false;
-        }
-
-        return $this->objects[$this->currentIteratorPosition];
     }
 
-    private function hydrateNextElements(): int
+    private function isHydratationRequired(?int $neededPosition = null): bool
     {
-        if (null === $this->nextPageUri) {
-            throw new \RuntimeException('Unable to hydrate next elements if next page not exist');
+        if (null === $neededPosition) {
+            $neededPosition = $this->currentIteratorPosition;
         }
 
-        $requestResponse = $this->proxyManager->getAdapter()->makeRequest(
-            'GET',
-            $this->nextPageUri
-        );
+        return !$this->isHydratationFinished() && $neededPosition > \count($this->objects);
+    }
 
-        if (!$requestResponse instanceof JsonResponse) {
-            throw new \RuntimeException('Cannot hydrate collection with non json response');
+    private function hydrate(?int $neededPosition = null): int
+    {
+        if (null === $neededPosition) {
+            $neededPosition = $this->currentIteratorPosition;
         }
 
-        $data = $requestResponse->getContent();
+        $totalHydratedElements = 0;
+        $firstLoop = true;
+        while ($this->isHydratationRequired($neededPosition) && ($totalHydratedElements > 0 || $firstLoop)) {
+            $firstLoop = false;
+            $requestResponse = $this->proxyManager->getAdapter()->makeRequest(
+                'GET',
+                $this->nextPageUri
+            );
 
-        // Members
-        foreach ($data['hydra:member'] as $member) {
-            $object = $this->proxyManager->getProxyFromIri($member['@id']);
-            $object->_hydrate($member);
-            $this->objects[] = $object;
+            if (!$requestResponse instanceof JsonResponse) {
+                throw new \RuntimeException('Cannot hydrate collection with non json response');
+            }
+
+            $data = $requestResponse->getContent();
+
+            // Members
+            foreach ($data['hydra:member'] as $member) {
+                $object = $this->proxyManager->getProxyFromIri($member['@id']);
+                $object->_hydrate($member);
+                $this->objects[] = $object;
+            }
+
+            // Update metadata
+            if (null !== ($data['hydra:view']['hydra:next'] ?? null)) {
+                $this->nextPageUri = $data['hydra:view']['hydra:next'];
+            } else {
+                $this->nextPageUri = null;
+            }
+
+            $totalHydratedElements += \count($data['hydra:member']);
         }
 
-        // Update metadata
-        if (null !== ($data['hydra:view']['hydra:next'] ?? null)) {
-            $this->nextPageUri = $data['hydra:view']['hydra:next'];
-        } else {
-            $this->nextPageUri = null;
-        }
-
-        return \count($data['hydra:member']);
+        return $totalHydratedElements;
     }
 
     public function current()
     {
-        return $this->objects[$this->currentIteratorPosition] ?? null;
+        return $this->offsetGet($this->currentIteratorPosition);
     }
 
     public function key()
@@ -107,24 +109,26 @@ class ProxyCollection implements \Iterator, \ArrayAccess
 
     public function valid()
     {
+        if ($this->isHydratationRequired()) {
+            $this->hydrate();
+        }
+
         return isset($this->objects[$this->currentIteratorPosition]);
     }
 
     public function rewind(): void
     {
-        $this->currentIteratorPosition = -1;
+        $this->currentIteratorPosition = self::INITAL_CURSOR_POSITION;
     }
 
     public function offsetExists($offset): bool
     {
         if (!\is_int($offset)) {
-            throw new \RuntimeException('Cannot use non int offset in ProxyCollection');
+            throw new \RuntimeException('Cannot use non-int offset in ProxyCollection');
         }
 
-        if ($offset > $this->currentIteratorPosition && null !== $this->nextPageUri) {
-            $this->hydrateNextElements();
-
-            return $this->offsetExists($offset);
+        if ($this->isHydratationRequired($offset)) {
+            $this->hydrate($offset);
         }
 
         return isset($this->objects[$offset]);
@@ -135,10 +139,9 @@ class ProxyCollection implements \Iterator, \ArrayAccess
         if (!\is_int($offset)) {
             throw new \RuntimeException('Cannot use non int offset in ProxyCollection');
         }
-        if ($offset > $this->currentIteratorPosition && null !== $this->nextPageUri) {
-            $this->hydrateNextElements();
 
-            return $this->offsetGet($offset);
+        if ($this->isHydratationRequired($offset)) {
+            $this->hydrate($offset);
         }
 
         return $this->objects[$offset] ?? null;
@@ -156,11 +159,15 @@ class ProxyCollection implements \Iterator, \ArrayAccess
 
     public function isEmpty(): bool
     {
-        return 0 === \count($this->objects) && null === $this->nextPageUri;
+        return 0 === \count($this->objects) && $this->isHydratationFinished();
     }
 
-//    public function count()
-//    {
-//        if ($this->nextPageUri)
-//    }
+    public function count()
+    {
+        while (!$this->isHydratationFinished()) {
+            $this->hydrate();
+        }
+
+        return \count($this->objects);
+    }
 }
