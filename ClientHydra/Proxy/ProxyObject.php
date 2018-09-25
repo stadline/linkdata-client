@@ -15,8 +15,6 @@ class ProxyObject
     private $proxyManager;
     /** @var SerializerInterface */
     private $serializer;
-    /** @var IriConverter */
-    private $iriConverter;
 
     /* internal metadata */
     private $_hydrated;
@@ -34,11 +32,9 @@ class ProxyObject
     ) {
         $this->proxyManager = $proxyManager;
         $this->serializer = $serializer;
-        $this->_iriConverter = $iriConverter;
-
         $this->_className = $className;
         $this->_id = $id;
-        $this->_iri = $this->_iriConverter->getIriFromClassNameAndId($this->_className, $this->_id);
+        $this->_iri = $iriConverter->getIriFromClassNameAndId($this->_className, $this->_id);
         $this->_hydrated = false;
 
         if (null !== $data) {

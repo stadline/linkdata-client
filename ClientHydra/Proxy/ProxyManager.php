@@ -52,6 +52,7 @@ class ProxyManager
         $className = $this->iriConverter->getClassnameFromIri($iri);
         $proxyObject = new $className(
             $this->iriConverter,
+            $this->serializer,
             $this,
             $className,
             $this->iriConverter->getObjectIdFromIri($iri)
@@ -113,7 +114,6 @@ class ProxyManager
     {
         return new ProxyCollection(
             $this,
-            $this->serializer,
             $this->iriConverter,
             $classname,
             $filters

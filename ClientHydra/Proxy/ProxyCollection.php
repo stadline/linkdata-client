@@ -25,9 +25,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess
         array $filters = []
     ) {
         $this->proxyManager = $proxyManager;
-
         $this->objects = [];
-
         $this->currentIteratorPosition = -1;
         $this->nextPageUri = $iriConverter->generateCollectionUri($classname, $filters);
     }
