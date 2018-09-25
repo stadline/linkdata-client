@@ -255,6 +255,7 @@ class Activity extends ProxyObject
     public function setSport($sport): void
     {
         if (\is_string($sport)) {
+            $this->sportIri = $sport;
             $sport = $this->getProxyManager()->getProxyFromIri($sport);
         }
 
