@@ -6,7 +6,6 @@ namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
 use Doctrine\Common\Inflector\Inflector;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
-use Stadline\LinkdataClient\ClientHydra\Type\UriType;
 
 class IriConverter
 {
@@ -54,48 +53,17 @@ class IriConverter
 
     public function generateCollectionUri(string $className, array $filters = []): string
     {
-        return $this->generateUri($className, ['filters' => $filters]);
+        return \sprintf(
+            '%s%s',
+            $this->getCollectionIriFromClassName($className),
+            $this->formatFilters($filters)
+        );
     }
 
-    public function generateObjectUri(string $className, $id): string
+    private function formatFilters(array $filters = []): string
     {
-        return $this->generateUri($className, ['id' => $id]);
-    }
-
-    protected function generateUri($className, $parameters = []): string
-    {
-        $uri = Inflector::pluralize($className);
-        $filters = $this->formatFilters($parameters['filters'] && \count($parameters['filters']) > 0 ? $parameters['filters'] : '');
-
-        $uri = \sprintf('%s/%s%s', $this->baseUri, Inflector::tableize($uri), $filters);
-
-        if (isset($parameters['id'])) {
-            $uri .= \sprintf('/%s', $parameters['id']);
-        }
-
-        return $uri;
-    }
-
-    private function formatFilters($args): string
-    {
-        // item case
-        if (!\is_array($args) && !\is_object($args)) {
-            return null !== $args ? \sprintf('/%s', $args) : '';
-        }
-
-        // item case (object)
-        if (\is_object($args)) {
-            return \method_exists($args, 'getId') ? \sprintf('/%s', $args->{'getId'}()) : '';
-        }
-
-        // collection case
-        if (!\array_key_exists(UriType::FILTERS, $args)) {
-            return '';
-        }
-
         $response = '?';
-
-        foreach ($args[UriType::FILTERS] as $key => $filter) {
+        foreach ($filters as $key => $filter) {
             $response .= \sprintf('%s=%s&', $key, $filter);
         }
 

@@ -76,8 +76,7 @@ class ProxyObject
         string $className,
         $id,
         ?array $data = null
-    )
-    {
+    ): void {
         $this->proxyManager = $proxyManager;
         $this->serializer = $serializer;
         $this->_className = $className;
