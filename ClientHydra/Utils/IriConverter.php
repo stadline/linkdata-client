@@ -76,7 +76,10 @@ class IriConverter
         if (\is_object($classNameOrObject) && $classNameOrObject instanceof ProxyObject) {
             $reflectionClass = new \ReflectionClass($classNameOrObject);
         } elseif (\is_string($classNameOrObject)) {
-            $reflectionClass = new \ReflectionClass(\sprintf('%s\\%s', $this->entityNamespace, $classNameOrObject));
+            if (!class_exists($classNameOrObject)) {
+                $classNameOrObject = \sprintf('%s\\%s', $this->entityNamespace, $classNameOrObject);
+            }
+            $reflectionClass = new \ReflectionClass($classNameOrObject);
         } else {
             throw new \RuntimeException('Invalid parameter for getClassShortName');
         }

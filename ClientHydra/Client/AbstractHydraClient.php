@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
+use Doctrine\Common\Inflector\Inflector;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Exception\FormatException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
@@ -55,7 +56,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
         }
 
         $method = \strtolower($matches['method']);
-        $className = $matches['className'];
+        $className = Inflector::singularize($matches['className']);
 
         switch ($method) {
             case 'get':
