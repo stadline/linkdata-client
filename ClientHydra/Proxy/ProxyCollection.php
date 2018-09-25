@@ -53,7 +53,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
             $neededPosition = $this->currentIteratorPosition;
         }
 
-        return !$this->isHydratationFinished() && $neededPosition > \count($this->objects);
+        return !$this->isHydratationFinished() && $neededPosition >= \count($this->objects);
     }
 
     private function hydrate(?int $neededPosition = null): int
@@ -109,11 +109,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
     public function valid()
     {
-        if ($this->isHydratationRequired()) {
-            $this->hydrate();
-        }
-
-        return isset($this->objects[$this->currentIteratorPosition]);
+        return $this->offsetExists($this->currentIteratorPosition);
     }
 
     public function rewind(): void
@@ -159,7 +155,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
     public function isEmpty(): bool
     {
-        return 0 === \count($this->objects) && $this->isHydratationFinished();
+        return 0 === $this->count();
     }
 
     public function count()
