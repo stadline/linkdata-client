@@ -158,7 +158,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
         return !$this->offsetExists(0);
     }
 
-    public function count()
+    public function count(): int
     {
         while (!$this->isHydratationFinished()) {
             $this->hydrate();
