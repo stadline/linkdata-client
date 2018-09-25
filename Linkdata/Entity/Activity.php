@@ -242,14 +242,9 @@ class Activity extends ProxyObject
         return $this->sport;
     }
 
-    public function getSportId(): string
+    public function getSportId(): int
     {
-        if (!$this->sportIri) {
-            $this->sportIri = $this->sport;
-        }
-
-        // Parse iri to get id.
-        return \explode('/', $this->sportIri)[3];
+        return $this->getSport()->getId();
     }
 
     public function setSport($sport): void
@@ -257,6 +252,7 @@ class Activity extends ProxyObject
         if (\is_string($sport)) {
             $this->sportIri = $sport;
             $sport = $this->getProxyManager()->getProxyFromIri($sport);
+            $sport->_hydrate();
         }
 
         $this->sport = $sport;

@@ -44,7 +44,7 @@ class IriConverter
 
     public function getCollectionIriFromClassName(string $className): string
     {
-        return \sprintf('%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($className)));
+        return \sprintf('%s/%s', $this->baseUri, Inflector::tableize(Inflector::pluralize($this->getClassShortName($className))));
     }
 
     public function getClassnameFromIri(string $iri): string

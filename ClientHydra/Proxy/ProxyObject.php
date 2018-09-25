@@ -9,7 +9,7 @@ use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class ProxyObject
+abstract class ProxyObject
 {
     /** @var ProxyManager */
     private $proxyManager;
@@ -20,7 +20,6 @@ class ProxyObject
     private $_hydrated;
     private $_iri;
     private $_className;
-    private $_id;
 
     /**
      * Hydrate an object with an IRI given.
@@ -80,8 +79,28 @@ class ProxyObject
         $this->proxyManager = $proxyManager;
         $this->serializer = $serializer;
         $this->_className = $className;
-        $this->_id = $id;
-        $this->_iri = $iriConverter->getIriFromClassNameAndId($this->_className, $this->_id);
+        $reflectionClass = new \ReflectionClass($this);
+
+        if ($reflectionClass->hasMethod('setId')) {
+            $reflectionMethod = $reflectionClass->getMethod('setId');
+            $reflectionParameter = $reflectionMethod->getParameters()[0];
+
+            switch ($reflectionParameter->getType()) {
+                case 'string':
+                    $this->setId((string) $id);
+                    break;
+                case 'float':
+                    $this->setId((float) $id);
+                    break;
+                case 'int':
+                    $this->setId((int) $id);
+                    break;
+                default:
+                    throw new \RuntimeException('This parameter type is not supported in setId method');
+            }
+        }
+
+        $this->_iri = $iriConverter->getIriFromClassNameAndId($this->_className, $id);
         $this->_hydrated = false;
 
         if (null !== $data) {
