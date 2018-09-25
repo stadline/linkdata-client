@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
 use Doctrine\Common\Inflector\Inflector;
@@ -34,7 +36,7 @@ class HydraParser
 
     public static function isCollection(array $content): bool
     {
-        return \in_array(self::getType($content), ['Hydra:Collection', 'Hydra:PartialCollection']);
+        return \in_array(self::getType($content), ['Hydra:Collection', 'Hydra:PartialCollection'], true);
     }
 
     public static function getType(array $content): ?string
@@ -44,11 +46,13 @@ class HydraParser
 
     /**
      * @param ProxyObject $object
+     *
      * @return string
      */
     public static function getNormContext(ProxyObject $object): string
     {
         $e = \explode('\\', \get_class($object));
+
         return \sprintf('%s_%s', Inflector::tableize(\end($e)), NormContextType::NORM);
     }
 

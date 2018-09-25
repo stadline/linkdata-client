@@ -13,7 +13,7 @@ class GuzzleAdapter implements AdapterInterface
 {
     private $client;
     private $defaultHeaders = [
-        'Content-Type' => 'application/ld+json'
+        'Content-Type' => 'application/ld+json',
     ];
 
     public function __construct(string $baseUrl)
@@ -37,13 +37,13 @@ class GuzzleAdapter implements AdapterInterface
         }
 
         $contentType = $response->getHeader('Content-Type')[0] ?? 'unknown';
-        $contentType = explode(';', $contentType)[0];
+        $contentType = \explode(';', $contentType)[0];
 
-        if (\in_array($contentType, ['application/ld+json', 'application/json'])) {
-            return new JsonResponse((string)$response->getBody());
+        if (\in_array($contentType, ['application/ld+json', 'application/json'], true)) {
+            return new JsonResponse((string) $response->getBody());
         }
 
-        return new RawResponse($contentType, (string)$response->getBody());
+        return new RawResponse($contentType, (string) $response->getBody());
     }
 
     public function setDefaultHeader(string $key, string $value): void

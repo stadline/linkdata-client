@@ -227,7 +227,7 @@ class Activity extends ProxyObject
 
     public function setUser($user): void
     {
-        if (is_string($user)) {
+        if (\is_string($user)) {
             $user = $this->getProxyManager()->getProxyFromIri($user);
         }
 
@@ -254,7 +254,7 @@ class Activity extends ProxyObject
 
     public function setSport($sport): void
     {
-        if (is_string($sport)) {
+        if (\is_string($sport)) {
             $sport = $this->getProxyManager()->getProxyFromIri($sport);
         }
 
@@ -271,7 +271,7 @@ class Activity extends ProxyObject
      */
     public function setUserDevice(?string $userDevice): void
     {
-        if (is_string($userDevice)) {
+        if (\is_string($userDevice)) {
             $userDevice = $this->getProxyManager()->getProxyFromIri($userDevice);
         }
 

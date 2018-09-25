@@ -31,8 +31,7 @@ class ProxyObject
         string $className,
         $id,
         ?array $data = null
-    )
-    {
+    ) {
         $this->proxyManager = $proxyManager;
         $this->serializer = $serializer;
         $this->_iriConverter = $iriConverter;
@@ -53,7 +52,7 @@ class ProxyObject
      */
     public function _hydrate(?array $data = null): void
     {
-// WHY ?
+        // WHY ?
 //        if (!$this->_hydrated) {
 //            return $iri;
 //        }
@@ -80,11 +79,11 @@ class ProxyObject
         $this->_refresh($data);
     }
 
-    public function _refresh(array $data)
+    public function _refresh(array $data): void
     {
-        $this->serializer->deserialize(json_encode($data), $this->_className, 'json', [
+        $this->serializer->deserialize(\json_encode($data), $this->_className, 'json', [
             'object_to_populate' => $this,
-            'groups' => [HydraParser::getDenormContext($data)]
+            'groups' => [HydraParser::getDenormContext($data)],
         ]);
         $this->_hydrated = true;
     }

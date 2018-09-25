@@ -131,7 +131,7 @@ class LinkdataClient extends AbstractHydraClient
     public function getActivityDatastream(string $activityId)
     {
         try {
-            return $this->send(MethodType::GET, [
+            return $this->call(MethodType::GET, [
                 'customUri' => \sprintf('/activities/%s/datastream', $activityId),
             ]);
         } catch (ClientHydraException $e) {
@@ -144,7 +144,7 @@ class LinkdataClient extends AbstractHydraClient
      */
     public function getSimilarActivities(string $activityId, $datatypeId)
     {
-        return $this->send(MethodType::GET, [
+        return $this->call(MethodType::GET, [
             'customUri' => \sprintf('/activities/%s/similar/%s', $activityId, $datatypeId),
             'filters' => [
                 'limit' => 3,
@@ -155,7 +155,7 @@ class LinkdataClient extends AbstractHydraClient
     public function getActivityLocations(string $activityId)
     {
         try {
-            return $this->send(MethodType::GET, [
+            return $this->call(MethodType::GET, [
                 'customUri' => \sprintf('/activities/%s/locations', $activityId),
             ]);
         } catch (ClientHydraException $e) {
@@ -166,7 +166,7 @@ class LinkdataClient extends AbstractHydraClient
     public function getActivityGpx(string $activityId)
     {
         try {
-            return $this->send(MethodType::GET, [
+            return $this->call(MethodType::GET, [
                 'customUri' => \sprintf('/activities/%s.%s', $activityId, FormatType::GPX),
             ]);
         } catch (ClientHydraException $e) {
@@ -179,16 +179,8 @@ class LinkdataClient extends AbstractHydraClient
      */
     public function getShareStatistics(string $id): array
     {
-        return $this->send(MethodType::GET, [
+        return $this->call(MethodType::GET, [
             'customUri' => \sprintf('/share_users_stats/%s', $id),
         ]);
-    }
-
-    /**
-     * @throws ClientHydraException
-     */
-    public function send(string $method, array $args)
-    {
-        // TODO: Implement send() method.
     }
 }

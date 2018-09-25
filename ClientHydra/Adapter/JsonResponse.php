@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Stadline\LinkdataClient\ClientHydra\Adapter;
 
 class JsonResponse implements ResponseInterface
@@ -8,7 +10,7 @@ class JsonResponse implements ResponseInterface
 
     public function __construct(string $content)
     {
-        $this->content = json_decode($content, true);
+        $this->content = \json_decode($content, true);
     }
 
     public function getContent(): array
@@ -27,7 +29,7 @@ class JsonResponse implements ResponseInterface
 
     public function isCollection(): bool
     {
-        return \in_array($this->getType(), ['Hydra:Collection', 'Hydra:PartialCollection']);
+        return \in_array($this->getType(), ['Hydra:Collection', 'Hydra:PartialCollection'], true);
     }
 
     public function getType(): ?string

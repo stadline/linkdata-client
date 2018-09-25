@@ -23,7 +23,7 @@ class Serializator
     private $entityNamespace;
     private $proxyManager;
     private $serializer;
-    
+
     public function __construct(string $entityNamespace, ProxyManager $proxyManager)
     {
         $this->entityNamespace = $entityNamespace;
@@ -83,7 +83,7 @@ class Serializator
     {
         try {
             $item = $this->serializer->deserialize(
-                json_encode($responseJson),
+                \json_encode($responseJson),
                 $className,
                 FormatType::JSON,
                 [$this->getNormContext(\explode('\\', $className)[4], NormContextType::NORM)]
@@ -113,7 +113,6 @@ class Serializator
 
         try {
             foreach ($responseJson['hydra:member'] as $item) {
-
                 $items[] = $this->deserializeObject($item, $className);
             }
         } catch (NotEncodableValueException $e) {
@@ -122,8 +121,8 @@ class Serializator
                 $e
             );
         }
-        return $collection;
 
+        return $collection;
     }
 
     private function getEntityName(array $responseJson): ?string

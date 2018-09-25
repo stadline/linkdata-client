@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ProxyCollection implements \Iterator, \ArrayAccess
 {
@@ -12,10 +13,6 @@ class ProxyCollection implements \Iterator, \ArrayAccess
     private $objects;
     /** @var ProxyManager */
     private $proxyManager;
-    /** @var SerializerInterface */
-    private $serializer;
-    /** @var IriConverter */
-    private $iriConverter;
 
     /* Internal metadata */
     private $currentIteratorPosition;
@@ -23,15 +20,11 @@ class ProxyCollection implements \Iterator, \ArrayAccess
 
     public function __construct(
         ProxyManager $proxyManager,
-        SerializerInterface $serializer,
         IriConverter $iriConverter,
         string $classname,
         array $filters = []
-    )
-    {
+    ) {
         $this->proxyManager = $proxyManager;
-        $this->serializer = $serializer;
-        $this->iriConverter = $iriConverter;
 
         $this->objects = [];
 
@@ -46,7 +39,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess
         }
 
         if (null !== $this->nextPageUri) {
-            return (0 < $this->hydrateNextElements());
+            return 0 < $this->hydrateNextElements();
         }
 
         return false;
@@ -62,7 +55,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess
         // currently on last iteration
         if (null !== $this->nextPageUri && 0 === $this->hydrateNextElements()) {
             // reset iterator to last value
-            $this->currentIteratorPosition--;
+            --$this->currentIteratorPosition;
             // no new elements : game over !
             return false;
         }
@@ -119,19 +112,20 @@ class ProxyCollection implements \Iterator, \ArrayAccess
         return isset($this->objects[$this->currentIteratorPosition]);
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->currentIteratorPosition = 0;
     }
 
     public function offsetExists($offset): bool
     {
-        if (!is_int($offset)) {
+        if (!\is_int($offset)) {
             throw new \RuntimeException('Cannot use non int offset in ProxyCollection');
         }
 
-        if ($offset > $this->currentIteratorPosition && $this->nextPageUri !== null) {
+        if ($offset > $this->currentIteratorPosition && null !== $this->nextPageUri) {
             $this->hydrateNextElements();
+
             return $this->offsetExists($offset);
         }
 
@@ -140,11 +134,12 @@ class ProxyCollection implements \Iterator, \ArrayAccess
 
     public function offsetGet($offset)
     {
-        if (!is_int($offset)) {
+        if (!\is_int($offset)) {
             throw new \RuntimeException('Cannot use non int offset in ProxyCollection');
         }
-        if ($offset > $this->currentIteratorPosition && $this->nextPageUri !== null) {
+        if ($offset > $this->currentIteratorPosition && null !== $this->nextPageUri) {
             $this->hydrateNextElements();
+
             return $this->offsetGet($offset);
         }
 
@@ -160,4 +155,14 @@ class ProxyCollection implements \Iterator, \ArrayAccess
     {
         throw new \RuntimeException('Cannot unset object in a ProxyCollection');
     }
+
+    public function isEmpty(): bool
+    {
+        return 0 === \count($this->objects) && null === $this->nextPageUri;
+    }
+
+//    public function count()
+//    {
+//        if ($this->nextPageUri)
+//    }
 }

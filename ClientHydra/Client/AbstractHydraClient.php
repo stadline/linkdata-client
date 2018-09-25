@@ -54,7 +54,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
             throw new FormatException(\sprintf('The method %s is not recognized.', $method));
         }
 
-        $method = strtolower($matches['method']);
+        $method = \strtolower($matches['method']);
         $className = $matches['className'];
 
         switch ($method) {
@@ -64,6 +64,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
                 return $this->callPut($args);
             case 'delete':
                 $this->callDelete($className, $args);
+
                 return null;
             case 'post':
                 return $this->callPost($args);

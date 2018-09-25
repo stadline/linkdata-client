@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
 use Doctrine\Common\Inflector\Inflector;
@@ -19,15 +21,15 @@ class IriConverter
 
     public function getIriFromObject(ProxyObject $object): string
     {
-        return sprintf('%s/%s/%s', $this->baseUri, Inflector::tableize(Inflector::pluralize($this->getClassShortName($object))), $object->getId());
+        return \sprintf('%s/%s/%s', $this->baseUri, Inflector::tableize(Inflector::pluralize($this->getClassShortName($object))), $object->getId());
     }
 
     /**
-     * @return string|int
+     * @return int|string
      */
     public function getObjectIdFromIri(string $iri)
     {
-        return explode('/', substr($iri, strlen($this->baseUri)))[2];
+        return \explode('/', \substr($iri, \strlen($this->baseUri)))[2];
     }
 
     public function getEntityNamespace(): string
@@ -37,17 +39,17 @@ class IriConverter
 
     public function getIriFromClassNameAndId(string $className, $id): string
     {
-        return sprintf('%s/%s/%s', $this->baseUri, Inflector::tableize(Inflector::pluralize($this->getClassShortName($className))), $id);
+        return \sprintf('%s/%s/%s', $this->baseUri, Inflector::tableize(Inflector::pluralize($this->getClassShortName($className))), $id);
     }
 
     public function getCollectionIriFromClassName(string $className): string
     {
-        return sprintf('%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($className)));
+        return \sprintf('%s/%s', $this->baseUri, Inflector::pluralize($this->getClassShortName($className)));
     }
 
     public function getClassnameFromIri(string $iri): string
     {
-        return $this->entityNamespace.'\\'.Inflector::classify(Inflector::singularize(explode('/', $iri)[2]));
+        return $this->entityNamespace.'\\'.Inflector::classify(Inflector::singularize(\explode('/', $iri)[2]));
     }
 
     public function generateCollectionUri(string $className, array $filters = []): string
@@ -68,7 +70,7 @@ class IriConverter
         $uri = \sprintf('%s/%s%s', $this->baseUri, Inflector::tableize($uri), $filters);
 
         if (isset($parameters['id'])) {
-            $uri .= sprintf('/%s', $parameters['id']);
+            $uri .= \sprintf('/%s', $parameters['id']);
         }
 
         return $uri;
@@ -105,7 +107,7 @@ class IriConverter
         try {
             $reflectionClass = new \ReflectionClass($classNameOrObject);
         } catch (\ReflectionException $e) {
-            $reflectionClass = new \ReflectionClass(sprintf('%s\\%s', $this->entityNamespace, $classNameOrObject));
+            $reflectionClass = new \ReflectionClass(\sprintf('%s\\%s', $this->entityNamespace, $classNameOrObject));
         }
 
         return $reflectionClass->getShortName();

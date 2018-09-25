@@ -11,37 +11,37 @@ class UserStorage extends ProxyObject
 {
     /**
      * @var string
-     * @Groups({"userstorage_norm", "userstorage_denorm})
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
     protected $id;
 
     /**
      * @var User
-     * @Groups({"userstorage_norm", "userstorage_denorm})
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
     protected $user;
 
     /**
      * @var string
-     * @Groups({"userstorage_norm", "userstorage_denorm})
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
     protected $value;
 
     /**
      * @var StorageKey
-     * @Groups({"userstorage_norm", "userstorage_denorm})
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
     protected $storageKey;
 
     /**
      * @var string
-     * @Groups({"userstorage_norm", "userstorage_denorm})
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
     private $createdAt;
 
     /**
      * @var string
-     * @Groups({"userstorage_norm", "userstorage_denorm})
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
     private $updatedAt;
 
@@ -74,7 +74,7 @@ class UserStorage extends ProxyObject
 
     public function setUser($user): void
     {
-        if (is_string($user)) {
+        if (\is_string($user)) {
             $user = $this->getProxyManager()->getProxyFromIri($user);
         }
 
@@ -90,7 +90,7 @@ class UserStorage extends ProxyObject
 
     public function setStorageKey($storageKey): void
     {
-        if (is_string($storageKey)) {
+        if (\is_string($storageKey)) {
             $storageKey = $this->getProxyManager()->getProxyFromIri($storageKey);
         }
 

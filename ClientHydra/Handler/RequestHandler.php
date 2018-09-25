@@ -6,7 +6,6 @@ namespace Stadline\LinkdataClient\ClientHydra\Handler;
 
 use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
-use Stadline\LinkdataClient\ClientHydra\Adapter\RawResponse;
 use Stadline\LinkdataClient\ClientHydra\Exception\HandlerException;
 use Stadline\LinkdataClient\ClientHydra\Exception\RequestException;
 use Stadline\LinkdataClient\ClientHydra\Exception\SerializerException;

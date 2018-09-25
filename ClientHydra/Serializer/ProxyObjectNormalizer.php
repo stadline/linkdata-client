@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Stadline\LinkdataClient\ClientHydra\Serializer;
 
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
@@ -38,9 +40,9 @@ class ProxyObjectNormalizer extends ObjectNormalizer
         $this->iriConverter = $iriConverter;
     }
 
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
-        if (($context['classContext'] ?? null) === get_class($object)) {
+        if (($context['classContext'] ?? null) === \get_class($object)) {
             return parent::normalize($object, $format, $context);
         }
 
@@ -50,12 +52,10 @@ class ProxyObjectNormalizer extends ObjectNormalizer
     /**
      * Denormalizes data back into an object of the given class.
      *
-     * @param mixed $data Data to restore
-     * @param string $class The expected class to instantiate
-     * @param string $format Format the given data was extracted from
-     * @param array $context Options available to the denormalizer
-     *
-     * @return object
+     * @param mixed  $data    Data to restore
+     * @param string $class   The expected class to instantiate
+     * @param string $format  Format the given data was extracted from
+     * @param array  $context Options available to the denormalizer
      *
      * @throws BadMethodCallException   Occurs when the normalizer is not called in an expected context
      * @throws InvalidArgumentException Occurs when the arguments are not coherent or not supported
@@ -63,8 +63,10 @@ class ProxyObjectNormalizer extends ObjectNormalizer
      * @throws ExtraAttributesException Occurs when the item doesn't have attribute to receive given data
      * @throws LogicException           Occurs when the normalizer is not supposed to denormalize
      * @throws RuntimeException         Occurs if the class cannot be instantiated
+     *
+     * @return object
      */
-    public function denormalize($data, $class, $format = null, array $context = array())
+    public function denormalize($data, $class, $format = null, array $context = [])
     {
         // Only support array
         if (!\is_array($data)) {
@@ -80,15 +82,15 @@ class ProxyObjectNormalizer extends ObjectNormalizer
     /**
      * Checks whether the given class is supported for denormalization by this normalizer.
      *
-     * @param mixed $data Data to denormalize from
-     * @param string $type The class to which the data should be denormalized
+     * @param mixed  $data   Data to denormalize from
+     * @param string $type   The class to which the data should be denormalized
      * @param string $format The format being deserialized from
      *
      * @return bool
      */
     public function supportsDenormalization($data, $type, $format = null)
     {
-        if ($format !== 'json') {
+        if ('json' !== $format) {
             return false;
         }
 

@@ -24,8 +24,7 @@ class ProxyManager
         AdapterInterface $adapter,
         IriConverter $iriConverter,
         SerializerInterface $serializer
-    )
-    {
+    ) {
         $this->adapter = $adapter;
         $this->iriConverter = $iriConverter;
         $this->serializer = $serializer;
@@ -33,7 +32,11 @@ class ProxyManager
 
     public function getObjectFromIri(string $iri): ?ProxyObject
     {
-        $object =  $this->getProxyFromIri($iri);
+        $object = $this->getProxyFromIri($iri);
+        if (null === $object) {
+            return null;
+        }
+
         $object->_hydrate();
 
         return $object;
@@ -49,7 +52,6 @@ class ProxyManager
         $className = $this->iriConverter->getClassnameFromIri($iri);
         $proxyObject = new $className(
             $this->iriConverter,
-            $this->serializer,
             $this,
             $className,
             $this->iriConverter->getObjectIdFromIri($iri)
@@ -127,7 +129,7 @@ class ProxyManager
             $this->serializer->serialize(
                 $object,
                 FormatType::JSON,
-                ['groups' => [HydraParser::getNormContext($object)], 'classContext' => get_class($object)]
+                ['groups' => [HydraParser::getNormContext($object)], 'classContext' => \get_class($object)]
             )
         );
 
@@ -144,8 +146,8 @@ class ProxyManager
     {
         if (1 === \count($objectOrId) && $objectOrId[0] instanceof ProxyObject) {
             $iri = $this->iriConverter->getIriFromObject($objectOrId[0]);
-        } else if (2 === \count($objectOrId)) {
-           $iri = $this->iriConverter->getIriFromClassNameAndId($objectOrId[0], $objectOrId[1]);
+        } elseif (2 === \count($objectOrId)) {
+            $iri = $this->iriConverter->getIriFromClassNameAndId($objectOrId[0], $objectOrId[1]);
         } else {
             throw new \RuntimeException('Invalid input for deleteObject method');
         }
