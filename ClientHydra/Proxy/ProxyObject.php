@@ -22,37 +22,12 @@ class ProxyObject
     private $_className;
     private $_id;
 
-    public function __construct(
-        IriConverter $iriConverter,
-        SerializerInterface $serializer,
-        ProxyManager $proxyManager,
-        string $className,
-        $id,
-        ?array $data = null
-    ) {
-        $this->proxyManager = $proxyManager;
-        $this->serializer = $serializer;
-        $this->_className = $className;
-        $this->_id = $id;
-        $this->_iri = $iriConverter->getIriFromClassNameAndId($this->_className, $this->_id);
-        $this->_hydrated = false;
-
-        if (null !== $data) {
-            $this->_hydrate($data);
-        }
-    }
-
     /**
      * Hydrate an object with an IRI given.
      * If hydrate is set to false, it returns the IRI given.
      */
     public function _hydrate(?array $data = null): void
     {
-        // WHY ?
-//        if (!$this->_hydrated) {
-//            return $iri;
-//        }
-
         // already hydrated : ignore
         if (true === $this->_hydrated) {
             return;
@@ -92,5 +67,26 @@ class ProxyObject
     protected function getProxyManager(): ProxyManager
     {
         return $this->proxyManager;
+    }
+
+    public function _init(
+        IriConverter $iriConverter,
+        SerializerInterface $serializer,
+        ProxyManager $proxyManager,
+        string $className,
+        $id,
+        ?array $data = null
+    )
+    {
+        $this->proxyManager = $proxyManager;
+        $this->serializer = $serializer;
+        $this->_className = $className;
+        $this->_id = $id;
+        $this->_iri = $iriConverter->getIriFromClassNameAndId($this->_className, $this->_id);
+        $this->_hydrated = false;
+
+        if (null !== $data) {
+            $this->_hydrate($data);
+        }
     }
 }

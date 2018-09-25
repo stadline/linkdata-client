@@ -50,7 +50,9 @@ class ProxyManager
         }
 
         $className = $this->iriConverter->getClassnameFromIri($iri);
-        $proxyObject = new $className(
+        /** @var ProxyObject $proxyObject */
+        $proxyObject = new $className();
+        $proxyObject->_init(
             $this->iriConverter,
             $this->serializer,
             $this,
