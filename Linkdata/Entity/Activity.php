@@ -222,11 +222,15 @@ class Activity extends ProxyObject
      */
     public function getUser()
     {
-        return $this->hydrate($this->user);
+        return $this->user;
     }
 
     public function setUser($user): void
     {
+        if (is_string($user)) {
+            $user = $this->getProxyManager()->getProxyFromIri($user);
+        }
+
         $this->user = $user;
     }
 
@@ -235,9 +239,7 @@ class Activity extends ProxyObject
      */
     public function getSport()
     {
-        $this->sportIri = $this->sport;
-
-        return $this->hydrate($this->sport);
+        return $this->sport;
     }
 
     public function getSportId(): string
@@ -252,12 +254,16 @@ class Activity extends ProxyObject
 
     public function setSport($sport): void
     {
+        if (is_string($sport)) {
+            $sport = $this->getProxyManager()->getProxyFromIri($sport);
+        }
+
         $this->sport = $sport;
     }
 
     public function getUserDevice()
     {
-        return null === $this->userDevice ? null : $this->hydrate($this->userDevice);
+        return $this->userDevice;
     }
 
     /**
@@ -265,6 +271,10 @@ class Activity extends ProxyObject
      */
     public function setUserDevice(?string $userDevice): void
     {
+        if (is_string($userDevice)) {
+            $userDevice = $this->getProxyManager()->getProxyFromIri($userDevice);
+        }
+
         $this->userDevice = $userDevice;
     }
 

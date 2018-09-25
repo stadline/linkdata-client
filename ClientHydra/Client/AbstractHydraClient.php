@@ -84,7 +84,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
     {
         // collection case
         if (!isset($args[0]) || \is_array($args[0])) {
-            return $this->proxyManager->getCollection($classname, $args[0][UriType::FILTERS] ?? null);
+            return $this->proxyManager->getCollection($classname, $args[0][UriType::FILTERS] ?? []);
         }
 
         // item (string | int) case

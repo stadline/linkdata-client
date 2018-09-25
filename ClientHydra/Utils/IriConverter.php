@@ -102,7 +102,11 @@ class IriConverter
 
     private function getClassShortName($classNameOrObject): string
     {
-        $reflectionClass = new \ReflectionClass($classNameOrObject);
+        try {
+            $reflectionClass = new \ReflectionClass($classNameOrObject);
+        } catch (\ReflectionException $e) {
+            $reflectionClass = new \ReflectionClass(sprintf('%s\\%s', $this->entityNamespace, $classNameOrObject));
+        }
 
         return $reflectionClass->getShortName();
     }
