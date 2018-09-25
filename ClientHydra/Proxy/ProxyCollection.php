@@ -65,7 +65,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
         $totalHydratedElements = 0;
         $lastHydratedElementsNumber = null;
         while ($this->isHydratationRequired($neededPosition) && ($lastHydratedElementsNumber > 0 || null === $lastHydratedElementsNumber)) {
-            $requestResponse = $this->proxyManager->getAdapter()->makeRequest(
+            $requestResponse = $this->proxyManager->getAdapter()->makeRequestWithCache(
                 'GET',
                 $this->nextPageUri
             );

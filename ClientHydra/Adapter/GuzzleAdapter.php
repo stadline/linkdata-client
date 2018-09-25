@@ -25,12 +25,18 @@ class GuzzleAdapter implements AdapterInterface
     /**
      * @throws RequestException
      */
-    public function makeRequest(string $method, string $uri, array $headers = [], string $body = null): ResponseInterface
+    public function makeRequest(string $method, string $uri, array $headers = [], string $body = null, bool $cacheEnable = false): ResponseInterface
     {
         $headers = \array_merge($this->defaultHeaders, $headers);
 
+        if (\in_array(strtoupper($method), ['PUT', 'POST', 'DELETE'])) {
+            $cacheEnable = false;
+        }
+
         $requestHash = \sha1(\json_encode($headers) . '.' . $method . '.' . $uri . '.' . $body);
-        if (!isset($this->cache[$requestHash])) {
+        if ($cacheEnable && isset($this->cache[$requestHash])) {
+            $response = $this->cache[$requestHash];
+        } else {
             try {
                 $response = $this->client->send(
                     new Request($method, $uri, $headers, $body)
@@ -39,8 +45,6 @@ class GuzzleAdapter implements AdapterInterface
             } catch (GuzzleException $e) {
                 throw new RequestException(\sprintf('Error while requesting %s with %s method', $uri, $method), $body, $e);
             }
-        } else {
-            $response = $this->cache[$requestHash];
         }
 
         $contentType = $response->getHeader('Content-Type')[0] ?? 'unknown';
@@ -51,6 +55,11 @@ class GuzzleAdapter implements AdapterInterface
         }
 
         return new RawResponse($contentType, (string)$response->getBody());
+    }
+
+    public function makeRequestWithCache(string $method, string $uri, array $headers = [], string $body = null): ResponseInterface
+    {
+        return $this->makeRequest($method, $uri, $headers, $body, true);
     }
 
     public function setDefaultHeader(string $key, string $value): void
