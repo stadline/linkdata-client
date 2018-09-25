@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\ClientHydra\Utils;
 
 use Doctrine\Common\Inflector\Inflector;
-use GuzzleHttp\Handler\Proxy;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 
 class IriConverter
@@ -49,7 +48,7 @@ class IriConverter
 
     public function getClassnameFromIri(string $iri): string
     {
-        return $this->entityNamespace . '\\' . Inflector::classify(Inflector::singularize(\explode('/', $iri)[2]));
+        return $this->entityNamespace.'\\'.Inflector::classify(Inflector::singularize(\explode('/', $iri)[2]));
     }
 
     public function generateCollectionUri(string $className, array $filters = []): string
@@ -76,7 +75,7 @@ class IriConverter
         if (\is_object($classNameOrObject) && $classNameOrObject instanceof ProxyObject) {
             $reflectionClass = new \ReflectionClass($classNameOrObject);
         } elseif (\is_string($classNameOrObject)) {
-            if (!class_exists($classNameOrObject)) {
+            if (!\class_exists($classNameOrObject)) {
                 $classNameOrObject = \sprintf('%s\\%s', $this->entityNamespace, $classNameOrObject);
             }
             $reflectionClass = new \ReflectionClass($classNameOrObject);

@@ -29,11 +29,11 @@ class GuzzleAdapter implements AdapterInterface
     {
         $headers = \array_merge($this->defaultHeaders, $headers);
 
-        if (\in_array(strtoupper($method), ['PUT', 'POST', 'DELETE'])) {
+        if (\in_array(\strtoupper($method), ['PUT', 'POST', 'DELETE'], true)) {
             $cacheEnable = false;
         }
 
-        $requestHash = \sha1(\json_encode($headers) . '.' . $method . '.' . $uri . '.' . $body);
+        $requestHash = \sha1(\json_encode($headers).'.'.$method.'.'.$uri.'.'.$body);
         if ($cacheEnable && isset($this->cache[$requestHash])) {
             $response = $this->cache[$requestHash];
         } else {
@@ -51,10 +51,10 @@ class GuzzleAdapter implements AdapterInterface
         $contentType = \explode(';', $contentType)[0];
 
         if (\in_array($contentType, ['application/ld+json', 'application/json'], true)) {
-            return new JsonResponse((string)$response->getBody());
+            return new JsonResponse((string) $response->getBody());
         }
 
-        return new RawResponse($contentType, (string)$response->getBody());
+        return new RawResponse($contentType, (string) $response->getBody());
     }
 
     public function makeRequestWithCache(string $method, string $uri, array $headers = [], string $body = null): ResponseInterface

@@ -71,36 +71,6 @@ class ProxyManager
         return $this->getObjectFromIri($iri);
     }
 
-//    public function getObject(string $iri): ProxyObject
-//    {
-//        // check if object already store
-//        if (isset($this->objects[$iri])) {
-//            return $this->objects[$iri];
-//        }
-//
-//        // resolve method to call.
-//        $methodToCall = \ucfirst(Inflector::singularize(\explode('/', $iri)[2]));
-//        $tempMethodToCall = 'get';
-//
-//        if (-1 !== \strstr('_', $methodToCall)) {
-//            foreach (\explode('_', $methodToCall) as $part) {
-//                if ('get' !== $part) {
-//                    $tempMethodToCall .= \ucfirst(Inflector::singularize($part));
-//                }
-//            }
-//
-//            $methodToCall = $tempMethodToCall;
-//        }
-//
-//        $id = \explode('/', $iri)[3];
-//
-//        // call client to resolve proxy.
-//        $object = $this->hydraClient->send($methodToCall, [$id]);
-//        $objects[$iri] = $object;
-//
-//        return $object;
-//    }
-
     public function hasObject(string $iri): bool
     {
         // check if object already store
