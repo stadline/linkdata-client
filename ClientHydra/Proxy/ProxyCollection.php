@@ -155,7 +155,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
     public function isEmpty(): bool
     {
-        return 0 === $this->count();
+        return !$this->offsetExists(0);
     }
 
     public function count()
