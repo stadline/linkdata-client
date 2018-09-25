@@ -53,11 +53,11 @@ class HydraParser
     {
         $e = \explode('\\', \get_class($object));
 
-        return \sprintf('%s_%s', Inflector::tableize(\end($e)), NormContextType::NORM);
+        return \sprintf('%s_%s', Inflector::tableize(\end($e)), 'norm');
     }
 
     public static function getDenormContext(array $content): string
     {
-        return \sprintf('%s_%s', \strtolower(self::getType($content)), NormContextType::DENORN);
+        return \sprintf('%s_%s', \strtolower(self::getType($content)), 'denorm');
     }
 }

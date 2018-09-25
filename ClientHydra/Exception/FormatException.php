@@ -6,7 +6,7 @@ namespace Stadline\LinkdataClient\ClientHydra\Exception;
 
 use Throwable;
 
-class FormatException extends UriException
+class FormatException extends ClientHydraException
 {
     public function __construct($message = '', Throwable $previous = null)
     {

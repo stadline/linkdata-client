@@ -11,7 +11,6 @@ use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Exception\FormatException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
-use Stadline\LinkdataClient\ClientHydra\Type\UriType;
 
 abstract class AbstractHydraClient implements HydraClientInterface
 {
@@ -61,7 +60,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
     {
         // collection case
         if (!isset($args[0]) || \is_array($args[0])) {
-            return $this->proxyManager->getCollection($classname, $args[0][UriType::FILTERS] ?? []);
+            return $this->proxyManager->getCollection($classname, $args[0]['filters'] ?? []);
         }
 
         // item (string | int) case
@@ -99,11 +98,13 @@ abstract class AbstractHydraClient implements HydraClientInterface
         return $this->proxyManager->postObject($args[0]);
     }
 
-    public function customCall(string $method, string $uri, array $headers = [], string $body = null): ResponseInterface
+    protected function customCall(string $method, string $uri, array $headers = [], string $body = null): ResponseInterface
     {
-        $this->adapter->makeRequest(
+        return $this->adapter->makeRequest(
             $method,
-            $uri
+            $uri,
+            $headers,
+            $body
         );
     }
 }

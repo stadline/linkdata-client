@@ -100,7 +100,7 @@ class ProxyManager
             [],
             $this->serializer->serialize(
                 $object,
-                FormatType::JSON,
+                'json',
                 ['groups' => [HydraParser::getNormContext($object)], 'classContext' => \get_class($object)]
             )
         );
