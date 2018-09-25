@@ -112,7 +112,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess
 
     public function rewind(): void
     {
-        $this->currentIteratorPosition = 0;
+        $this->currentIteratorPosition = -1;
     }
 
     public function offsetExists($offset): bool
