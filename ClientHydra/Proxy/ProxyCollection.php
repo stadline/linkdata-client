@@ -63,9 +63,8 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
         }
 
         $totalHydratedElements = 0;
-        $firstLoop = true;
-        while ($this->isHydratationRequired($neededPosition) && ($totalHydratedElements > 0 || $firstLoop)) {
-            $firstLoop = false;
+        $lastHydratedElementsNumber = null;
+        while ($this->isHydratationRequired($neededPosition) && ($lastHydratedElementsNumber > 0 || null === $lastHydratedElementsNumber)) {
             $requestResponse = $this->proxyManager->getAdapter()->makeRequest(
                 'GET',
                 $this->nextPageUri
@@ -91,7 +90,8 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
                 $this->nextPageUri = null;
             }
 
-            $totalHydratedElements += \count($data['hydra:member']);
+            $lastHydratedElementsNumber = \count($data['hydra:member']);
+            $totalHydratedElements += $lastHydratedElementsNumber;
         }
 
         return $totalHydratedElements;
