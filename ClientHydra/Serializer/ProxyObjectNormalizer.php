@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Serializer;
 
+use Doctrine\Common\Inflector\Inflector;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
@@ -14,6 +15,7 @@ use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\LogicException;
 use Symfony\Component\Serializer\Exception\RuntimeException;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ProxyObjectNormalizer extends ObjectNormalizer
@@ -73,10 +75,21 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             throw new InvalidArgumentException('ProxyObjectDenormalizer::denormalize requires an array in parameter');
         }
 
-        /** @var ProxyObject $object */
-        $object = parent::denormalize($data, $class, $format, $context);
+        if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject) {
+            $reflexionClass = new \ReflectionClass($context[AbstractNormalizer::OBJECT_TO_POPULATE]);
+            foreach($data as $propName => $propValue) {
+                if (null !== $propValue && '' !== $propValue) {
+                    continue;
+                }
+                $setter = $reflexionClass->getMethod(sprintf('set%s', Inflector::classify($propName)));
+                if (null !== ($param = $setter->getParameters()[0] ?? null) && ProxyObject::class === $param->getType()) {
+                    $data[$propName] = $this->proxyManager->getProxyFromIri($propValue);
+                    continue;
+                }
+            }
+        }
 
-        return $object;
+        return parent::denormalize($data, $class, $format, $context);
     }
 
     /**

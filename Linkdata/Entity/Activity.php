@@ -38,7 +38,7 @@ class Activity extends ProxyObject
     protected $sport;
 
     /**
-     * @var string
+     * @var UserDevice
      *
      * @Groups({"activity_norm", "activity_denorm"})
      */
@@ -235,10 +235,13 @@ class Activity extends ProxyObject
     }
 
     /**
-     * @return Sport|string
+     * @return Sport
      */
     public function getSport()
     {
+        if (null !== $this->sport) {
+            $this->sport->_hydrate();
+        }
         return $this->sport;
     }
 
@@ -247,31 +250,21 @@ class Activity extends ProxyObject
         return $this->getSport()->getId();
     }
 
-    public function setSport($sport): void
+    public function setSport(?Sport $sport): void
     {
-        if (\is_string($sport)) {
-            $this->sportIri = $sport;
-            $sport = $this->getProxyManager()->getProxyFromIri($sport);
-            $sport->_hydrate();
-        }
-
         $this->sport = $sport;
     }
 
     public function getUserDevice()
     {
+        if (null !== $this->userDevice) {
+            $this->userDevice->_hydrate();
+        }
         return $this->userDevice;
     }
 
-    /**
-     * @param string $userDevice
-     */
-    public function setUserDevice(?string $userDevice): void
+    public function setUserDevice(?UserDevice $userDevice): void
     {
-        if (\is_string($userDevice)) {
-            $userDevice = $this->getProxyManager()->getProxyFromIri($userDevice);
-        }
-
         $this->userDevice = $userDevice;
     }
 
