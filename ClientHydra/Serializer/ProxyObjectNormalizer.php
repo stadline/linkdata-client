@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\ClientHydra\Serializer;
 
 use Doctrine\Common\Inflector\Inflector;
+use ReflectionMethod;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
@@ -26,6 +27,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
     private $entityNamespace;
     /** @var IriConverter */
     private $iriConverter;
+    private $proxyObjectMetadata = [];
+
 
     public function setProxyManager(ProxyManager $proxyManager): void
     {
@@ -54,10 +57,10 @@ class ProxyObjectNormalizer extends ObjectNormalizer
     /**
      * Denormalizes data back into an object of the given class.
      *
-     * @param mixed  $data    Data to restore
-     * @param string $class   The expected class to instantiate
-     * @param string $format  Format the given data was extracted from
-     * @param array  $context Options available to the denormalizer
+     * @param mixed $data Data to restore
+     * @param string $class The expected class to instantiate
+     * @param string $format Format the given data was extracted from
+     * @param array $context Options available to the denormalizer
      *
      * @throws BadMethodCallException   Occurs when the normalizer is not called in an expected context
      * @throws InvalidArgumentException Occurs when the arguments are not coherent or not supported
@@ -75,23 +78,37 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             throw new InvalidArgumentException('ProxyObjectDenormalizer::denormalize requires an array in parameter');
         }
 
-        if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject) {
+        // generate metadata cache
+        if (!isset($this->proxyObjectMetadata[$class])) {
+            $metadata = [];
+
             $reflexionClass = new \ReflectionClass($context[AbstractNormalizer::OBJECT_TO_POPULATE]);
-            foreach($data as $propName => $propValue) {
-                if (null === $propValue && '' === $propValue) {
-                    continue;
+            foreach ($reflexionClass->getProperties() as $property) {
+                if (preg_match('/@var\s+([^\s]+)/', $property->getDocComment(), $matches)) {
+                    [, $type] = $matches;
+                    if (ProxyObject::class === (new \ReflectionClass($type))->isSubclassOf(ProxyObject::class)) {
+                        $metadata[] = $property->getName();
+                    }
                 }
+            }
+            foreach ($reflexionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+                if (strpos($method->getName(), 'set') === 0) {
+                    $propertyName = Inflector::tableize(substr($method->getName(), 3));
+                    if (\in_array($propertyName, $metadata, true)) {
+                        continue;
+                    }
+                    // If parameter is proxy object
+                    if (null !== ($param = $method->getParameters()[0] ?? null) && (new \ReflectionClass($param->getType()))->isSubclassOf(ProxyObject::class)) {
+                        $metadata[] = $propertyName;
+                    }
+                }
+            }
+            $this->proxyObjectMetadata[$class] = $metadata;
+        }
 
-                $setterMethod = sprintf('set%s', Inflector::classify($propName));
-                if (!$reflexionClass->hasMethod($setterMethod)) {
-                    continue;
-                }
-
-                $setter = $reflexionClass->getMethod($setterMethod);
-                if (null !== ($param = $setter->getParameters()[0] ?? null) && ProxyObject::class === $param->getType()) {
-                    $data[$propName] = $this->proxyManager->getProxyFromIri($propValue);
-                    continue;
-                }
+        if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject && null !== ($metadata = $this->proxyObjectMetadata[\get_class($context[AbstractNormalizer::OBJECT_TO_POPULATE])])) {
+            foreach ($metadata as $propName) {
+                $data[$propName] = $this->proxyManager->getProxyFromIri($data[$propName]);
             }
         }
 
@@ -101,8 +118,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
     /**
      * Checks whether the given class is supported for denormalization by this normalizer.
      *
-     * @param mixed  $data   Data to denormalize from
-     * @param string $type   The class to which the data should be denormalized
+     * @param mixed $data Data to denormalize from
+     * @param string $type The class to which the data should be denormalized
      * @param string $format The format being deserialized from
      *
      * @return bool
