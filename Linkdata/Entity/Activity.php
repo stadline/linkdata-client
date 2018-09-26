@@ -222,15 +222,14 @@ class Activity extends ProxyObject
      */
     public function getUser()
     {
+        if (null !== $this->user) {
+            $this->user->_hydrate();
+        }
         return $this->user;
     }
 
-    public function setUser($user): void
+    public function setUser(?User $user): void
     {
-        if (\is_string($user)) {
-            $user = $this->getProxyManager()->getProxyFromIri($user);
-        }
-
         $this->user = $user;
     }
 

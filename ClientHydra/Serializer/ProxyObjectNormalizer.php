@@ -83,7 +83,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
 
             $reflexionClass = new \ReflectionClass($context[AbstractNormalizer::OBJECT_TO_POPULATE]);
             foreach ($reflexionClass->getProperties() as $property) {
-                if (preg_match('/@var\s+([^\s]+)/', $property->getDocComment(), $matches)) {
+                if (false !== $property->getDocComment() && preg_match('/@var\s+([^\s]+)/', $property->getDocComment(), $matches)) {
                     [, $type] = $matches;
                     if (!\class_exists($type)) {
                         $type = $this->entityNamespace.'\\'.$type;
@@ -98,12 +98,12 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             }
             foreach ($reflexionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
                 if (strpos($method->getName(), 'set') === 0) {
-                    $propertyName = Inflector::tableize(substr($method->getName(), 3));
+                    $propertyName = lcfirst(substr($method->getName(), 3));
                     if (\in_array($propertyName, $metadata, true)) {
                         continue;
                     }
                     // If parameter is proxy object
-                    if (null !== ($param = $method->getParameters()[0] ?? null) && \class_exists($param->getType()) && (new \ReflectionClass($param->getType()))->isSubclassOf(ProxyObject::class)) {
+                    if (null !== ($param = $method->getParameters()[0] ?? null) && $param->getType() && \class_exists($param->getType()->getName()) && (new \ReflectionClass($param->getType()->getName()))->isSubclassOf(ProxyObject::class)) {
                         $metadata[] = $propertyName;
                     }
                 }
@@ -113,7 +113,9 @@ class ProxyObjectNormalizer extends ObjectNormalizer
 
         if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject && null !== ($metadata = $this->proxyObjectMetadata[\get_class($context[AbstractNormalizer::OBJECT_TO_POPULATE])])) {
             foreach ($metadata as $propName) {
-                $data[$propName] = $this->proxyManager->getProxyFromIri($data[$propName]);
+                if (isset($data[$propName])) {
+                    $data[$propName] = $this->proxyManager->getProxyFromIri($data[$propName]);
+                }
             }
         }
 

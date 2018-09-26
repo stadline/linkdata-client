@@ -316,10 +316,13 @@ class Sport extends ProxyObject
 
     public function getUniverse()
     {
-        return $this->hydrate($this->universe);
+        if (null !== $this->universe) {
+            $this->universe->_hydrate();
+        }
+        return $this->universe;
     }
 
-    public function setUniverse($universe): void
+    public function setUniverse(?Universe $universe): void
     {
         $this->universe = $universe;
     }

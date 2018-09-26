@@ -57,8 +57,9 @@ class UserStorage extends ProxyObject
 
     public function getUser()
     {
-        $this->user->_hydrate();
-
+        if (null !== $this->user) {
+            $this->user->_hydrate();
+        }
         return $this->user;
     }
 
@@ -72,28 +73,21 @@ class UserStorage extends ProxyObject
         $this->value = $value;
     }
 
-    public function setUser($user): void
+    public function setUser(?User $user): void
     {
-        if (\is_string($user)) {
-            $user = $this->getProxyManager()->getProxyFromIri($user);
-        }
-
         $this->user = $user;
     }
 
     public function getStorageKey()
     {
-        $this->storageKey->_hydrate();
-
+        if (null !== $this->storageKey) {
+            $this->storageKey->_hydrate();
+        }
         return $this->storageKey;
     }
 
-    public function setStorageKey($storageKey): void
+    public function setStorageKey(?StorageKey $storageKey): void
     {
-        if (\is_string($storageKey)) {
-            $storageKey = $this->getProxyManager()->getProxyFromIri($storageKey);
-        }
-
         $this->storageKey = $storageKey;
     }
 
