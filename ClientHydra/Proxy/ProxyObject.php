@@ -10,8 +10,8 @@ use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * @method void setId(string|int $id)
- * @method string|int getId()
+ * @method void setId(string|int|null $id)
+ * @method string|int|null getId()
  */
 abstract class ProxyObject
 {
@@ -132,7 +132,7 @@ abstract class ProxyObject
                 $this->_set($propertyName, $arguments[0]);
             break;
             case 'get':
-                if (1 !== \count($arguments)) {
+                if (0 !== \count($arguments)) {
                     throw new \RuntimeException(sprintf('%s::%s() require no parameter', \get_class($this), $name));
                 }
                 return $this->_get($propertyName);

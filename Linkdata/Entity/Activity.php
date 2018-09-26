@@ -11,8 +11,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method string|null getId()
  * @method void setId(string|null $id)
  *
- * @method Sport getSport()
- * @method void setSport(Sport $sport)
+ * @method Sport|null getSport()
+ * @method void setSport(Sport|null $sport)
  *
  */
 class Activity extends ProxyObject
