@@ -37,8 +37,6 @@ class ProxyManager
             return null;
         }
 
-        $object->_hydrate();
-
         return $object;
     }
 

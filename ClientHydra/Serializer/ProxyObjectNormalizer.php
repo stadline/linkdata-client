@@ -91,7 +91,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                     if (!\class_exists($type)) {
                         continue;
                     }
-                    if (ProxyObject::class === (new \ReflectionClass($type))->isSubclassOf(ProxyObject::class)) {
+                    if ((new \ReflectionClass($type))->isSubclassOf(ProxyObject::class)) {
                         $metadata[] = $property->getName();
                     }
                 }
