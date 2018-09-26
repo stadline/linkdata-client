@@ -9,6 +9,7 @@
 
         <service id="linkdata_client.client" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
             <argument type="service" id="linkdata_client.proxy_manager" />
+            <argument type="service" id="linkdata_client.adapter_guzzle" />
         </service>
 
         <service id="linkdata_client.adapter_guzzle" class="Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter">
