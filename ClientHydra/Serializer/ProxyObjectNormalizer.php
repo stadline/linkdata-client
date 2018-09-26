@@ -29,7 +29,6 @@ class ProxyObjectNormalizer extends ObjectNormalizer
     private $iriConverter;
     private $proxyObjectMetadata = [];
 
-
     public function setProxyManager(ProxyManager $proxyManager): void
     {
         $this->proxyManager = $proxyManager;
@@ -86,6 +85,12 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             foreach ($reflexionClass->getProperties() as $property) {
                 if (preg_match('/@var\s+([^\s]+)/', $property->getDocComment(), $matches)) {
                     [, $type] = $matches;
+                    if (!\class_exists($type)) {
+                        $type = $this->entityNamespace.'\\'.$type;
+                    }
+                    if (!\class_exists($type)) {
+                        continue;
+                    }
                     if (ProxyObject::class === (new \ReflectionClass($type))->isSubclassOf(ProxyObject::class)) {
                         $metadata[] = $property->getName();
                     }
@@ -98,7 +103,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                         continue;
                     }
                     // If parameter is proxy object
-                    if (null !== ($param = $method->getParameters()[0] ?? null) && (new \ReflectionClass($param->getType()))->isSubclassOf(ProxyObject::class)) {
+                    if (null !== ($param = $method->getParameters()[0] ?? null) && \class_exists($param->getType()) && (new \ReflectionClass($param->getType()))->isSubclassOf(ProxyObject::class)) {
                         $metadata[] = $propertyName;
                     }
                 }
