@@ -78,10 +78,16 @@ class ProxyObjectNormalizer extends ObjectNormalizer
         if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject) {
             $reflexionClass = new \ReflectionClass($context[AbstractNormalizer::OBJECT_TO_POPULATE]);
             foreach($data as $propName => $propValue) {
-                if (null !== $propValue && '' !== $propValue) {
+                if (null === $propValue && '' === $propValue) {
                     continue;
                 }
-                $setter = $reflexionClass->getMethod(sprintf('set%s', Inflector::classify($propName)));
+
+                $setterMethod = sprintf('set%s', Inflector::classify($propName));
+                if (!$reflexionClass->hasMethod($setterMethod)) {
+                    continue;
+                }
+
+                $setter = $reflexionClass->getMethod($setterMethod);
                 if (null !== ($param = $setter->getParameters()[0] ?? null) && ProxyObject::class === $param->getType()) {
                     $data[$propName] = $this->proxyManager->getProxyFromIri($propValue);
                     continue;
