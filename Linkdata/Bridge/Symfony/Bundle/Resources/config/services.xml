@@ -39,39 +39,5 @@
             </call>
             <tag name="serializer.normalizer" />
         </service>
-
-        <!--<service id="linkdata_client.uri_converter" class="Stadline\LinkdataClient\ClientHydra\Utils\UriConverter">-->
-            <!--<argument>%linkdata_client.base_url%</argument>-->
-            <!--<argument>%linkdata_client.entity_namespace%</argument>-->
-            <!--<argument type="service" id="linkdata_client.uri_resolver" />-->
-        <!--</service>-->
-
-        <!--<service id="linkdata_client.uri_resolver" class="Stadline\LinkdataClient\ClientHydra\Utils\UriResolver">-->
-        <!--</service>-->
-
-        <!--<service id="linkdata_client.adapter_guzzle" class="Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter">-->
-            <!--<argument>%linkdata_client.base_url%</argument>-->
-        <!--</service>-->
-
-        <!--<service id="linkdata_client.request_handler" class="Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler">-->
-            <!--<argument type="service" id="linkdata_client.adapter" />-->
-            <!--<argument type="service" id="linkdata_client.serializator" />-->
-            <!--<argument type="service" id="linkdata_client.pagination_handler" />-->
-        <!--</service>-->
-
-        <!--<service id="linkdata_client.proxy_manager" class="Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager">-->
-            <!--<argument type="service" id="linkdata_client.client" />-->
-        <!--</service>-->
-
-        <!--<service id="linkdata_client.serializator" class="Stadline\LinkdataClient\ClientHydra\Utils\Serializator">-->
-            <!--<argument>%linkdata_client.entity_namespace%</argument>-->
-            <!--<argument type="service" id="linkdata_client.proxy_manager" />-->
-        <!--</service>-->
-
-        <!--<service id="linkdata_client.pagination_handler">-->
-            <!--<argument type="service" id="linkdata_client.serializator" />-->
-            <!--<argument type="service" id="linkdata_client.uri_converter" />-->
-            <!--<argument>%linkdata_client.max_result_per_page%</argument>-->
-        <!--</service>-->
     </services>
 </container>

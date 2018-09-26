@@ -25,7 +25,8 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
         IriConverter $iriConverter,
         string $classname,
         array $filters = []
-    ) {
+    )
+    {
         $this->proxyManager = $proxyManager;
         $this->objects = [];
         $this->currentIteratorPosition = self::INITAL_CURSOR_POSITION;
@@ -145,12 +146,34 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
     public function offsetSet($offset, $value): void
     {
-        throw new \RuntimeException('Cannot set object in a ProxyCollection');
+        if (!\is_int($offset)) {
+            throw new \RuntimeException('Cannot use non int offset in ProxyCollection');
+        }
+
+        if ($this->isHydratationRequired($offset)) {
+            $this->hydrate($offset);
+        }
+
+        $this->objects[$offset] = $value;
     }
 
     public function offsetUnset($offset): void
     {
-        throw new \RuntimeException('Cannot unset object in a ProxyCollection');
+        if (!\is_int($offset)) {
+            throw new \RuntimeException('Cannot use non int offset in ProxyCollection');
+        }
+
+        if ($this->offsetExists($offset)) {
+            unset($this->objects[$offset]);
+
+            // Re-index array
+            $this->objects = array_values($this->objects);
+
+            // As we removed one element, rollback iterator position to previous
+            if ($this->currentIteratorPosition > self::INITAL_CURSOR_POSITION) {
+                --$this->currentIteratorPosition;
+            }
+        }
     }
 
     public function isEmpty(): bool
