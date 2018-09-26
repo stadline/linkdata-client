@@ -9,6 +9,10 @@ use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * @method void setId(string|int $id)
+ * @method string|int getId()
+ */
 abstract class ProxyObject
 {
     /** @var ProxyManager */
@@ -106,5 +110,56 @@ abstract class ProxyObject
         if (null !== $data) {
             $this->_hydrate($data);
         }
+    }
+
+    public function __call($name, $arguments)
+    {
+        if (1 !== \preg_match('/^(?<method>set|get)(?<propertyName>[A-Za-z0-1]+)$/', $name, $matches)) {
+            throw new \RuntimeException(\sprintf('No method %s for object %s', $name, \get_class($this)));
+        }
+
+        // Check propertyExists
+        $propertyName = lcfirst($matches['propertyName']);
+        if (!(new \ReflectionClass($this))->hasProperty($propertyName)) {
+            throw new \RuntimeException(\sprintf('%s::%s() error : property "%s" does not exists', \get_class($this), $name, $propertyName));
+        }
+
+        switch ($matches['method']) {
+            case 'set':
+                if (1 !== \count($arguments)) {
+                    throw new \RuntimeException(sprintf('%s::%s() require one and only one parameter', \get_class($this), $name));
+                }
+                $this->_set($propertyName, $arguments[0]);
+            break;
+            case 'get':
+                if (1 !== \count($arguments)) {
+                    throw new \RuntimeException(sprintf('%s::%s() require no parameter', \get_class($this), $name));
+                }
+                return $this->_get($propertyName);
+            break;
+            default:
+                throw new \RuntimeException('What ??? Not possible !');
+        }
+    }
+
+    protected function _set($property, $value): void
+    {
+        $this->$property = $value;
+    }
+
+    protected function _get($property)
+    {
+        // Id special case
+        if ('id' === $property) {
+            return $this->$property;
+        }
+
+        // Object not hydrated : autohydrate
+        if (null === $this->$property && !$this->_isHydrated()) {
+            $this->_hydrate();
+        }
+
+        // Return property
+        return $this->$property;
     }
 }

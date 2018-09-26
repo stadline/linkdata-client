@@ -7,6 +7,14 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string|null getId()
+ * @method void setId(string|null $id)
+ *
+ * @method Sport getSport()
+ * @method void setSport(Sport $sport)
+ *
+ */
 class Activity extends ProxyObject
 {
     /**
@@ -233,25 +241,9 @@ class Activity extends ProxyObject
         $this->user = $user;
     }
 
-    /**
-     * @return Sport
-     */
-    public function getSport()
-    {
-        if (null !== $this->sport) {
-            $this->sport->_hydrate();
-        }
-        return $this->sport;
-    }
-
     public function getSportId(): int
     {
         return $this->getSport()->getId();
-    }
-
-    public function setSport(?Sport $sport): void
-    {
-        $this->sport = $sport;
     }
 
     public function getUserDevice()
