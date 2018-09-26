@@ -133,7 +133,7 @@ class LinkdataClient extends AbstractHydraClient
         try {
             return $this->customCall(
                 'GET',
-                \sprintf('/activities/%s/datastream', $activityId)
+                \sprintf('/v2/activities/%s/datastream', $activityId)
             )->getContent();
         } catch (ClientHydraException $e) {
             return [];
@@ -147,7 +147,7 @@ class LinkdataClient extends AbstractHydraClient
     {
         return $this->customCall(
             'GET',
-            \sprintf('/activities/%s/similar/%s?limit=3', $activityId, $datatypeId)
+            \sprintf('/v2/activities/%s/similar/%s?limit=3', $activityId, $datatypeId)
         )->getContent();
     }
 
@@ -156,9 +156,10 @@ class LinkdataClient extends AbstractHydraClient
         try {
             return $this->customCall(
                 'GET',
-                \sprintf('/activities/%s/locations', $activityId)
+                \sprintf('/v2/activities/%s/locations', $activityId)
             )->getContent();
         } catch (ClientHydraException $e) {
+            dump($e->getMessage()); die;
             return [];
         }
     }
@@ -168,7 +169,7 @@ class LinkdataClient extends AbstractHydraClient
         try {
             return $this->customCall(
                 'GET',
-                \sprintf('/activities/%s.%s', $activityId, 'gpx')
+                \sprintf('/v2/activities/%s.%s', $activityId, 'gpx')
             )->getContent();
         } catch (ClientHydraException $e) {
             return '';
@@ -182,7 +183,7 @@ class LinkdataClient extends AbstractHydraClient
     {
         return $this->customCall(
             'GET',
-            \sprintf('/share_users_stats/%s', $id)
+            \sprintf('/v2/share_users_stats/%s', $id)
         )->getContent();
     }
 }
