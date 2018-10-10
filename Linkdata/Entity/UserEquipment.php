@@ -72,20 +72,11 @@ class UserEquipment extends ProxyObject
      */
     private $updatedAt;
 
-    /**
-     * @return int
-     */
+    private $userIri;
+
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     /**
@@ -94,6 +85,21 @@ class UserEquipment extends ProxyObject
     public function getUser()
     {
         return $this->hydrate($this->user);
+    }
+
+    public function getUserId(): string
+    {
+        if (!$this->userIri) {
+            $this->userIri = $this->user;
+        }
+
+        // Parse iri to get id.
+        return \explode('/', $this->userIri)[3];
+    }
+
+    public function getUserIri()
+    {
+        return $this->userIri;
     }
 
     /**
@@ -107,7 +113,7 @@ class UserEquipment extends ProxyObject
     /**
      * @return string
      */
-    public function getCategory(): string
+    public function getCategory(): ?string
     {
         return $this->category;
     }
@@ -123,7 +129,7 @@ class UserEquipment extends ProxyObject
     /**
      * @return string
      */
-    public function getBrand(): string
+    public function getBrand(): ?string
     {
         return $this->brand;
     }
@@ -139,7 +145,7 @@ class UserEquipment extends ProxyObject
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -155,7 +161,7 @@ class UserEquipment extends ProxyObject
     /**
      * @return array
      */
-    public function getSumups(): array
+    public function getSumups(): ?array
     {
         return $this->sumups;
     }
@@ -171,7 +177,7 @@ class UserEquipment extends ProxyObject
     /**
      * @return mixed
      */
-    public function getSports(): array
+    public function getSports(): ?array
     {
         return $this->sports;
     }

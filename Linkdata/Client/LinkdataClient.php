@@ -128,9 +128,9 @@ use Stadline\LinkdataClient\Linkdata\Entity\UserEquipment;
  * @method Paginator           getUserSumups(array $options = [])
  * @method UserEquipment       getUserEquipment(string $id, array $options = [])
  * @method Paginator           getUserEquipments(array $options = [])
- * @method UserEquipment       putUserEquipment(UserDevice $userEquipment, array $options = [])
- * @method UserEquipment       postUserEquipment(UserDevice $userEquipment, array $options = [])
- * @method void                deleteUserEquipment(string $id, array $options = [])*
+ * @method UserEquipment       putUserEquipment(UserEquipment $userEquipment, array $options = [])
+ * @method UserEquipment       postUserEquipment(UserEquipment $userEquipment, array $options = [])
+ * @method void                deleteUserEquipment(string $id, array $options = [])
  */
 class LinkdataClient extends AbstractHydraClient
 {
