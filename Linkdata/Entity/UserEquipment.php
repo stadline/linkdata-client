@@ -52,7 +52,7 @@ class UserEquipment extends ProxyObject
     private $sumups = [];
 
     /**
-     * @var string
+     * @var Sport[]
      *
      * @Groups({"equipment_norm", "equipment_denorm"})
      */
