@@ -274,6 +274,13 @@ class Sport extends ProxyObject
      */
     private $updatedAt;
 
+    /**
+     * @var array
+     *
+     * @Groups({"sport_norm"})
+     */
+    private $userEquipments;
+
     public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
@@ -351,5 +358,15 @@ class Sport extends ProxyObject
         }
 
         return '';
+    }
+
+    public function getUserEquipments(): array
+    {
+        return $this->userEquipments;
+    }
+
+    public function setUserEquipments($userEquipments)
+    {
+        $this->userEquipments = $userEquipments;
     }
 }
