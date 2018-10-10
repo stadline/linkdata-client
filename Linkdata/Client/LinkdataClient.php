@@ -25,6 +25,7 @@ use Stadline\LinkdataClient\Linkdata\Entity\UserMeasureGoal;
 use Stadline\LinkdataClient\Linkdata\Entity\UserRecord;
 use Stadline\LinkdataClient\Linkdata\Entity\UserStorage;
 use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
+use Stadline\LinkdataClient\Linkdata\Entity\UserEquipment;
 
 /**
  * @method Activity            getActivity(string $id, array $options = [])
@@ -125,6 +126,11 @@ use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
  * @method void                deleteUserStorage(string $id, array $options = [])
  * @method UserSumup           getUserSumup(string $id, array $options = [])
  * @method Paginator           getUserSumups(array $options = [])
+ * @method UserEquipment       getUserEquipment(string $id, array $options = [])
+ * @method Paginator           getUserEquipments(array $options = [])
+ * @method UserEquipment       putUserEquipment(UserDevice $userEquipment, array $options = [])
+ * @method UserEquipment       postUserEquipment(UserDevice $userEquipment, array $options = [])
+ * @method void                deleteUserEquipment(string $id, array $options = [])*
  */
 class LinkdataClient extends AbstractHydraClient
 {
