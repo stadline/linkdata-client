@@ -52,27 +52,167 @@ class UserEquipment extends ProxyObject
     private $sumups = [];
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Sport", inversedBy="userEquipments")
-     * @ORM\JoinTable(name="user_equipments_sport")
+     * @var string
+     *
      * @Groups({"equipment_norm", "equipment_denorm"})
      */
     private $sports;
 
     /**
-     * @var DateTime
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
+     * @var \DateTime
+     *
      * @Groups({"equipment_norm", "equipment_denorm"})
      */
     private $createdAt;
 
     /**
-     * @var DateTime
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
+     * @var \DateTime
+     *
      * @Groups({"equipment_norm", "equipment_denorm"})
      */
     private $updatedAt;
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return User|string
+     */
+    public function getUser()
+    {
+        return $this->hydrate($this->user);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategory(): string
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param string $category
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrand(): string
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param string $brand
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSumups(): array
+    {
+        return $this->sumups;
+    }
+
+    /**
+     * @param array $sumups
+     */
+    public function setSumups($sumups)
+    {
+        $this->sumups = $sumups;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSports(): array
+    {
+        return $this->sports;
+    }
+
+    /**
+     * @param mixed $sports
+     */
+    public function setSports($sports)
+    {
+        $this->sports = $sports;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
 }
