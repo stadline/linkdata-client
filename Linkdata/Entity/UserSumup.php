@@ -120,11 +120,6 @@ class UserSumup extends ProxyObject
         return $this->sport;
     }
 
-    public function getSportId(): int
-    {
-        return $this->getSport()->getId();
-    }
-
     public function setSport(?Sport $sport): void
     {
         $this->sport = $sport;

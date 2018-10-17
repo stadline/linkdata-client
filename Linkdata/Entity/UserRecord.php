@@ -145,16 +145,6 @@ class UserRecord extends ProxyObject
         $this->sport = $sport;
     }
 
-    public function getSportId(): string
-    {
-        if (!$this->sportIri) {
-            $this->sportIri = $this->sport;
-        }
-
-        // Parse iri to get id.
-        return \explode('/', $this->sportIri)[3];
-    }
-
     public function getType(): string
     {
         return $this->type;

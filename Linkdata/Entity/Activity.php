@@ -8,12 +8,62 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method string|null getId()
- * @method void setId(string|null $id)
- *
- * @method Sport|null getSport()
- * @method void setSport(Sport|null $sport)
- *
+ * @method string getId()
+ * @method void setId(string $id)
+ * @method string|null getName()
+ * @method void setName(string|null $name)
+ * @method User getUser()
+ * @method void setUser(User $user)
+ * @method Sport getSport()
+ * @method void setSport(Sport $sport)
+ * @method UserDevice getUserDevice()
+ * @method void setUserDevice(UserDevice $userDevice)
+ * @method \DateTime getStartdate()
+ * @method void setStartdate(\DateTime $startdate)
+ * @method string getStartstringzone()
+ * @method void setStartstringzone(string $startstringzone)
+ * @method int getDuration()
+ * @method void setDuration(int $duration)
+ * @method float getLatitude()
+ * @method void setLatitude(float $latitude)
+ * @method float getLongitude()
+ * @method void setLongitude(float $longitude)
+ * @method float getElevation()
+ * @method void setElevation(float $elevation)
+ * @method bool isManual()
+ * @method void setManual(bool $manual)
+ * @method string getComment()
+ * @method void setComment(string $comment)
+ * @method string getConnector()
+ * @method void setConnector(string $connector)
+ * @method string getUserSession()
+ * @method void setUserSession(string $userSession)
+ * @method array getImages()
+ * @method void setImages(array $images)
+ * @method bool isCorrectedElevation()
+ * @method void setCorrectedElevation(bool $correctedElevation)
+ * @method string getThumbnail()
+ * @method void setThumbnail(string $thumbnail)
+ * @method array getDataSummaries()
+ * @method void setDataSummaries(array $dataSummaries)
+ * @method array getTags()
+ * @method void setTags(array $tags)
+ * @method bool isTrackFlag()
+ * @method void setTrackFlag(bool $trackFlag)
+ * @method bool isDatastreamFlag()
+ * @method void setDatastreamFlag(bool $datastreamFlag)
+ * @method string getGlobalChallenge()
+ * @method void setGlobalChallenge(string $globalChallenge)
+ * @method array getAvailableDatatypes()
+ * @method void setAvailableDatatypes(array $availableDatatypes)
+ * @method string getCreatedAt()
+ * @method void setCreatedAt(string $createdAt)
+ * @method string getUpdatedAt()
+ * @method void setUpdatedAt(string $updatedAt)
+ * @method array getLocations()
+ * @method void setLocations(array $locations)
+ * @method array getDatastream()
+ * @method void setDatastream(array $datastream)
  */
 class Activity extends ProxyObject
 {
@@ -22,160 +72,159 @@ class Activity extends ProxyObject
      *
      * @Groups({"activity_norm"})
      */
-    private $id;
+    public $id;
 
     /**
-     * @var string
+     * @var ?string
      *
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $name;
+    public $name;
 
     /**
      * @var User
      *
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    protected $user;
+    public $user;
 
     /**
      * @var Sport
      *
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    protected $sport;
+    public $sport;
 
     /**
      * @var UserDevice
      *
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    protected $userDevice;
+    public $userDevice;
+
+    /**
+     * @var \DateTime
+     * @Groups({"activity_norm", "activity_denorm"})
+     */
+    public $startdate;
 
     /**
      * @var string
      */
-    private $startdate;
-
-    /**
-     * @var string
-     */
-    private $startstringzone;
+    public $startstringzone;
 
     /**
      * @var int
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $duration;
+    public $duration;
 
     /**
      * @var float
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $latitude;
+    public $latitude;
 
     /**
      * @var float
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $longitude;
+    public $longitude;
 
     /**
      * @var float
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $elevation;
+    public $elevation;
 
     /**
      * @var bool
      */
-    private $manual;
+    public $manual;
 
     /**
      * @var string
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $comment;
+    public $comment;
 
     /**
      * @var string
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $connector;
+    public $connector;
 
     /**
      * @var string
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $userSession;
+    public $userSession;
 
     /**
      * @var array
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $images;
+    public $images;
 
     /**
      * @var bool
      * @Groups({"activity_norm"})
      */
-    private $correctedElevation;
+    public $correctedElevation;
 
     /**
      * @var string
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $thumbnail;
+    public $thumbnail;
 
     /**
      * @var array
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $dataSummaries;
+    public $dataSummaries;
 
     /**
      * @var array
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $tags;
+    public $tags;
 
     /**
      * @var bool
      * @Groups({"activity_norm"})
      */
-    private $trackFlag;
+    public $trackFlag;
 
     /**
      * @var bool
      * @Groups({"activity_norm"})
      */
-    private $datastreamFlag;
+    public $datastreamFlag;
 
     /**
      * @var string
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    private $globalChallenge;
+    public $globalChallenge;
 
     /**
      * @var array
      * @Groups({"activity_norm"})
      */
-    private $availableDatatypes;
+    public $availableDatatypes;
 
     /**
      * @var string
      * @Groups({"activity_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
      * @var string
      * @Groups({"activity_norm"})
      */
-    private $updatedAt;
-
-    private $sportIri;
+    public $updatedAt;
 
     /**
      * Temp storage for locations.
@@ -183,7 +232,7 @@ class Activity extends ProxyObject
      * @var array
      * @Groups({"activity_norm"})
      */
-    private $locations;
+    public $locations;
 
     /**
      * Temp storage for datastream.
@@ -191,447 +240,5 @@ class Activity extends ProxyObject
      * @var array
      * @Groups({"activity_norm"})
      */
-    private $datastream;
-
-    /**
-     * @return string
-     */
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param string $id
-     */
-    public function setId(?string $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName(?string $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string|User
-     */
-    public function getUser()
-    {
-        if (null !== $this->user) {
-            $this->user->_hydrate();
-        }
-        return $this->user;
-    }
-
-    public function setUser(?User $user): void
-    {
-        $this->user = $user;
-    }
-
-    public function getSportId(): int
-    {
-        return $this->getSport()->getId();
-    }
-
-    public function getUserDevice()
-    {
-        if (null !== $this->userDevice) {
-            $this->userDevice->_hydrate();
-        }
-        return $this->userDevice;
-    }
-
-    public function setUserDevice(?UserDevice $userDevice): void
-    {
-        $this->userDevice = $userDevice;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStartdate(): ?string
-    {
-        return $this->startdate;
-    }
-
-    /**
-     * @param string $startdate
-     */
-    public function setStartdate(?string $startdate): void
-    {
-        $this->startdate = $startdate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStartstringzone(): ?string
-    {
-        return $this->startstringzone;
-    }
-
-    /**
-     * @param string $startstringzone
-     */
-    public function setStartstringzone(?string $startstringzone): void
-    {
-        $this->startstringzone = $startstringzone;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDuration(): ?int
-    {
-        return $this->duration;
-    }
-
-    /**
-     * @param int $duration
-     */
-    public function setDuration(?int $duration): void
-    {
-        $this->duration = $duration;
-    }
-
-    /**
-     * @return float
-     */
-    public function getLatitude(): ?float
-    {
-        return $this->latitude;
-    }
-
-    /**
-     * @param float $latitude
-     */
-    public function setLatitude(?float $latitude): void
-    {
-        $this->latitude = $latitude;
-    }
-
-    /**
-     * @return float
-     */
-    public function getLongitude(): ?float
-    {
-        return $this->longitude;
-    }
-
-    /**
-     * @param float $longitude
-     */
-    public function setLongitude(?float $longitude): void
-    {
-        $this->longitude = $longitude;
-    }
-
-    /**
-     * @return float
-     */
-    public function getElevation(): ?float
-    {
-        return $this->elevation;
-    }
-
-    /**
-     * @param float $elevation
-     */
-    public function setElevation(?float $elevation): void
-    {
-        $this->elevation = $elevation;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isManual(): ?bool
-    {
-        return $this->manual;
-    }
-
-    /**
-     * @param bool $manual
-     */
-    public function setManual(?bool $manual): void
-    {
-        $this->manual = $manual;
-    }
-
-    /**
-     * @return string
-     */
-    public function getComment(): ?string
-    {
-        return $this->comment;
-    }
-
-    /**
-     * @param string $comment
-     */
-    public function setComment(?string $comment): void
-    {
-        $this->comment = $comment;
-    }
-
-    /**
-     * @return string
-     */
-    public function getConnector(): ?string
-    {
-        return $this->connector;
-    }
-
-    /**
-     * @param string $connector
-     */
-    public function setConnector(?string $connector): void
-    {
-        $this->connector = $connector;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserSession(): ?string
-    {
-        return $this->userSession;
-    }
-
-    /**
-     * @param string $userSession
-     */
-    public function setUserSession(?string $userSession): void
-    {
-        $this->userSession = $userSession;
-    }
-
-    /**
-     * @return array
-     */
-    public function getImages(): ?array
-    {
-        return $this->images;
-    }
-
-    /**
-     * @param array $images
-     */
-    public function setImages(?array $images): void
-    {
-        $this->images = $images;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCorrectedElevation(): ?bool
-    {
-        return $this->correctedElevation;
-    }
-
-    /**
-     * @param bool $correctedElevation
-     */
-    public function setCorrectedElevation(?bool $correctedElevation): void
-    {
-        $this->correctedElevation = $correctedElevation;
-    }
-
-    /**
-     * @return string
-     */
-    public function getThumbnail(): ?string
-    {
-        return $this->thumbnail;
-    }
-
-    /**
-     * @param string $thumbnail
-     */
-    public function setThumbnail(?string $thumbnail): void
-    {
-        $this->thumbnail = $thumbnail;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDataSummaries(): ?array
-    {
-        return $this->dataSummaries;
-    }
-
-    /**
-     * @param array $dataSummaries
-     */
-    public function setDataSummaries(?array $dataSummaries): void
-    {
-        $this->dataSummaries = $dataSummaries;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTags(): ?array
-    {
-        return $this->tags;
-    }
-
-    /**
-     * @param array $tags
-     */
-    public function setTags(?array $tags): void
-    {
-        $this->tags = $tags;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTrackFlag(): ?bool
-    {
-        return $this->trackFlag;
-    }
-
-    /**
-     * @param bool $trackFlag
-     */
-    public function setTrackFlag(?bool $trackFlag): void
-    {
-        $this->trackFlag = $trackFlag;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDatastreamFlag(): ?bool
-    {
-        return $this->datastreamFlag;
-    }
-
-    /**
-     * @param bool $datastreamFlag
-     */
-    public function setDatastreamFlag(?bool $datastreamFlag): void
-    {
-        $this->datastreamFlag = $datastreamFlag;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGlobalChallenge(): ?string
-    {
-        return $this->globalChallenge;
-    }
-
-    /**
-     * @param string $globalChallenge
-     */
-    public function setGlobalChallenge(?string $globalChallenge): void
-    {
-        $this->globalChallenge = $globalChallenge;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAvailableDatatypes(): ?array
-    {
-        return $this->availableDatatypes;
-    }
-
-    /**
-     * @param array $availableDatatypes
-     */
-    public function setAvailableDatatypes(?array $availableDatatypes): void
-    {
-        $this->availableDatatypes = $availableDatatypes;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCreatedAt(): ?string
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param string $createdAt
-     */
-    public function setCreatedAt(?string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUpdatedAt(): ?string
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param string $updatedAt
-     */
-    public function setUpdatedAt(?string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSportIri()
-    {
-        return $this->sportIri;
-    }
-
-    /**
-     * @return array
-     */
-    public function getLocations(): ?array
-    {
-        return $this->locations;
-    }
-
-    /**
-     * @param array $locations
-     */
-    public function setLocations(?array $locations): void
-    {
-        $this->locations = $locations;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDatastream(): ?array
-    {
-        return $this->datastream;
-    }
-
-    /**
-     * @param array $datastream
-     */
-    public function setDatastream(?array $datastream): void
-    {
-        $this->datastream = $datastream;
-    }
+    public $datastream;
 }

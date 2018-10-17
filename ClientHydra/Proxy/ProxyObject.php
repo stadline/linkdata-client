@@ -79,7 +79,8 @@ abstract class ProxyObject
         string $className,
         $id,
         ?array $data = null
-    ): void {
+    ): void
+    {
         $this->proxyManager = $proxyManager;
         $this->serializer = $serializer;
         $this->_className = $className;
@@ -91,13 +92,13 @@ abstract class ProxyObject
 
             switch ($reflectionParameter->getType()) {
                 case 'string':
-                    $this->setId((string) $id);
+                    $this->setId((string)$id);
                     break;
                 case 'float':
-                    $this->setId((float) $id);
+                    $this->setId((float)$id);
                     break;
                 case 'int':
-                    $this->setId((int) $id);
+                    $this->setId((int)$id);
                     break;
                 default:
                     throw new \RuntimeException('This parameter type is not supported in setId method');
@@ -114,7 +115,7 @@ abstract class ProxyObject
 
     public function __call($name, $arguments)
     {
-        if (1 !== \preg_match('/^(?<method>set|get)(?<propertyName>[A-Za-z0-1]+)$/', $name, $matches)) {
+        if (1 !== \preg_match('/^(?<method>set|get|is)(?<propertyName>[A-Za-z0-1]+)$/', $name, $matches)) {
             throw new \RuntimeException(\sprintf('No method %s for object %s', $name, \get_class($this)));
         }
 
@@ -124,21 +125,18 @@ abstract class ProxyObject
             throw new \RuntimeException(\sprintf('%s::%s() error : property "%s" does not exists', \get_class($this), $name, $propertyName));
         }
 
-        switch ($matches['method']) {
-            case 'set':
-                if (1 !== \count($arguments)) {
-                    throw new \RuntimeException(sprintf('%s::%s() require one and only one parameter', \get_class($this), $name));
-                }
-                $this->_set($propertyName, $arguments[0]);
-            break;
-            case 'get':
-                if (0 !== \count($arguments)) {
-                    throw new \RuntimeException(sprintf('%s::%s() require no parameter', \get_class($this), $name));
-                }
-                return $this->_get($propertyName);
-            break;
-            default:
-                throw new \RuntimeException('What ??? Not possible !');
+        if ('set' === $matches['method']) {
+            if (1 !== \count($arguments)) {
+                throw new \RuntimeException(sprintf('%s::%s() require one and only one parameter', \get_class($this), $name));
+            }
+            $this->_set($propertyName, $arguments[0]);
+        } else if (\in_array($matches['method'], ['is', 'get'])) {
+            if (0 !== \count($arguments)) {
+                throw new \RuntimeException(sprintf('%s::%s() require no parameter', \get_class($this), $name));
+            }
+            return $this->_get($propertyName);
+        } else {
+            throw new \RuntimeException('What ??? Not possible !');
         }
     }
 
