@@ -14,6 +14,7 @@
 
         <service id="linkdata_client.adapter_guzzle" class="Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter">
             <argument>%linkdata_client.base_url%</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <service id="linkdata_client.proxy_manager" class="Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager">

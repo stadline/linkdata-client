@@ -16,10 +16,16 @@ class GuzzleAdapter implements AdapterInterface
         'Content-Type' => 'application/ld+json',
     ];
     private $cache;
+    private $debugData;
+    private $isDebug;
+    private $isDebugStoreResult;
 
-    public function __construct(string $baseUrl)
+    public function __construct(string $baseUrl, $kernelDebug)
     {
         $this->client = new Client(['base_uri' => $baseUrl]);
+        $this->isDebug = $kernelDebug;
+        $this->isDebugStoreResult = true;
+        $this->debugData = [];
     }
 
     /**
@@ -27,7 +33,11 @@ class GuzzleAdapter implements AdapterInterface
      */
     public function makeRequest(string $method, string $uri, array $headers = [], string $body = null, bool $cacheEnable = false): ResponseInterface
     {
+        $requestStartTime = \microtime(true);
         $headers = \array_merge($this->defaultHeaders, $headers);
+        $requestData = [];
+        $requestData['headers'] = $headers;
+        $requestData['body'] = $body;
 
         if (\in_array(\strtoupper($method), ['PUT', 'POST', 'DELETE'], true)) {
             $cacheEnable = false;
@@ -36,12 +46,18 @@ class GuzzleAdapter implements AdapterInterface
         $requestHash = \sha1(\json_encode($headers).'.'.$method.'.'.$uri.'.'.$body);
         if ($cacheEnable && isset($this->cache[$requestHash])) {
             $response = $this->cache[$requestHash];
+            if ($this->isDebug) {
+                $requestData['cache'] = true;
+            }
         } else {
             try {
                 $response = $this->client->send(
                     new Request($method, $uri, $headers, $body)
                 );
                 $this->cache[$requestHash] = $response;
+                if ($this->isDebug) {
+                    $requestData['cache'] = false;
+                }
             } catch (GuzzleException $e) {
                 throw new RequestException(\sprintf('Error while requesting %s with %s method', $uri, $method), $body, $e);
             }
@@ -49,6 +65,16 @@ class GuzzleAdapter implements AdapterInterface
 
         $contentType = $response->getHeader('Content-Type')[0] ?? 'unknown';
         $contentType = \explode(';', $contentType)[0];
+
+        if ($this->isDebug) {
+            $requestEndTime = \microtime(true);
+            $requestData['method'] = $method;
+            $requestData['uri'] = $uri;
+            $requestData['time'] = $requestEndTime - $requestStartTime;
+            $requestData['response'] = $this->isDebugStoreResult ? (string) $response->getBody() : '';
+
+            $this->debugData[] = $requestData;
+        }
 
         if (\in_array($contentType, ['application/ld+json', 'application/json'], true)) {
             return new JsonResponse((string) $response->getBody());
@@ -65,5 +91,10 @@ class GuzzleAdapter implements AdapterInterface
     public function setDefaultHeader(string $key, string $value): void
     {
         $this->defaultHeaders[$key] = $value;
+    }
+
+    public function getDebugData(): array
+    {
+        return $this->debugData;
     }
 }
