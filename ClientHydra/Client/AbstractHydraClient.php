@@ -107,4 +107,9 @@ abstract class AbstractHydraClient implements HydraClientInterface
             $body
         );
     }
+
+    public function getAdapter(): AdapterInterface
+    {
+        return $this->adapter;
+    }
 }
