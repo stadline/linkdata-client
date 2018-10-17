@@ -10,11 +10,10 @@
 require_once './vendor/autoload.php';
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
 $loader = require __DIR__.'/../vendor/autoload.php';
 AnnotationRegistry::registerLoader([$loader, 'loadClass']);
-
-use Doctrine\Common\Annotations\AnnotationRegistry;
 
 class UniversalAnnotationReader extends AnnotationReader
 {
@@ -44,53 +43,145 @@ if (!\file_exists($argv[1])) {
     exit(1);
 }
 
-$fileContent = \file_get_contents($argv[1]);
-require_once $argv[1];
+// Vars
+$baseLd2Path = $argv[1];
+$clientExtractFilename = 'client-extract.json';
+$fileContent = \file_get_contents(\sprintf('%s/%s', $baseLd2Path, $clientExtractFilename));
+$extractConf = \json_decode($fileContent, true);
 
-\preg_match('/^namespace (.+);/m', $fileContent, $matches);
-$namespace = $matches[1];
-\preg_match('/^class (.+)( extends?)(.*)/m', $fileContent, $matches);
-$classname = $namespace.'\\'.$matches[1];
+// Require ld2 autoload
+require_once \sprintf('%s/%s', $baseLd2Path, $extractConf['autoload_path']);
 
 $annotationReader = new UniversalAnnotationReader();
-$reflectedClass = new \ReflectionClass($classname);
 
-echo '/**'.PHP_EOL;
-foreach ($reflectedClass->getProperties() as $reflectionProperty) {
-    // the annotations
-    $annotations = $annotationReader->getPropertyAnnotations($reflectionProperty);
-    $annotation = $annotationReader->getPropertyType($reflectionProperty);
+main($baseLd2Path, $extractConf);
 
-//    var_dump($reflectionProperty->getName());
-//    var_dump($annotation);
-//    var_dump($annotations);
-//    die();
+function main(string $baseLd2Path, array $extractConf)
+{
+    foreach ($extractConf['entity_directories'] as $entityPath) {
 
-    $propertyName = $reflectionProperty->getName();
+        $finder = new \Symfony\Component\Finder\Finder();
+        $files = $finder->files()->name('*.php')->in(\sprintf('%s/%s', $baseLd2Path, $entityPath));
 
-    $isNullable = '?' === \substr($annotation, 0, 1);
-    $realType = $isNullable ? \substr($annotation, 1) : $annotation;
+        /** @var SplFileInfo $file */
+        foreach ($files as $file) {
+            $entityContent = processEntity(\file_get_contents($file->getRealPath()));
 
-    // Type
-    if ($isNullable) {
-        $stringType = $realType.'|null';
-    } else {
-        $stringType = $realType;
+            var_dump($entityContent);die;
+        }
     }
-
-    // getter
-    $getterPrefix = 'get';
-    if ('bool' === $realType || 'boolean' === $realType) {
-        $getterPrefix = 'is';
-    }
-    $stringGetter = $getterPrefix.\ucfirst($propertyName).'()';
-
-    // setter
-    $stringSetter = 'set'.\ucfirst($propertyName).'('.$stringType.' $'.$propertyName.')';
-    echo \sprintf(' * @method %s %s', $stringType, $stringGetter).PHP_EOL;
-    echo \sprintf(' * @method void %s', $stringSetter).PHP_EOL;
 }
-echo ' */'.PHP_EOL;
+
+function processEntity(string $entityContent): string
+{
+    global $annotationReader;
+
+    $content = <<<EOF
+<?php
+        
+declare(strict_types=1);
+        
+namespace Stadline\LinkdataClient\Linkdata\Entity;
+
+
+EOF;
+
+    \preg_match('/^namespace (.+);/m', $entityContent, $matches);
+    $namespace = $matches[1];
+    \preg_match('/^class ([a-zA-Z0-9\\_]+)/m', $entityContent, $matches);
+    $classname = $namespace.'\\'.$matches[1];
+
+    $reflectedClass = new \ReflectionClass($classname);
+
+    $content .= generateClassDoc($reflectedClass->getProperties());
+
+
+    return $content;
+
+
+    foreach ($reflectedClass->getProperties() as $reflectionProperty) {
+
+        // the annotations
+        $annotations = $annotationReader->getPropertyAnnotations($reflectionProperty);
+        $annotation = $annotationReader->getPropertyType($reflectionProperty);
+
+        $propertyName = $reflectionProperty->getName();
+
+        $isNullable = '?' === \substr($annotation, 0, 1);
+        $realType = $isNullable ? \substr($annotation, 1) : $annotation;
+
+        // Type
+        if ($isNullable) {
+            $stringType = $realType . '|null';
+        } else {
+            $stringType = $realType;
+        }
+
+        // getter
+        $getterPrefix = 'get';
+        if ('bool' === $realType || 'boolean' === $realType) {
+            $getterPrefix = 'is';
+        }
+        $stringGetter = $getterPrefix . \ucfirst($propertyName) . '()';
+
+        // setter
+        $stringSetter = 'set' . \ucfirst($propertyName) . '(' . $stringType . ' $' . $propertyName . ')';
+        echo \sprintf(' * @method %s %s', $stringType, $stringGetter) . PHP_EOL;
+        echo \sprintf(' * @method void %s', $stringSetter) . PHP_EOL;
+
+    }
+    echo ' */'.PHP_EOL;
+
+
+}
+
+
+function generateClassDoc(array $reflectionProperties): string
+{
+    global $annotationReader;
+
+    $classDoc = "/**".PHP_EOL;
+
+    foreach ($reflectionProperties as $reflectionProperty) {
+
+        // the annotations
+        $annotations = $annotationReader->getPropertyAnnotations($reflectionProperty);
+        $annotation = $annotationReader->getPropertyType($reflectionProperty);
+
+        $propertyName = $reflectionProperty->getName();
+
+        $isNullable = '?' === \substr($annotation, 0, 1);
+        $realType = $isNullable ? \substr($annotation, 1) : $annotation;
+
+        // Type
+        if ($isNullable) {
+            $stringType = $realType . '|null';
+        } else {
+            $stringType = $realType;
+        }
+
+        // getter
+        $getterPrefix = 'get';
+        if ('bool' === $realType || 'boolean' === $realType) {
+            $getterPrefix = 'is';
+        }
+        $stringGetter = $getterPrefix . \ucfirst($propertyName) . '()';
+
+        // setter
+        $stringSetter = 'set' . \ucfirst($propertyName) . '(' . $stringType . ' $' . $propertyName . ')';
+        $classDoc .= \sprintf(' * @method %s %s', $stringType, $stringGetter) . PHP_EOL;
+        $classDoc .= \sprintf(' * @method void %s', $stringSetter) . PHP_EOL;
+
+    }
+    $classDoc .= ' */'.PHP_EOL;
+
+    return $classDoc;
+}
+
+
+
+
+
 
 //
 //foreach ($routes as $route => $param) {
@@ -108,3 +199,7 @@ echo ' */'.PHP_EOL;
 
 //Annotations
 //echo $fileContent;
+
+
+
+
