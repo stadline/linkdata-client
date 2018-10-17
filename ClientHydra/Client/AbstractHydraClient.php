@@ -108,6 +108,11 @@ abstract class AbstractHydraClient implements HydraClientInterface
         );
     }
 
+    public function getProxyManager(): ProxyManager
+    {
+        return $this->proxyManager;
+    }
+
     public function getAdapter(): AdapterInterface
     {
         return $this->adapter;
