@@ -50,7 +50,8 @@ class Paginator extends Pagerfanta
 
     public static function getAllResults(self $data): array
     {
-        $results = [];
+        $results = [[]];
+        $results[] = $data->getCurrentPageResults();
 
         if (!$data->hasNextPage()) {
             return $data->getCurrentPageResults();
