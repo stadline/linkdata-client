@@ -128,12 +128,13 @@ use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
  */
 class LinkdataClient extends AbstractHydraClient
 {
-    public function getActivityDatastream(string $activityId)
+    public function getActivityDatastream(string $activityId): array
     {
         try {
-            return $this->send(MethodType::GET, [
-                'customUri' => \sprintf('/activities/%s/datastream', $activityId),
-            ]);
+            return $this->customCall(
+                'GET',
+                \sprintf('/v2/activities/%s/datastream', $activityId)
+            )->getContent();
         } catch (ClientHydraException $e) {
             return [];
         }
@@ -142,34 +143,34 @@ class LinkdataClient extends AbstractHydraClient
     /**
      * @throws ClientHydraException
      */
-    public function getSimilarActivities(string $activityId, $datatypeId)
+    public function getSimilarActivities(string $activityId, $datatypeId): array
     {
-        return $this->send(MethodType::GET, [
-            'customUri' => \sprintf('/activities/%s/similar/%s', $activityId, $datatypeId),
-            'filters' => [
-                'limit' => 3,
-            ],
-        ]);
+        return $this->customCall(
+            'GET',
+            \sprintf('/v2/activities/%s/similar/%s?limit=3', $activityId, $datatypeId)
+        )->getContent();
     }
 
-    public function getActivityLocations(string $activityId)
+    public function getActivityLocations(string $activityId): array
     {
         try {
-            return $this->send(MethodType::GET, [
-                'customUri' => \sprintf('/activities/%s/locations', $activityId),
-            ]);
+            return $this->customCall(
+                'GET',
+                \sprintf('/v2/activities/%s/locations', $activityId)
+            )->getContent();
         } catch (ClientHydraException $e) {
+            dump($e->getMessage()); die;
             return [];
         }
     }
 
-    public function getActivityGpx(string $activityId)
+    public function getActivityGpx(string $activityId): string
     {
         try {
-            return $this->send(MethodType::GET, [
-                'customUri' => \sprintf('/activities/%s.%s', $activityId, FormatType::GPX),
-                'haveToDeserialize' => false,
-            ]);
+            return $this->customCall(
+                'GET',
+                \sprintf('/v2/activities/%s.%s', $activityId, 'gpx')
+            )->getContent();
         } catch (ClientHydraException $e) {
             return '';
         }
@@ -180,8 +181,9 @@ class LinkdataClient extends AbstractHydraClient
      */
     public function getShareStatistics(string $id): array
     {
-        return $this->send(MethodType::GET, [
-            'customUri' => \sprintf('/share_users_stats/%s', $id),
-        ]);
+        return $this->customCall(
+            'GET',
+            \sprintf('/v2/share_users_stats/%s', $id)
+        )->getContent();
     }
 }

@@ -7,6 +7,14 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string|null getId()
+ * @method void setId(string|null $id)
+ *
+ * @method Sport|null getSport()
+ * @method void setSport(Sport|null $sport)
+ *
+ */
 class Activity extends ProxyObject
 {
     /**
@@ -38,7 +46,7 @@ class Activity extends ProxyObject
     protected $sport;
 
     /**
-     * @var string
+     * @var UserDevice
      *
      * @Groups({"activity_norm", "activity_denorm"})
      */
@@ -222,48 +230,31 @@ class Activity extends ProxyObject
      */
     public function getUser()
     {
-        return $this->hydrate($this->user);
+        if (null !== $this->user) {
+            $this->user->_hydrate();
+        }
+        return $this->user;
     }
 
-    public function setUser($user): void
+    public function setUser(?User $user): void
     {
         $this->user = $user;
     }
 
-    /**
-     * @return Sport|string
-     */
-    public function getSport()
+    public function getSportId(): int
     {
-        $this->sportIri = $this->sport;
-
-        return $this->hydrate($this->sport);
-    }
-
-    public function getSportId(): string
-    {
-        if (!$this->sportIri) {
-            $this->sportIri = $this->sport;
-        }
-
-        // Parse iri to get id.
-        return \explode('/', $this->sportIri)[3];
-    }
-
-    public function setSport($sport): void
-    {
-        $this->sport = $sport;
+        return $this->getSport()->getId();
     }
 
     public function getUserDevice()
     {
-        return null === $this->userDevice ? null : $this->hydrate($this->userDevice);
+        if (null !== $this->userDevice) {
+            $this->userDevice->_hydrate();
+        }
+        return $this->userDevice;
     }
 
-    /**
-     * @param string $userDevice
-     */
-    public function setUserDevice(?string $userDevice): void
+    public function setUserDevice(?UserDevice $userDevice): void
     {
         $this->userDevice = $userDevice;
     }
