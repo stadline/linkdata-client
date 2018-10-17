@@ -10,8 +10,8 @@ use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * @method void setId(string|int|null $id)
- * @method string|int|null getId()
+ * @method void            setId(null|int|string $id)
+ * @method null|int|string getId()
  */
 abstract class ProxyObject
 {
@@ -79,8 +79,7 @@ abstract class ProxyObject
         string $className,
         $id,
         ?array $data = null
-    ): void
-    {
+    ): void {
         $this->proxyManager = $proxyManager;
         $this->serializer = $serializer;
         $this->_className = $className;
@@ -92,13 +91,13 @@ abstract class ProxyObject
 
             switch ($reflectionParameter->getType()) {
                 case 'string':
-                    $this->setId((string)$id);
+                    $this->setId((string) $id);
                     break;
                 case 'float':
-                    $this->setId((float)$id);
+                    $this->setId((float) $id);
                     break;
                 case 'int':
-                    $this->setId((int)$id);
+                    $this->setId((int) $id);
                     break;
                 default:
                     throw new \RuntimeException('This parameter type is not supported in setId method');
@@ -120,20 +119,21 @@ abstract class ProxyObject
         }
 
         // Check propertyExists
-        $propertyName = lcfirst($matches['propertyName']);
+        $propertyName = \lcfirst($matches['propertyName']);
         if (!(new \ReflectionClass($this))->hasProperty($propertyName)) {
             throw new \RuntimeException(\sprintf('%s::%s() error : property "%s" does not exists', \get_class($this), $name, $propertyName));
         }
 
         if ('set' === $matches['method']) {
             if (1 !== \count($arguments)) {
-                throw new \RuntimeException(sprintf('%s::%s() require one and only one parameter', \get_class($this), $name));
+                throw new \RuntimeException(\sprintf('%s::%s() require one and only one parameter', \get_class($this), $name));
             }
             $this->_set($propertyName, $arguments[0]);
-        } else if (\in_array($matches['method'], ['is', 'get'])) {
+        } elseif (\in_array($matches['method'], ['is', 'get'], true)) {
             if (0 !== \count($arguments)) {
-                throw new \RuntimeException(sprintf('%s::%s() require no parameter', \get_class($this), $name));
+                throw new \RuntimeException(\sprintf('%s::%s() require no parameter', \get_class($this), $name));
             }
+
             return $this->_get($propertyName);
         } else {
             throw new \RuntimeException('What ??? Not possible !');
@@ -142,22 +142,22 @@ abstract class ProxyObject
 
     protected function _set($property, $value): void
     {
-        $this->$property = $value;
+        $this->{$property} = $value;
     }
 
     protected function _get($property)
     {
         // Id special case
         if ('id' === $property) {
-            return $this->$property;
+            return $this->{$property};
         }
 
         // Object not hydrated : autohydrate
-        if (null === $this->$property && !$this->_isHydrated()) {
+        if (null === $this->{$property} && !$this->_isHydrated()) {
             $this->_hydrate();
         }
 
         // Return property
-        return $this->$property;
+        return $this->{$property};
     }
 }

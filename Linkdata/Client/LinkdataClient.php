@@ -6,8 +6,6 @@ namespace Stadline\LinkdataClient\Linkdata\Client;
 
 use Stadline\LinkdataClient\ClientHydra\Client\AbstractHydraClient;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
-use Stadline\LinkdataClient\ClientHydra\Type\FormatType;
-use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
 use Stadline\LinkdataClient\ClientHydra\Utils\Paginator;
 use Stadline\LinkdataClient\Linkdata\Entity\Activity;
 use Stadline\LinkdataClient\Linkdata\Entity\Brand;
@@ -159,7 +157,9 @@ class LinkdataClient extends AbstractHydraClient
                 \sprintf('/v2/activities/%s/locations', $activityId)
             )->getContent();
         } catch (ClientHydraException $e) {
-            dump($e->getMessage()); die;
+            dump($e->getMessage());
+            die;
+
             return [];
         }
     }

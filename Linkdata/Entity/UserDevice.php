@@ -86,6 +86,7 @@ class UserDevice extends ProxyObject
         if (null !== $this->model) {
             $this->model->_hydrate();
         }
+
         return $this->model;
     }
 
@@ -109,6 +110,7 @@ class UserDevice extends ProxyObject
         if (null !== $this->user) {
             $this->user->_hydrate();
         }
+
         return $this->user;
     }
 

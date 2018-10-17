@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\DataCollector;
 
-use Symfony\Component\HttpKernel\DataCollector\DataCollector;
+use Stadline\LinkdataClient\Linkdata\Client\LinkdataClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Stadline\LinkdataClient\Linkdata\Client\LinkdataClient;
+use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 
 class LinkDataCollector extends DataCollector
 {
@@ -18,14 +18,14 @@ class LinkDataCollector extends DataCollector
         $this->client = $client;
     }
 
-    public function collect(Request $request, Response $response, \Exception $exception = null)
+    public function collect(Request $request, Response $response, \Exception $exception = null): void
     {
         $this->data = $this->client->getAdapter()->getDebugData();
     }
 
-    public function reset()
+    public function reset(): void
     {
-        $this->data = array();
+        $this->data = [];
     }
 
     public function getName()
@@ -42,7 +42,7 @@ class LinkDataCollector extends DataCollector
     {
         $time = 0;
 
-        foreach($this->data as $request) {
+        foreach ($this->data as $request) {
             $time += $request['time'];
         }
 

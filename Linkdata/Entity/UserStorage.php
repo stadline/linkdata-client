@@ -60,6 +60,7 @@ class UserStorage extends ProxyObject
         if (null !== $this->user) {
             $this->user->_hydrate();
         }
+
         return $this->user;
     }
 
@@ -83,6 +84,7 @@ class UserStorage extends ProxyObject
         if (null !== $this->storageKey) {
             $this->storageKey->_hydrate();
         }
+
         return $this->storageKey;
     }
 

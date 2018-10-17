@@ -178,6 +178,7 @@ class DeviceModel extends ProxyObject
         if (null !== $this->brand) {
             $this->brand->_hydrate();
         }
+
         return $this->brand;
     }
 

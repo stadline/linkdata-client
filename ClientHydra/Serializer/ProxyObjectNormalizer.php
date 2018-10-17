@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Serializer;
 
-use Doctrine\Common\Inflector\Inflector;
 use ReflectionMethod;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
@@ -56,10 +55,10 @@ class ProxyObjectNormalizer extends ObjectNormalizer
     /**
      * Denormalizes data back into an object of the given class.
      *
-     * @param mixed $data Data to restore
-     * @param string $class The expected class to instantiate
-     * @param string $format Format the given data was extracted from
-     * @param array $context Options available to the denormalizer
+     * @param mixed  $data    Data to restore
+     * @param string $class   The expected class to instantiate
+     * @param string $format  Format the given data was extracted from
+     * @param array  $context Options available to the denormalizer
      *
      * @throws BadMethodCallException   Occurs when the normalizer is not called in an expected context
      * @throws InvalidArgumentException Occurs when the arguments are not coherent or not supported
@@ -83,8 +82,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
 
             $reflexionClass = new \ReflectionClass($context[AbstractNormalizer::OBJECT_TO_POPULATE]);
             foreach ($reflexionClass->getProperties() as $property) {
-                if (false !== $property->getDocComment() && preg_match('/@var\s+([^\s]+)/', $property->getDocComment(), $matches)) {
-                    [, $type] = $matches;
+                if (false !== $property->getDocComment() && \preg_match('/@var\s+([^\s]+)/', $property->getDocComment(), $matches)) {
+                    list(, $type) = $matches;
                     if (!\class_exists($type)) {
                         $type = $this->entityNamespace.'\\'.$type;
                     }
@@ -97,8 +96,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                 }
             }
             foreach ($reflexionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-                if (strpos($method->getName(), 'set') === 0) {
-                    $propertyName = lcfirst(substr($method->getName(), 3));
+                if (0 === \strpos($method->getName(), 'set')) {
+                    $propertyName = \lcfirst(\substr($method->getName(), 3));
                     if (\in_array($propertyName, $metadata, true)) {
                         continue;
                     }
@@ -125,8 +124,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
     /**
      * Checks whether the given class is supported for denormalization by this normalizer.
      *
-     * @param mixed $data Data to denormalize from
-     * @param string $type The class to which the data should be denormalized
+     * @param mixed  $data   Data to denormalize from
+     * @param string $type   The class to which the data should be denormalized
      * @param string $format The format being deserialized from
      *
      * @return bool

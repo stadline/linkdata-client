@@ -101,6 +101,7 @@ class UserSumup extends ProxyObject
         if (null !== $this->user) {
             $this->user->_hydrate();
         }
+
         return $this->user;
     }
 
@@ -117,6 +118,7 @@ class UserSumup extends ProxyObject
         if (null !== $this->sport) {
             $this->sport->_hydrate();
         }
+
         return $this->sport;
     }
 
@@ -133,6 +135,7 @@ class UserSumup extends ProxyObject
         if (null !== $this->datatype) {
             $this->datatype->_hydrate();
         }
+
         return $this->datatype;
     }
 

@@ -319,6 +319,7 @@ class Sport extends ProxyObject
         if (null !== $this->universe) {
             $this->universe->_hydrate();
         }
+
         return $this->universe;
     }
 

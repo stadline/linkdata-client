@@ -58,6 +58,7 @@ class ShareUser extends ProxyObject
         if (null !== $this->user) {
             $this->user->_hydrate();
         }
+
         return $this->user;
     }
 

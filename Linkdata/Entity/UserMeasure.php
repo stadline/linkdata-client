@@ -81,6 +81,7 @@ class UserMeasure extends ProxyObject
         if (null !== $this->user) {
             $this->user->_hydrate();
         }
+
         return $this->user;
     }
 
@@ -94,6 +95,7 @@ class UserMeasure extends ProxyObject
         if (null !== $this->datatype) {
             $this->datatype->_hydrate();
         }
+
         return $this->datatype;
     }
 

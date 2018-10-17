@@ -25,8 +25,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
         IriConverter $iriConverter,
         string $classname,
         array $filters = []
-    )
-    {
+    ) {
         $this->proxyManager = $proxyManager;
         $this->objects = [];
         $this->currentIteratorPosition = self::INITAL_CURSOR_POSITION;
@@ -167,7 +166,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
             unset($this->objects[$offset]);
 
             // Re-index array
-            $this->objects = array_values($this->objects);
+            $this->objects = \array_values($this->objects);
 
             // As we removed one element, rollback iterator position to previous
             if ($this->currentIteratorPosition > self::INITAL_CURSOR_POSITION) {
