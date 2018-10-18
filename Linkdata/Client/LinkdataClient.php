@@ -20,12 +20,12 @@ use Stadline\LinkdataClient\Linkdata\Entity\StorageKey;
 use Stadline\LinkdataClient\Linkdata\Entity\Universe;
 use Stadline\LinkdataClient\Linkdata\Entity\User;
 use Stadline\LinkdataClient\Linkdata\Entity\UserDevice;
+use Stadline\LinkdataClient\Linkdata\Entity\UserEquipment;
 use Stadline\LinkdataClient\Linkdata\Entity\UserMeasure;
 use Stadline\LinkdataClient\Linkdata\Entity\UserMeasureGoal;
 use Stadline\LinkdataClient\Linkdata\Entity\UserRecord;
 use Stadline\LinkdataClient\Linkdata\Entity\UserStorage;
 use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
-use Stadline\LinkdataClient\Linkdata\Entity\UserEquipment;
 
 /**
  * @method Activity            getActivity(string $id, array $options = [])

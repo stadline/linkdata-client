@@ -80,7 +80,7 @@ class UserEquipment extends ProxyObject
     }
 
     /**
-     * @return User|string
+     * @return string|User
      */
     public function getUser()
     {
@@ -105,7 +105,7 @@ class UserEquipment extends ProxyObject
     /**
      * @param User $user
      */
-    public function setUser($user)
+    public function setUser($user): void
     {
         $this->user = $user;
     }
@@ -121,7 +121,7 @@ class UserEquipment extends ProxyObject
     /**
      * @param string $category
      */
-    public function setCategory($category)
+    public function setCategory($category): void
     {
         $this->category = $category;
     }
@@ -137,7 +137,7 @@ class UserEquipment extends ProxyObject
     /**
      * @param string $brand
      */
-    public function setBrand($brand)
+    public function setBrand($brand): void
     {
         $this->brand = $brand;
     }
@@ -153,7 +153,7 @@ class UserEquipment extends ProxyObject
     /**
      * @param string $name
      */
-    public function setName($name)
+    public function setName($name): void
     {
         $this->name = $name;
     }
@@ -169,7 +169,7 @@ class UserEquipment extends ProxyObject
     /**
      * @param array $sumups
      */
-    public function setSumups($sumups)
+    public function setSumups($sumups): void
     {
         $this->sumups = $sumups;
     }
@@ -185,7 +185,7 @@ class UserEquipment extends ProxyObject
     /**
      * @param mixed $sports
      */
-    public function setSports($sports)
+    public function setSports($sports): void
     {
         $this->sports = $sports;
     }
@@ -201,7 +201,7 @@ class UserEquipment extends ProxyObject
     /**
      * @param \DateTime $createdAt
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt($createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -217,7 +217,7 @@ class UserEquipment extends ProxyObject
     /**
      * @param \DateTime $updatedAt
      */
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt($updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }

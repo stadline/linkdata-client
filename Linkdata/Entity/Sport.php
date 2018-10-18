@@ -326,6 +326,7 @@ class Sport extends ProxyObject
         if (null !== $this->universe) {
             $this->universe->_hydrate();
         }
+
         return $this->universe;
     }
 
@@ -368,7 +369,7 @@ class Sport extends ProxyObject
         return $this->userEquipments;
     }
 
-    public function setUserEquipments($userEquipments)
+    public function setUserEquipments($userEquipments): void
     {
         $this->userEquipments = $userEquipments;
     }

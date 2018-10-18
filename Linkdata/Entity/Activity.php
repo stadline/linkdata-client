@@ -240,14 +240,13 @@ class Activity extends ProxyObject
         return $this->hydrate($this->sport);
     }
 
-    public function getSportId(): string
+    public function getSportId(): ?int
     {
-        if (!$this->sportIri) {
-            $this->sportIri = $this->sport;
+        if ($this->getSport()) {
+            return $this->getSport()->getId();
         }
 
-        // Parse iri to get id.
-        return \explode('/', $this->sportIri)[3];
+        return null;
     }
 
     public function setSport($sport): void
