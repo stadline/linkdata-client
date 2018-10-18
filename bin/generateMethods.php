@@ -90,13 +90,13 @@ function main(string $baseLd2Path, array $extractConf): void
     try {
         $fileSystem->remove($entityDirPath);
     } catch (IOExceptionInterface $exception) {
-        echo "An error occurred while creating your directory at ".$exception->getPath();
+        echo 'An error occurred while creating your directory at '.$exception->getPath();
     }
 
     try {
         $fileSystem->mkdir($entityDirPath);
     } catch (IOExceptionInterface $exception) {
-        echo "An error occurred while creating your directory at ".$exception->getPath();
+        echo 'An error occurred while creating your directory at '.$exception->getPath();
     }
 
     foreach ($extractConf['entity_directories'] as $entityPath) {
@@ -104,16 +104,33 @@ function main(string $baseLd2Path, array $extractConf): void
         $files = $finder->files()->name('*.php')->in(\sprintf('%s/%s', $baseLd2Path, $entityPath));
 
         foreach ($files as $file) {
-            if (!strpos($file->getRealPath(), 'Interface.php')) {
-
+            if (!\strpos($file->getRealPath(), 'Interface.php')) {
                 list($entityName, $entityContent) = processEntity(\file_get_contents($file->getRealPath()));
 
                 // Save Entity in file
-                $fileSystem->appendToFile(sprintf('%s/%s.php', $entityDirPath, $entityName), $entityContent);
-
+                $fileSystem->appendToFile(\sprintf('%s/%s.php', $entityDirPath, $entityName), $entityContent);
             }
         }
     }
+
+    // CS-Fixer
+    $csFixer = new \Symfony\Component\Process\Process(
+        array(
+            'php',
+            'vendor/bin/php-cs-fixer',
+            'fix',
+            '--no-ansi',
+            $entityDirPath
+        )
+    );
+    $csFixer->run();
+
+    // executes after the command finishes
+    if (!$csFixer->isSuccessful()) {
+        echo 'Error with CS-Fixer command';
+    }
+
+    echo $csFixer->getOutput();
 }
 
 function processEntity(string $entityContent): array
@@ -129,15 +146,14 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use DateTime;
 
 
 EOF;
 
     \preg_match('/^namespace (.+);/m', $entityContent, $matches);
-
-    var_dump($matches);
-
-
     $namespace = $matches[1];
     \preg_match('/^class ([a-zA-Z0-9\\_]+)/m', $entityContent, $matches);
     $classname = $matches[1];
@@ -159,7 +175,7 @@ EOF;
 }
 EOF;
 
-    return array($classname,$content);
+    return [$classname, $content];
 }
 
 function generateClassDoc(array $reflectionProperties): string
