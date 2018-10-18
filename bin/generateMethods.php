@@ -11,6 +11,8 @@ require_once './vendor/autoload.php';
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 $loader = require __DIR__.'/../vendor/autoload.php';
 AnnotationRegistry::registerLoader([$loader, 'loadClass']);
@@ -24,12 +26,36 @@ class UniversalAnnotationReader extends AnnotationReader
      *
      * @return null|string
      */
-    public function getPropertyType(\ReflectionProperty $property)
+    public function getPropertyType(\ReflectionProperty $property): ?string
     {
         $doc = $property->getDocComment();
         \preg_match_all('#@var (.*?)\n#s', $doc, $annotations);
 
         return $annotations[1][0];
+    }
+
+    /**
+     * Get groups of property from property declaration.
+     *
+     * @param array $property
+     *
+     * @return null|array
+     */
+    public function getPropertyGroups(array $annotations): ?array
+    {
+        $groups = [];
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof \Symfony\Component\Serializer\Annotation\Groups) {
+                $groups = $annotation;
+            }
+        }
+
+        if (empty($groups)) {
+            return null;
+        }
+
+        return $groups->getGroups();
     }
 }
 
@@ -56,23 +82,41 @@ $annotationReader = new UniversalAnnotationReader();
 
 main($baseLd2Path, $extractConf);
 
-function main(string $baseLd2Path, array $extractConf)
+function main(string $baseLd2Path, array $extractConf): void
 {
-    foreach ($extractConf['entity_directories'] as $entityPath) {
+    $fileSystem = new Filesystem();
+    $entityDirPath = 'var/Entity';
 
+    try {
+        $fileSystem->remove($entityDirPath);
+    } catch (IOExceptionInterface $exception) {
+        echo "An error occurred while creating your directory at ".$exception->getPath();
+    }
+
+    try {
+        $fileSystem->mkdir($entityDirPath);
+    } catch (IOExceptionInterface $exception) {
+        echo "An error occurred while creating your directory at ".$exception->getPath();
+    }
+
+    foreach ($extractConf['entity_directories'] as $entityPath) {
         $finder = new \Symfony\Component\Finder\Finder();
         $files = $finder->files()->name('*.php')->in(\sprintf('%s/%s', $baseLd2Path, $entityPath));
 
-        /** @var SplFileInfo $file */
         foreach ($files as $file) {
-            $entityContent = processEntity(\file_get_contents($file->getRealPath()));
+            if (!strpos($file->getRealPath(), 'Interface.php')) {
 
-            var_dump($entityContent);die;
+                list($entityName, $entityContent) = processEntity(\file_get_contents($file->getRealPath()));
+
+                // Save Entity in file
+                $fileSystem->appendToFile(sprintf('%s/%s.php', $entityDirPath, $entityName), $entityContent);
+
+            }
         }
     }
 }
 
-function processEntity(string $entityContent): string
+function processEntity(string $entityContent): array
 {
     global $annotationReader;
 
@@ -83,69 +127,49 @@ declare(strict_types=1);
         
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
+use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 EOF;
 
     \preg_match('/^namespace (.+);/m', $entityContent, $matches);
+
+    var_dump($matches);
+
+
     $namespace = $matches[1];
     \preg_match('/^class ([a-zA-Z0-9\\_]+)/m', $entityContent, $matches);
-    $classname = $namespace.'\\'.$matches[1];
+    $classname = $matches[1];
 
-    $reflectedClass = new \ReflectionClass($classname);
+    $reflectedClass = new \ReflectionClass($namespace.'\\'.$matches[1]);
 
     $content .= generateClassDoc($reflectedClass->getProperties());
 
+    $content .= <<<EOF
+class ${classname} extends ProxyObject
+{
 
-    return $content;
+EOF;
 
+    $content .= generateProperties($reflectedClass->getProperties());
 
-    foreach ($reflectedClass->getProperties() as $reflectionProperty) {
-
-        // the annotations
-        $annotations = $annotationReader->getPropertyAnnotations($reflectionProperty);
-        $annotation = $annotationReader->getPropertyType($reflectionProperty);
-
-        $propertyName = $reflectionProperty->getName();
-
-        $isNullable = '?' === \substr($annotation, 0, 1);
-        $realType = $isNullable ? \substr($annotation, 1) : $annotation;
-
-        // Type
-        if ($isNullable) {
-            $stringType = $realType . '|null';
-        } else {
-            $stringType = $realType;
-        }
-
-        // getter
-        $getterPrefix = 'get';
-        if ('bool' === $realType || 'boolean' === $realType) {
-            $getterPrefix = 'is';
-        }
-        $stringGetter = $getterPrefix . \ucfirst($propertyName) . '()';
-
-        // setter
-        $stringSetter = 'set' . \ucfirst($propertyName) . '(' . $stringType . ' $' . $propertyName . ')';
-        echo \sprintf(' * @method %s %s', $stringType, $stringGetter) . PHP_EOL;
-        echo \sprintf(' * @method void %s', $stringSetter) . PHP_EOL;
-
-    }
-    echo ' */'.PHP_EOL;
-
+    $content .= <<<EOF
 
 }
+EOF;
 
+    return array($classname,$content);
+}
 
 function generateClassDoc(array $reflectionProperties): string
 {
     global $annotationReader;
 
-    $classDoc = "/**".PHP_EOL;
+    $classDoc = '/**'.PHP_EOL;
 
     foreach ($reflectionProperties as $reflectionProperty) {
-
-        // the annotations
-        $annotations = $annotationReader->getPropertyAnnotations($reflectionProperty);
+        // Annotations
         $annotation = $annotationReader->getPropertyType($reflectionProperty);
 
         $propertyName = $reflectionProperty->getName();
@@ -155,33 +179,87 @@ function generateClassDoc(array $reflectionProperties): string
 
         // Type
         if ($isNullable) {
-            $stringType = $realType . '|null';
+            $stringType = $realType.'|null';
         } else {
             $stringType = $realType;
         }
 
-        // getter
+        // Getter
         $getterPrefix = 'get';
         if ('bool' === $realType || 'boolean' === $realType) {
             $getterPrefix = 'is';
         }
-        $stringGetter = $getterPrefix . \ucfirst($propertyName) . '()';
+        $stringGetter = $getterPrefix.\ucfirst($propertyName).'()';
 
-        // setter
-        $stringSetter = 'set' . \ucfirst($propertyName) . '(' . $stringType . ' $' . $propertyName . ')';
-        $classDoc .= \sprintf(' * @method %s %s', $stringType, $stringGetter) . PHP_EOL;
-        $classDoc .= \sprintf(' * @method void %s', $stringSetter) . PHP_EOL;
-
+        // Setter
+        $stringSetter = 'set'.\ucfirst($propertyName).'('.$stringType.' $'.$propertyName.')';
+        $classDoc .= \sprintf(' * @method %s %s', $stringType, $stringGetter).PHP_EOL;
+        $classDoc .= \sprintf(' * @method void %s', $stringSetter).PHP_EOL;
     }
     $classDoc .= ' */'.PHP_EOL;
 
     return $classDoc;
 }
 
+function generateProperties(array $reflectionProperties): string
+{
+    $properties = '';
+
+    // Annotation
+    foreach ($reflectionProperties as $reflectionProperty) {
+        $properties .= generateAnnotationForProperties($reflectionProperty);
+
+        $propertyName = $reflectionProperty->getName();
+        $properties .= <<<EOF
+    public $${propertyName};
 
 
+EOF;
+    }
 
+    return $properties;
+}
 
+function generateAnnotationForProperties(ReflectionProperty $reflectionProperty): ?string
+{
+    global $annotationReader;
+
+    $annotationsString = <<<EOF
+    /**
+EOF;
+    $annotations = $annotationReader->getPropertyAnnotations($reflectionProperty);
+
+    if ($type = $annotationReader->getPropertyType($reflectionProperty)) {
+        $annotationsString .= <<<EOF
+        
+     * @var ${type}
+     *
+EOF;
+    }
+
+    if ($groups = $annotationReader->getPropertyGroups($annotations)) {
+        $groupsString = '{';
+
+        $keys = \array_keys($groups);
+        $last_key = \end($keys);
+        foreach ($groups as $key => $group) {
+            $groupsString .= $key !== $last_key ? \sprintf('"%s",', $group) : \sprintf('"%s"', $group);
+        }
+
+        $annotationsString .= <<<EOF
+        
+     * @Groups(${groupsString}})
+EOF;
+    }
+
+    $annotationsString .= <<<EOF
+    
+     */
+
+EOF;
+
+    return $annotationsString;
+}
 
 //
 //foreach ($routes as $route => $param) {
@@ -199,7 +277,3 @@ function generateClassDoc(array $reflectionProperties): string
 
 //Annotations
 //echo $fileContent;
-
-
-
-
