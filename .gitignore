@@ -6,3 +6,4 @@ Dockerfile
 /docker/*
 docker-*
 .env
+/var
