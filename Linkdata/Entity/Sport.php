@@ -281,6 +281,8 @@ class Sport extends ProxyObject
      */
     private $userEquipments;
 
+    private $iri;
+
     public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
@@ -372,5 +374,10 @@ class Sport extends ProxyObject
     public function setUserEquipments($userEquipments): void
     {
         $this->userEquipments = $userEquipments;
+    }
+
+    public function getIri(): string
+    {
+        return sprintf('/v2/sports/%s', $this->id);
     }
 }
