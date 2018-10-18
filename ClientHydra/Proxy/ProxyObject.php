@@ -4,21 +4,16 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
-use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
-use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
-use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
-use Symfony\Component\Serializer\SerializerInterface;
-
 /**
  * @method void            setId(null|int|string $id)
  * @method null|int|string getId()
  */
 abstract class ProxyObject
 {
-    /** @var ProxyManager */
-    private $proxyManager;
-    /** @var SerializerInterface */
-    private $serializer;
+    /** @var \Closure */
+    private $_doRefresh;
+    /** @var \Closure */
+    private $_getData;
 
     /* internal metadata */
     private $_hydrated;
@@ -38,16 +33,7 @@ abstract class ProxyObject
 
         // if data is empty = get data from api
         if (null === $data) {
-            $requestResponse = $this->proxyManager->getAdapter()->makeRequest(
-                'GET',
-                $this->_iri
-            );
-
-            if (!$requestResponse instanceof JsonResponse) {
-                throw new \RuntimeException('Cannot hydrate object with non json response');
-            }
-
-            $data = $requestResponse->getContent();
+            $data = ($this->_getData)($this->_iri);
         }
 
         $this->_refresh($data);
@@ -55,10 +41,7 @@ abstract class ProxyObject
 
     public function _refresh(array $data): void
     {
-        $this->serializer->deserialize(\json_encode($data), $this->_className, 'json', [
-            'object_to_populate' => $this,
-            'groups' => [HydraParser::getDenormContext($data)],
-        ]);
+        ($this->_doRefresh)($this, $this->_className, $data);
         $this->_hydrated = true;
     }
 
@@ -67,21 +50,16 @@ abstract class ProxyObject
         return $this->_hydrated;
     }
 
-    protected function getProxyManager(): ProxyManager
-    {
-        return $this->proxyManager;
-    }
-
     public function _init(
-        IriConverter $iriConverter,
-        SerializerInterface $serializer,
-        ProxyManager $proxyManager,
+        string $iri,
+        \Closure $refreshClosure,
+        \Closure $getDataClosure,
         string $className,
         $id,
         ?array $data = null
     ): void {
-        $this->proxyManager = $proxyManager;
-        $this->serializer = $serializer;
+        $this->_getData = $getDataClosure;
+        $this->_doRefresh = $refreshClosure;
         $this->_className = $className;
         $reflectionClass = new \ReflectionClass($this);
 
@@ -104,7 +82,7 @@ abstract class ProxyObject
             }
         }
 
-        $this->_iri = $iriConverter->getIriFromClassNameAndId($this->_className, $id);
+        $this->_iri = $iri;
         $this->_hydrated = false;
 
         if (null !== $data) {

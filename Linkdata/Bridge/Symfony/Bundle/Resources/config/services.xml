@@ -5,6 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient" alias="linkdata_client.client" />
         <service id="linkdata_client.adapter" alias="linkdata_client.adapter_guzzle" />
 
         <service id="linkdata_client.client" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
@@ -39,6 +40,11 @@
                 <argument type="service" id="linkdata_client.iri_converter" />
             </call>
             <tag name="serializer.normalizer" />
+        </service>
+
+        <service id="linkdata_client.data_collector" class="Stadline\LinkdataClient\Linkdata\Bridge\Symfony\Bundle\DataCollector\LinkDataCollector">
+            <argument type="service" id="linkdata_client.client" />
+            <tag name="data_collector" template="LinkdataClientBundle::toolbar.html.twig" id="linkdata_client.linkdata_collector" />
         </service>
     </services>
 </container>

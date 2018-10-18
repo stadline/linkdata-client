@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\Linkdata\DataCollector;
+namespace Stadline\LinkdataClient\Linkdata\Bridge\Symfony\Bundle\DataCollector;
 
 use Stadline\LinkdataClient\Linkdata\Client\LinkdataClient;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,37 +28,34 @@ class LinkDataCollector extends DataCollector
         $this->data = [];
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'linkdata_client.linkdata_collector';
     }
 
-    public function getNbrCall()
+    public function getNbrCall(): int
     {
         return \count($this->data);
     }
 
-    public function getTotalTime()
+    public function getTotalTime(): int
     {
         $time = 0;
-
         foreach ($this->data as $request) {
             $time += $request['time'];
         }
 
-        $time = $time * 1000;
-
-        return $time;
+        return $time * 1000;
     }
 
-    public function getNbrErrors()
+    public function getNbrErrors(): int
     {
         $errors = 0;
 
         return $errors;
     }
 
-    public function getCalls()
+    public function getCalls(): array
     {
         return $this->data;
     }

@@ -237,123 +237,123 @@ class Sport extends ProxyObject
      *
      * @Groups({"sport_norm"})
      */
-    private $id;
+    public $id;
 
     /**
      * @var array
      *
      * @Groups({"sport_norm"})
      */
-    private $translatedNames;
+    public $translatedNames;
 
     /**
      * @var Universe
      *
      * @Groups({"sport_norm"})
      */
-    private $universe;
+    public $universe;
 
     /**
      * @var bool
      *
      * @Groups({"sport_norm"})
      */
-    private $active = true;
+    public $active = true;
 
     /**
      * @var string
      *
      * @Groups({"sport_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
      * @var string
      *
      * @Groups({"sport_norm"})
      */
-    private $updatedAt;
-
-    public function getUpdatedAt(): ?string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): ?string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(?string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getTranslatedNames(): ?array
-    {
-        return $this->translatedNames;
-    }
-
-    public function setTranslatedNames(?array $translatedNames): void
-    {
-        $this->translatedNames = $translatedNames;
-    }
-
-    public function getUniverse()
-    {
-        if (null !== $this->universe) {
-            $this->universe->_hydrate();
-        }
-
-        return $this->universe;
-    }
-
-    public function setUniverse(?Universe $universe): void
-    {
-        $this->universe = $universe;
-    }
-
-    public function isActive(): ?bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(?bool $active): void
-    {
-        $this->active = $active;
-    }
-
-    public function hasNameByLocale(string $locale): ?bool
-    {
-        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
-    }
-
-    public function getNameByLocale(string $locale): ?string
-    {
-        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
-    }
-
-    public static function getIcon($id): string
-    {
-        if (isset(self::$slug_table[$id])) {
-            return self::$slug_table[$id];
-        }
-
-        return '';
-    }
+    public $updatedAt;
+//
+//    public function getUpdatedAt(): ?string
+//    {
+//        return $this->updatedAt;
+//    }
+//
+//    public function setUpdatedAt(?string $updatedAt): void
+//    {
+//        $this->updatedAt = $updatedAt;
+//    }
+//
+//    public function getCreatedAt(): ?string
+//    {
+//        return $this->createdAt;
+//    }
+//
+//    public function setCreatedAt(?string $createdAt): void
+//    {
+//        $this->createdAt = $createdAt;
+//    }
+//
+//    public function getId(): ?int
+//    {
+//        return $this->id;
+//    }
+//
+//    public function setId(?int $id): void
+//    {
+//        $this->id = $id;
+//    }
+//
+//    public function getTranslatedNames(): ?array
+//    {
+//        return $this->translatedNames;
+//    }
+//
+//    public function setTranslatedNames(?array $translatedNames): void
+//    {
+//        $this->translatedNames = $translatedNames;
+//    }
+//
+//    public function getUniverse()
+//    {
+//        if (null !== $this->universe) {
+//            $this->universe->_hydrate();
+//        }
+//
+//        return $this->universe;
+//    }
+//
+//    public function setUniverse(?Universe $universe): void
+//    {
+//        $this->universe = $universe;
+//    }
+//
+//    public function isActive(): ?bool
+//    {
+//        return $this->active;
+//    }
+//
+//    public function setActive(?bool $active): void
+//    {
+//        $this->active = $active;
+//    }
+//
+//    public function hasNameByLocale(string $locale): ?bool
+//    {
+//        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
+//    }
+//
+//    public function getNameByLocale(string $locale): ?string
+//    {
+//        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
+//    }
+//
+//    public static function getIcon($id): string
+//    {
+//        if (isset(self::$slug_table[$id])) {
+//            return self::$slug_table[$id];
+//        }
+//
+//        return '';
+//    }
 }

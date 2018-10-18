@@ -6,7 +6,6 @@ namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
 use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
-use Stadline\LinkdataClient\ClientHydra\Type\FormatType;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -49,13 +48,30 @@ class ProxyManager
 
         $className = $this->iriConverter->getClassnameFromIri($iri);
         /** @var ProxyObject $proxyObject */
+        $id = $this->iriConverter->getObjectIdFromIri($iri);
         $proxyObject = new $className();
         $proxyObject->_init(
-            $this->iriConverter,
-            $this->serializer,
-            $this,
+            $this->iriConverter->getIriFromClassNameAndId($className, $id),
+            function (ProxyObject $proxyObject, string $className, $data): void {
+                $this->serializer->deserialize(\json_encode($data), $className, 'json', [
+                    'object_to_populate' => $proxyObject,
+                    'groups' => [HydraParser::getDenormContext($data)],
+                ]);
+            },
+            function (string $iri) {
+                $requestResponse = $this->getAdapter()->makeRequest(
+                    'GET',
+                    $iri
+                );
+
+                if (!$requestResponse instanceof JsonResponse) {
+                    throw new \RuntimeException('Cannot hydrate object with non json response');
+                }
+
+                return $requestResponse->getContent();
+            },
             $className,
-            $this->iriConverter->getObjectIdFromIri($iri)
+            $id
         );
         $this->objects[$iri] = $proxyObject;
 
@@ -137,7 +153,7 @@ class ProxyManager
             $this->iriConverter->getCollectionIriFromClassName(\get_class($object)),
             $this->serializer->serialize(
                 $object,
-                FormatType::JSON,
+                'application/json',
                 ['groups' => [HydraParser::getNormContext()]]
             )
         );

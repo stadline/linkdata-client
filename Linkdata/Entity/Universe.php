@@ -14,120 +14,120 @@ class Universe extends ProxyObject
      *
      * @Groups({"universe_norm"})
      */
-    private $id;
+    public $id;
 
     /**
      * @var array
      *
      * @Groups({"universe_norm"})
      */
-    private $translatedNames;
+    public $translatedNames;
 
     /**
-     * @var array
+     * @var Sport[]
      *
      * @Groups({"universe_norm"})
      */
-    private $sports;
+    public $sports = [];
 
     /**
      * @var bool
      *
      * @Groups({"universe_norm"})
      */
-    private $active = true;
+    public $active = true;
 
     /**
      * @var string
      *
      * @Groups({"universe_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
      * @var string
      *
      * @Groups({"universe_norm"})
      */
-    private $updatedAt;
-
-    public function __construct()
-    {
-        $this->sports = [];
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getTranslatedNames(): ?array
-    {
-        return $this->translatedNames;
-    }
-
-    public function setTranslatedNames(?array $translatedNames): void
-    {
-        $this->translatedNames = $translatedNames;
-    }
-
-    public function addSport(?string $sport): void
-    {
-        $this->sports[] = $sport;
-    }
-
-    public function removeSport(string $sport): void
-    {
-        //todo implement the method
-    }
-
-    public function getSports(): array
-    {
-        return $this->sports;
-    }
-
-    public function isActive(): ?bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(?bool $active): void
-    {
-        $this->active = $active;
-    }
-
-    public function getCreatedAt(): ?string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(?string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getUpdatedAt(): ?string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function hasNameByLocale(string $locale): ?bool
-    {
-        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
-    }
-
-    public function getNameByLocale(string $locale): ?string
-    {
-        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
-    }
+    public $updatedAt;
+//
+//    public function __construct()
+//    {
+//        $this->sports = [];
+//    }
+//
+//    public function getId(): ?int
+//    {
+//        return $this->id;
+//    }
+//
+//    public function setId(?int $id): void
+//    {
+//        $this->id = $id;
+//    }
+//
+//    public function getTranslatedNames(): ?array
+//    {
+//        return $this->translatedNames;
+//    }
+//
+//    public function setTranslatedNames(?array $translatedNames): void
+//    {
+//        $this->translatedNames = $translatedNames;
+//    }
+//
+//    public function addSport(?string $sport): void
+//    {
+//        $this->sports[] = $sport;
+//    }
+//
+//    public function removeSport(string $sport): void
+//    {
+//        //todo implement the method
+//    }
+//
+//    public function getSports(): array
+//    {
+//        return $this->sports;
+//    }
+//
+//    public function isActive(): ?bool
+//    {
+//        return $this->active;
+//    }
+//
+//    public function setActive(?bool $active): void
+//    {
+//        $this->active = $active;
+//    }
+//
+//    public function getCreatedAt(): ?string
+//    {
+//        return $this->createdAt;
+//    }
+//
+//    public function setCreatedAt(?string $createdAt): void
+//    {
+//        $this->createdAt = $createdAt;
+//    }
+//
+//    public function getUpdatedAt(): ?string
+//    {
+//        return $this->updatedAt;
+//    }
+//
+//    public function setUpdatedAt(?string $updatedAt): void
+//    {
+//        $this->updatedAt = $updatedAt;
+//    }
+//
+//    public function hasNameByLocale(string $locale): ?bool
+//    {
+//        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
+//    }
+//
+//    public function getNameByLocale(string $locale): ?string
+//    {
+//        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
+//    }
 }

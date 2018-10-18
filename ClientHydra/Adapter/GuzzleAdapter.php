@@ -17,14 +17,12 @@ class GuzzleAdapter implements AdapterInterface
     ];
     private $cache;
     private $debugData;
-    private $isDebug;
-    private $isDebugStoreResult;
+    private $debugEnabled;
 
-    public function __construct(string $baseUrl, $kernelDebug)
+    public function __construct(string $baseUrl, $debugEnabled = false)
     {
         $this->client = new Client(['base_uri' => $baseUrl]);
-        $this->isDebug = $kernelDebug;
-        $this->isDebugStoreResult = true;
+        $this->debugEnabled = $debugEnabled;
         $this->debugData = [];
     }
 
@@ -46,7 +44,7 @@ class GuzzleAdapter implements AdapterInterface
         $requestHash = \sha1(\json_encode($headers).'.'.$method.'.'.$uri.'.'.$body);
         if ($cacheEnable && isset($this->cache[$requestHash])) {
             $response = $this->cache[$requestHash];
-            if ($this->isDebug) {
+            if ($this->debugEnabled) {
                 $requestData['cache'] = true;
             }
         } else {
@@ -55,7 +53,7 @@ class GuzzleAdapter implements AdapterInterface
                     new Request($method, $uri, $headers, $body)
                 );
                 $this->cache[$requestHash] = $response;
-                if ($this->isDebug) {
+                if ($this->debugEnabled) {
                     $requestData['cache'] = false;
                 }
             } catch (GuzzleException $e) {
@@ -66,12 +64,12 @@ class GuzzleAdapter implements AdapterInterface
         $contentType = $response->getHeader('Content-Type')[0] ?? 'unknown';
         $contentType = \explode(';', $contentType)[0];
 
-        if ($this->isDebug) {
+        if ($this->debugEnabled) {
             $requestEndTime = \microtime(true);
             $requestData['method'] = $method;
             $requestData['uri'] = $uri;
             $requestData['time'] = $requestEndTime - $requestStartTime;
-            $requestData['response'] = $this->isDebugStoreResult ? (string) $response->getBody() : '';
+            $requestData['response'] = $this->debugEnabled ? (string) $response->getBody() : '';
 
             $this->debugData[] = $requestData;
         }

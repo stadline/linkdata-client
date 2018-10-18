@@ -9,12 +9,7 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
-use Symfony\Component\Serializer\Exception\BadMethodCallException;
-use Symfony\Component\Serializer\Exception\ExtraAttributesException;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
-use Symfony\Component\Serializer\Exception\LogicException;
-use Symfony\Component\Serializer\Exception\RuntimeException;
-use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
@@ -54,22 +49,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
 
     /**
      * Denormalizes data back into an object of the given class.
-     *
-     * @param mixed  $data    Data to restore
-     * @param string $class   The expected class to instantiate
-     * @param string $format  Format the given data was extracted from
-     * @param array  $context Options available to the denormalizer
-     *
-     * @throws BadMethodCallException   Occurs when the normalizer is not called in an expected context
-     * @throws InvalidArgumentException Occurs when the arguments are not coherent or not supported
-     * @throws UnexpectedValueException Occurs when the item cannot be hydrated with the given data
-     * @throws ExtraAttributesException Occurs when the item doesn't have attribute to receive given data
-     * @throws LogicException           Occurs when the normalizer is not supposed to denormalize
-     * @throws RuntimeException         Occurs if the class cannot be instantiated
-     *
-     * @return object
      */
-    public function denormalize($data, $class, $format = null, array $context = [])
+    public function denormalize($data, $class, $format = null, array $context = []): ProxyObject
     {
         // Only support array
         if (!\is_array($data)) {
@@ -82,7 +63,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
 
             $reflexionClass = new \ReflectionClass($context[AbstractNormalizer::OBJECT_TO_POPULATE]);
             foreach ($reflexionClass->getProperties() as $property) {
-                if (false !== $property->getDocComment() && \preg_match('/@var\s+([^\s]+)/', $property->getDocComment(), $matches)) {
+                if (false !== $property->getDocComment() && \preg_match('/@var\s+([a-zA-Z0-9_]+)(\[\])?/', $property->getDocComment(), $matches)) {
                     list(, $type) = $matches;
                     if (!\class_exists($type)) {
                         $type = $this->entityNamespace.'\\'.$type;
@@ -113,7 +94,15 @@ class ProxyObjectNormalizer extends ObjectNormalizer
         if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject && null !== ($metadata = $this->proxyObjectMetadata[\get_class($context[AbstractNormalizer::OBJECT_TO_POPULATE])])) {
             foreach ($metadata as $propName) {
                 if (isset($data[$propName])) {
-                    $data[$propName] = $this->proxyManager->getProxyFromIri($data[$propName]);
+                    if (\is_array($data[$propName])) {
+                        $toto = [];
+                        foreach ($data[$propName] as $elt) {
+                            $toto[] = $this->proxyManager->getProxyFromIri($elt);
+                        }
+                        $data[$propName] = $toto;
+                    } else {
+                        $data[$propName] = $this->proxyManager->getProxyFromIri($data[$propName]);
+                    }
                 }
             }
         }
