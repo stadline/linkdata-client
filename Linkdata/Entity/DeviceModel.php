@@ -175,10 +175,14 @@ class DeviceModel extends ProxyObject
 
     public function getBrand()
     {
-        return $this->hydrate($this->brand);
+        if (null !== $this->brand) {
+            $this->brand->_hydrate();
+        }
+
+        return $this->brand;
     }
 
-    public function setBrand($brand): void
+    public function setBrand(?Brand $brand): void
     {
         $this->brand = $brand;
     }

@@ -4,78 +4,48 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
-use Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter;
+use Doctrine\Common\Inflector\Inflector;
+use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
+use Stadline\LinkdataClient\ClientHydra\Adapter\ResponseInterface;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
-use Stadline\LinkdataClient\ClientHydra\Handler\PaginationHandler;
-use Stadline\LinkdataClient\ClientHydra\Handler\RequestHandler;
+use Stadline\LinkdataClient\ClientHydra\Exception\FormatException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
-use Stadline\LinkdataClient\ClientHydra\Type\MethodType;
-use Stadline\LinkdataClient\ClientHydra\Utils\Serializator;
-use Stadline\LinkdataClient\ClientHydra\Utils\UriConverter;
 
 abstract class AbstractHydraClient implements HydraClientInterface
 {
-    private $uriConverter;
-    private $serializator;
-    private $requestHandler;
-    private $headers;
+    private $proxyManager;
+    private $adapter;
 
-    private $baseUrl;
-
-    public function __construct(string $baseUrl, int $maxResultPerPage, string $entityNamespace)
+    public function __construct(ProxyManager $proxyManager, AdapterInterface $adapter)
     {
-        // Header default value
-        $this->headers = [
-            'Content-Type' => 'application/ld+json',
-        ];
-
-        $this->baseUrl = $baseUrl;
-
-        $this->uriConverter = new UriConverter($this->baseUrl, $entityNamespace);
-        $this->serializator = new Serializator($entityNamespace);
-        $paginationHandler = new PaginationHandler($this->serializator, $this->uriConverter, $maxResultPerPage);
-
-        $adapter = new GuzzleAdapter();
-        $this->requestHandler = new RequestHandler($adapter, $this->serializator, $paginationHandler);
+        $this->proxyManager = $proxyManager;
+        $this->adapter = $adapter;
     }
 
-    public function getProxy(string $iri): ProxyObject
+    protected function call(string $method, array $args)
     {
-        $proxyManager = new ProxyManager($this);
-
-        return $proxyManager->getProxy($iri);
-    }
-
-    /**
-     * @throws ClientHydraException
-     */
-    public function send(string $method, array $args)
-    {
-        if (isset($args['customUri'])) {
-            $uri['uri'] = \sprintf('%s%s', $this->baseUrl, $args['customUri']);
-            $uri['method'] = $method;
-        } else {
-            $uri = $this->uriConverter->formatUri($method, $args);
+        if (1 !== \preg_match('/^(?<method>[a-z]+)(?<className>[A-Za-z]+)$/', $method, $matches)) {
+            throw new FormatException(\sprintf('The method %s is not recognized.', $method));
         }
 
-        $this->serializator->setClient($this);
-        $body = null;
+        $method = \strtolower($matches['method']);
+        $className = Inflector::singularize($matches['className']);
 
-        // Put or POST, make a serialization with the entity.
-        if (isset($args[0]) && \in_array($uri['method'], [MethodType::POST, MethodType::PUT], true)) {
-            $body = $this->serializator->serialize(MethodType::POST === $uri['method'] ? $args[0][0] : $args[0]);
+        switch ($method) {
+            case 'get':
+                return $this->callGet($className, $args);
+            case 'put':
+                return $this->callPut($args);
+            case 'delete':
+                $this->callDelete($className, $args);
+
+                return null;
+            case 'post':
+                return $this->callPost($args);
         }
 
-        $requestArgs = [
-            'method' => $uri['method'],
-            'baseUrl' => $this->baseUrl,
-            'uri' => $uri['uri'],
-            'headers' => $this->headers,
-            'body' => $body,
-        ];
-
-        return $this->requestHandler->handleRequest($requestArgs);
+        throw new \RuntimeException('Cannot determine method to call');
     }
 
     /**
@@ -83,15 +53,68 @@ abstract class AbstractHydraClient implements HydraClientInterface
      */
     public function __call(string $method, array $args)
     {
-        return $this->send($method, $args);
+        return $this->call($method, $args);
     }
 
-    public function setHeader(string $name, ?string $value): void
+    private function callGet(string $classname, array $args)
     {
-        if (null !== $value) {
-            $this->headers[$name] = $value;
-        } else {
-            unset($this->headers[$name]);
+        // collection case
+        if (!isset($args[0]) || \is_array($args[0])) {
+            return $this->proxyManager->getCollection($classname, $args[0]['filters'] ?? []);
         }
+
+        // item (string | int) case
+        if (\is_int($args[0]) || \is_string($args[0])) {
+            return $this->proxyManager->getObject($classname, $args[0]);
+        }
+
+        throw new \RuntimeException('Unknown error during call get');
+    }
+
+    private function callPut(array $args)
+    {
+        if (!$args[0] instanceof ProxyObject) {
+            throw new \RuntimeException('Put require a proxy object in parameter');
+        }
+
+        return $this->proxyManager->putObject($args[0]);
+    }
+
+    private function callDelete($className, array $args): void
+    {
+        if (!\is_string($args[0]) || !\is_int($args[0])) {
+            throw new \RuntimeException('Delete require a string or an int in parameter');
+        }
+
+        $this->proxyManager->deleteObject($className, $args[0]);
+    }
+
+    private function callPost(array $args)
+    {
+        if (!$args[0] instanceof ProxyObject) {
+            throw new \RuntimeException('Post require a proxy object in parameter');
+        }
+
+        return $this->proxyManager->postObject($args[0]);
+    }
+
+    protected function customCall(string $method, string $uri, array $headers = [], string $body = null): ResponseInterface
+    {
+        return $this->adapter->makeRequest(
+            $method,
+            $uri,
+            $headers,
+            $body
+        );
+    }
+
+    public function getProxyManager(): ProxyManager
+    {
+        return $this->proxyManager;
+    }
+
+    public function getAdapter(): AdapterInterface
+    {
+        return $this->adapter;
     }
 }

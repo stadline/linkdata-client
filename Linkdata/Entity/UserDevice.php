@@ -61,8 +61,6 @@ class UserDevice extends ProxyObject
      */
     private $updatedAt;
 
-    private $deviceModelIri;
-
     public function getId(): ?string
     {
         return $this->id;
@@ -85,22 +83,14 @@ class UserDevice extends ProxyObject
 
     public function getModel()
     {
-        $this->deviceModelIri = $this->model;
-
-        return $this->hydrate($this->model);
-    }
-
-    public function getModelId(): string
-    {
-        if (!$this->deviceModelIri) {
-            $this->deviceModelIri = $this->model;
+        if (null !== $this->model) {
+            $this->model->_hydrate();
         }
 
-        // Parse iri to get id.
-        return \explode('/', $this->deviceModelIri)[3];
+        return $this->model;
     }
 
-    public function setModel($model): void
+    public function setModel(?DeviceModel $model): void
     {
         $this->model = $model;
     }
@@ -117,10 +107,14 @@ class UserDevice extends ProxyObject
 
     public function getUser(): ?User
     {
+        if (null !== $this->user) {
+            $this->user->_hydrate();
+        }
+
         return $this->user;
     }
 
-    public function setUser($user): void
+    public function setUser(?User $user): void
     {
         $this->user = $user;
     }

@@ -82,32 +82,33 @@ class UserMeasureGoal extends ProxyObject
 
     public function getUser()
     {
-        return $this->hydrate($this->user);
+        if (null !== $this->user) {
+            $this->user->_hydrate();
+        }
+
+        return $this->user;
     }
 
-    public function setUser($user): void
+    public function setUser(?User $user): void
     {
         $this->user = $user;
     }
 
     public function getDatatype()
     {
-        $this->datatypeIri = $this->datatype;
-
-        return $this->hydrate($this->datatype);
-    }
-
-    public function getDatatypeId(): ?string
-    {
-        if (!$this->datatypeIri) {
-            $this->datatypeIri = $this->datatype;
+        if (null !== $this->datatype) {
+            $this->datatype->_hydrate();
         }
 
-        // Parse iri to get id.
-        return \explode('/', $this->datatypeIri)[3];
+        return $this->datatype;
     }
 
-    public function setDatatype($datatype): void
+    public function getDatatypeId(): ?int
+    {
+        return $this->getDatatype()->getId();
+    }
+
+    public function setDatatype(?Datatype $datatype): void
     {
         $this->datatype = $datatype;
     }
