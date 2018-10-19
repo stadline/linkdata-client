@@ -280,6 +280,14 @@ class Sport extends ProxyObject
      * @Groups({"sport_norm"})
      */
     public $userEquipments;
+
+    public $iri;
+
+    public function getIri(): string
+    {
+        return sprintf('/v2/sports/%s', $this->id);
+    }
+
     //
     //    public function getUpdatedAt(): ?string
     //    {
