@@ -41,8 +41,13 @@ abstract class ProxyObject
 
     public function _refresh(array $data): void
     {
-        ($this->_doRefresh)($this, $this->_className, $data);
+        $this->_refreshPartial($data);
         $this->_hydrated = true;
+    }
+
+    public function _refreshPartial(array $data): void
+    {
+        ($this->_doRefresh)($this, $this->_className, $data);
     }
 
     public function _isHydrated(): bool
@@ -57,31 +62,34 @@ abstract class ProxyObject
         string $className,
         $id,
         ?array $data = null
-    ): void {
+    ): void
+    {
         $this->_getData = $getDataClosure;
         $this->_doRefresh = $refreshClosure;
         $this->_className = $className;
         $reflectionClass = new \ReflectionClass($this);
 
+        // Special case : method setId exists so, we must to cast the id in needed type
         if ($reflectionClass->hasMethod('setId')) {
             $reflectionMethod = $reflectionClass->getMethod('setId');
             $reflectionParameter = $reflectionMethod->getParameters()[0];
 
             switch ($reflectionParameter->getType()) {
                 case 'string':
-                    $this->setId((string) $id);
+                    $id = (string)$id;
                     break;
                 case 'float':
-                    $this->setId((float) $id);
+                    $id = (float)$id;
                     break;
                 case 'int':
-                    $this->setId((int) $id);
+                    $id = (int)$id;
                     break;
                 default:
                     throw new \RuntimeException('This parameter type is not supported in setId method');
             }
         }
 
+        $this->setId($id);
         $this->_iri = $iri;
         $this->_hydrated = false;
 

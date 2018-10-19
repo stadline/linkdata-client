@@ -95,11 +95,19 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             foreach ($metadata as $propName) {
                 if (isset($data[$propName])) {
                     if (\is_array($data[$propName])) {
-                        $toto = [];
+                        $properties = [];
                         foreach ($data[$propName] as $elt) {
-                            $toto[] = $this->proxyManager->getProxyFromIri($elt);
+                            if (\is_array($elt) && isset($elt['@id'])) {
+                                $subObject = $this->proxyManager->getProxyFromIri($elt['@id']);
+                                $subObject->_refreshPartial($elt);
+                                $properties[] = $subObject;
+                            } else if (\is_string($elt) && $this->iriConverter->isIri($elt)) {
+                                $properties[] = $this->proxyManager->getProxyFromIri($elt);
+                            } else {
+                                $properties[] = $elt;
+                            }
                         }
-                        $data[$propName] = $toto;
+                        $data[$propName] = $properties;
                     } else {
                         $data[$propName] = $this->proxyManager->getProxyFromIri($data[$propName]);
                     }

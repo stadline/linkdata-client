@@ -24,7 +24,8 @@ AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 /*
  * Test script
  */
-$baseUri = 'https://linkdata.dev.geonaute.com';
+//$baseUri = 'https://linkdata.dev.geonaute.com';
+$baseUri = 'http://localhost.local:8000';
 $iriPrefix = '/v2';
 $entityNamespace = 'Stadline\LinkdataClient\Linkdata\Entity';
 $jwt = getenv('JWT');
@@ -48,9 +49,13 @@ $normalizer->setProxyManager($proxyManager);
 
 $linkdataClient = new LinkdataClient($proxyManager, $adapter);
 
+$linkdataClient->getAdapter()->makeRequest("GET", "/v2/me");
+
 $collection = $linkdataClient->getProxyManager()->getCollection(Universe::class);
 foreach ($collection as $entity) {
+    /** @var \Stadline\LinkdataClient\Linkdata\Entity\Sport $sport */
     foreach ($entity->getSports() as $sport) {
-        dump($sport->getCreatedAt());
+        $sport->getId();
+        $sport->getTranslatedNames();
     }
 }
