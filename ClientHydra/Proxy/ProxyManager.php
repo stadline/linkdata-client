@@ -154,7 +154,7 @@ class ProxyManager
             $this->serializer->serialize(
                 $object,
                 'application/json',
-                ['groups' => [HydraParser::getNormContext()]]
+                ['groups' => [HydraParser::getNormContext($object)]]
             )
         );
 
