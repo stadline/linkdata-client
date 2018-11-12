@@ -189,14 +189,15 @@ class LinkdataClient extends AbstractHydraClient
         )->getContent();
     }
 
+
     /**
      * @throws ClientHydraException
      */
-    public function getEquipmentAutoComplete(string $type, string $query): array
+    public function getAutocompleteEquipement(string $parameter, string $query): array
     {
         return $this->customCall(
             'GET',
-            \sprintf('/v2/autocomplete/user_equipments/%s?q=%s', $type, $query)
+            \sprintf('/v2/autocomplete/user_equipments?%s=%s', $parameter, $query)
         )->getContent();
     }
 }
