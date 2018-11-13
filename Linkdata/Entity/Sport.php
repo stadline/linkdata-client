@@ -281,94 +281,22 @@ class Sport extends ProxyObject
      */
     public $userEquipments;
 
-    public $iri;
-
-    public function getIri(): string
+    public function hasNameByLocale(string $locale): ?bool
     {
-        return sprintf('/v2/sports/%s', $this->id);
+        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
     }
 
-    //
-    //    public function getUpdatedAt(): ?string
-    //    {
-    //        return $this->updatedAt;
-    //    }
-    //
-    //    public function setUpdatedAt(?string $updatedAt): void
-    //    {
-    //        $this->updatedAt = $updatedAt;
-    //    }
-    //
-    //    public function getCreatedAt(): ?string
-    //    {
-    //        return $this->createdAt;
-    //    }
-    //
-    //    public function setCreatedAt(?string $createdAt): void
-    //    {
-    //        $this->createdAt = $createdAt;
-    //    }
-    //
-    //    public function getId(): ?int
-    //    {
-    //        return $this->id;
-    //    }
-    //
-    //    public function setId(?int $id): void
-    //    {
-    //        $this->id = $id;
-    //    }
-    //
-    //    public function getTranslatedNames(): ?array
-    //    {
-    //        return $this->translatedNames;
-    //    }
-    //
-    //    public function setTranslatedNames(?array $translatedNames): void
-    //    {
-    //        $this->translatedNames = $translatedNames;
-    //    }
-    //
-    //    public function getUniverse()
-    //    {
-    //        if (null !== $this->universe) {
-    //            $this->universe->_hydrate();
-    //        }
-    //
-    //        return $this->universe;
-    //    }
-    //
-    //    public function setUniverse(?Universe $universe): void
-    //    {
-    //        $this->universe = $universe;
-    //    }
-    //
-    //    public function isActive(): ?bool
-    //    {
-    //        return $this->active;
-    //    }
-    //
-    //    public function setActive(?bool $active): void
-    //    {
-    //        $this->active = $active;
-    //    }
-    //
-    //    public function hasNameByLocale(string $locale): ?bool
-    //    {
-    //        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
-    //    }
-    //
-    //    public function getNameByLocale(string $locale): ?string
-    //    {
-    //        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
-    //    }
-    //
-    //    public static function getIcon($id): string
-    //    {
-    //        if (isset(self::$slug_table[$id])) {
-    //            return self::$slug_table[$id];
-    //        }
-    //
-    //        return '';
-    //    }
+    public function getNameByLocale(string $locale): ?string
+    {
+        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
+    }
+
+    public static function getIcon($id): string
+    {
+        if (isset(self::$slug_table[$id])) {
+            return self::$slug_table[$id];
+        }
+
+        return '';
+    }
 }
