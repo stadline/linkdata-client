@@ -197,7 +197,7 @@ class LinkdataClient extends AbstractHydraClient
     {
         return $this->customCall(
             'GET',
-            \sprintf('/v2/autocomplete/user_equipments?%s=%s', $parameter, $query)
+            \sprintf('/v2/user_equipments/autocomplete/%s/%s', $parameter, $query)
         )->getContent();
     }
 }
