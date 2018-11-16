@@ -64,6 +64,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void        setLocations(array $locations)
  * @method array       getDatastream()
  * @method void        setDatastream(array $datastream)
+ * @method array       getEquipments()
+ * @method void        setEquipments(array $equipments)
  */
 class Activity extends ProxyObject
 {
@@ -241,4 +243,10 @@ class Activity extends ProxyObject
      * @Groups({"activity_norm"})
      */
     public $datastream;
+
+    /**
+     * @var array
+     * @Groups({"activity_norm"})
+     */
+    public $equipments;
 }
