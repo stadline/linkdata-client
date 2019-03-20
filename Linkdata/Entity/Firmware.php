@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
+use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -26,7 +27,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method string      getUpdatedAt()
  * @method void        setUpdatedAt(string $updatedAt)
  */
-class Firmware
+class Firmware extends ProxyObject
 {
     /**
      * @var int
