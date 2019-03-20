@@ -9,8 +9,8 @@ use Stadline\LinkdataClient\Linkdata\Utils\RelatedValue;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method string getId()
- * @method void   setId(string $id)
+ * @method int getId()
+ * @method void   setId(int $id)
  * @method string getUnit()
  * @method void   setUnit(string $unit)
  * @method array  getTranslatedNames()
