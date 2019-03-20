@@ -84,9 +84,4 @@ class UserSumup extends ProxyObject
      * @Groups({"user_sumup_norm"})
      */
     public $updatedAt;
-
-    public function __construct()
-    {
-        $this->value = 0;
-    }
 }
