@@ -62,8 +62,7 @@ abstract class ProxyObject
         string $className,
         $id,
         ?array $data = null
-    ): void
-    {
+    ): void {
         $this->_getData = $getDataClosure;
         $this->_doRefresh = $refreshClosure;
         $this->_className = $className;
@@ -76,13 +75,13 @@ abstract class ProxyObject
 
             switch ($reflectionParameter->getType()) {
                 case 'string':
-                    $id = (string)$id;
+                    $id = (string) $id;
                     break;
                 case 'float':
-                    $id = (float)$id;
+                    $id = (float) $id;
                     break;
                 case 'int':
-                    $id = (int)$id;
+                    $id = (int) $id;
                     break;
                 default:
                     throw new \RuntimeException('This parameter type is not supported in setId method');

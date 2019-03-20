@@ -101,7 +101,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                                 $subObject = $this->proxyManager->getProxyFromIri($elt['@id']);
                                 $subObject->_refreshPartial($elt);
                                 $properties[] = $subObject;
-                            } else if (\is_string($elt) && $this->iriConverter->isIri($elt)) {
+                            } elseif (\is_string($elt) && $this->iriConverter->isIri($elt)) {
                                 $properties[] = $this->proxyManager->getProxyFromIri($elt);
                             } else {
                                 $properties[] = $elt;

@@ -88,6 +88,6 @@ class IriConverter
 
     public function isIri(string $str): bool
     {
-        return 1 === preg_match('@^'.$this->baseUri.'/([a-zA-Z0-9_]+)/([a-zA-Z0-9\-_])+$@', $str);
+        return 1 === \preg_match('@^'.$this->baseUri.'/([a-zA-Z0-9_]+)/([a-zA-Z0-9\-_])+$@', $str);
     }
 }

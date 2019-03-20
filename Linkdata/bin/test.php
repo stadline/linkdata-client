@@ -5,7 +5,7 @@
 // read http://symfony.com/doc/current/book/installation.html#configuration-and-setup for more information
 //umask(0000);
 \set_time_limit(0);
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__.'/../../vendor/autoload.php';
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter;
@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
-$loader = require __DIR__ . '/../../vendor/autoload.php';
+$loader = require __DIR__.'/../../vendor/autoload.php';
 AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 
 /*
@@ -28,10 +28,10 @@ AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 $baseUri = 'http://localhost.local:8000';
 $iriPrefix = '/v2';
 $entityNamespace = 'Stadline\LinkdataClient\Linkdata\Entity';
-$jwt = getenv('JWT');
+$jwt = \getenv('JWT');
 
 $adapter = new GuzzleAdapter($baseUri);
-$adapter->setDefaultHeader('Authorization', 'Bearer ' . $jwt);
+$adapter->setDefaultHeader('Authorization', 'Bearer '.$jwt);
 
 $iriConverter = new IriConverter($entityNamespace, $iriPrefix);
 
@@ -49,7 +49,7 @@ $normalizer->setProxyManager($proxyManager);
 
 $linkdataClient = new LinkdataClient($proxyManager, $adapter);
 
-$linkdataClient->getAdapter()->makeRequest("GET", "/v2/me");
+$linkdataClient->getAdapter()->makeRequest('GET', '/v2/me');
 
 $collection = $linkdataClient->getProxyManager()->getCollection(Universe::class);
 foreach ($collection as $entity) {

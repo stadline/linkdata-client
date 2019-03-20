@@ -62,6 +62,7 @@ class GuzzleAdapter implements AdapterInterface
                 // User not on available for now, create it
                 if (442 === $e->getCode()) {
                     $this->makeRequest('GET', '/v2/me');
+
                     return $this->makeRequest($method, $uri, $headers, $body, $cacheEnable);
                 }
                 throw $e;

@@ -115,13 +115,13 @@ function main(string $baseLd2Path, array $extractConf): void
 
     // CS-Fixer
     $csFixer = new \Symfony\Component\Process\Process(
-        array(
+        [
             'php',
             'vendor/bin/php-cs-fixer',
             'fix',
             '--no-ansi',
-            $entityDirPath
-        )
+            $entityDirPath,
+        ]
     );
     $csFixer->run();
 
