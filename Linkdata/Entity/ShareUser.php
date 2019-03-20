@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method string getId()
  * @method void   setId(string $id)
  * @method User   getUser()
- * @method void   setUser()
+ * @method void   setUser(User $user)
  * @method string getCreatedAt()
  * @method void   setCreatedAt(string $createdAt)
  * @method string getUpdatedAt()
