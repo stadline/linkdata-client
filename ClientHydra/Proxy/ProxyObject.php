@@ -14,57 +14,19 @@ abstract class ProxyObject
     private $_doRefresh;
     /** @var \Closure */
     private $_getData;
-    /** @var bool */
-    private $_isInit = false;
 
     /* internal metadata */
     private $_hydrated = false;
-
-    /**
-     * Hydrate an object with an IRI given.
-     * If hydrate is set to false, it returns the IRI given.
-     */
-    public function _hydrate(?array $data = null): void
-    {
-        // already hydrated : ignore
-        if (true === $this->_hydrated || null === $this->getId()) {
-            return;
-        }
-
-        // if data is empty = get data from api
-        if (null === $data) {
-            $data = ($this->_getData)($this);
-        }
-
-        $this->_refresh($data);
-    }
+    private $_hydratedProperties = [];
 
     public function _refresh(array $data): void
     {
-        $this->_refreshPartial($data);
-        $this->_hydrated = true;
-    }
-
-    public function _refreshPartial(array $data): void
-    {
+        foreach ($data as $k => $v) {
+            $this->_hydratedProperties[$k] = true;
+        }
         ($this->_doRefresh)($this, $data);
     }
 
-    public function _isHydrated(): bool
-    {
-        return $this->_hydrated;
-    }
-
-    public function _isInit(): bool
-    {
-        return $this->_isInit;
-    }
-
-    public function _getIri(): ?string
-    {
-        return ($this->_getIri)($this);
-    }
-    
     public function _init(
         \Closure $refreshClosure,
         \Closure $getDataClosure
@@ -72,28 +34,6 @@ abstract class ProxyObject
     {
         $this->_getData = $getDataClosure;
         $this->_doRefresh = $refreshClosure;
-        // @todo : delete
-//        $reflectionClass = new \ReflectionClass($this);
-//
-//        // Special case : method setId exists so, we must to cast the id in needed type
-//        if ($reflectionClass->hasMethod('setId')) {
-//            $reflectionMethod = $reflectionClass->getMethod('setId');
-//            $reflectionParameter = $reflectionMethod->getParameters()[0];
-//
-//            switch ($reflectionParameter->getType()) {
-//                case 'string':
-//                    $id = (string)$id;
-//                    break;
-//                case 'float':
-//                    $id = (float)$id;
-//                    break;
-//                case 'int':
-//                    $id = (int)$id;
-//                    break;
-//                default:
-//                    throw new \RuntimeException('This parameter type is not supported in setId method');
-//            }
-//        }
     }
 
     public function __call($name, $arguments)
@@ -124,8 +64,30 @@ abstract class ProxyObject
         }
     }
 
+    /**
+     * Hydrate an object with an IRI given.
+     * If hydrate is set to false, it returns the IRI given.
+     */
+    protected function _hydrate(?array $data = null): void
+    {
+        // already hydrated : ignore
+        if (true === $this->_hydrated || null === $this->getId()) {
+            return;
+        }
+
+        // if data is empty = get data from api
+        if (null === $data) {
+            $data = ($this->_getData)($this);
+        }
+
+        $this->_refresh($data);
+
+        $this->_hydrated = true;
+    }
+
     protected function _set($property, $value): void
     {
+        $this->_hydratedProperties[$property] = true;
         $this->{$property} = $value;
     }
 
@@ -137,7 +99,7 @@ abstract class ProxyObject
         }
 
         // Object not hydrated : autohydrate
-        if (null === $this->{$property} && !$this->_isHydrated()) {
+        if (true !== ($this->_hydratedProperties[$property] ?? null)) {
             $this->_hydrate();
         }
 

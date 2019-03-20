@@ -99,7 +99,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                         foreach ($data[$propName] as $elt) {
                             if (\is_array($elt) && isset($elt['@id'])) {
                                 $subObject = $this->proxyManager->getProxyFromIri($elt['@id']);
-                                $subObject->_refreshPartial($elt);
+                                $subObject->_refresh($elt);
                                 $properties[] = $subObject;
                             } elseif (\is_string($elt) && $this->iriConverter->isIri($elt)) {
                                 $properties[] = $this->proxyManager->getProxyFromIri($elt);

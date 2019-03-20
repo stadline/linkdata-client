@@ -100,10 +100,7 @@ class ProxyManager
 
     public function addObject(string $iri, ProxyObject $object): void
     {
-        if (!$object->_isInit()) {
-            $this->addObjectToManager($object);
-        }
-
+        $this->addObjectToManager($object);
         $this->objects[$iri] = $object;
     }
 
@@ -163,9 +160,7 @@ class ProxyManager
 
     public function postObject(ProxyObject $object): ProxyObject
     {
-        if (!$object->_isInit()) {
-            $this->addObjectToManager($object);
-        }
+        $this->addObjectToManager($object);
 
         $response = $this->adapter->makeRequest(
             'POST',
