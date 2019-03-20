@@ -7,6 +7,26 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string   getId()
+ * @method void     setId(string $id)
+ * @method User     getUser()
+ * @method void     setUser(User $user)
+ * @method Datatype getDatatype()
+ * @method void     setDatatype(Datatype $datatype)
+ * @method Activity getActivity()
+ * @method void     setActivity(Activity $activity)
+ * @method Sport    getSport()
+ * @method void     setSport(Sport $sport)
+ * @method string   getType()
+ * @method void     setType(string $type)
+ * @method float    getValue()
+ * @method void     setValue(float $value)
+ * @method string   getCreatedAt()
+ * @method void     setCreatedAt(string $createdAt)
+ * @method string   getUpdatedAt()
+ * @method void     setUpdatedAt(string $updatedAt)
+ */
 class UserRecord extends ProxyObject
 {
     const ALL = 'all';
@@ -28,174 +48,53 @@ class UserRecord extends ProxyObject
      * @var string
      * @Groups({"user_record_norm"})
      */
-    private $id;
+    public $id;
 
     /**
      * @var User
      * @Groups({"user_record_norm"})
      */
-    private $user;
+    public $user;
 
     /**
      * @var Datatype
      * @Groups({"user_record_norm"})
      */
-    private $datatype;
+    public $datatype;
 
     /**
      * @var Activity
      * @Groups({"user_record_norm"})
      */
-    private $activity;
+    public $activity;
 
     /**
      * @var Sport
      * @Groups({"user_record_norm"})
      */
-    private $sport;
+    public $sport;
 
     /**
      * @var string
      * @Groups({"user_record_norm"})
      */
-    private $type = 'all';
+    public $type = 'all';
 
     /**
      * @var float
      * @Groups({"user_record_norm"})
      */
-    private $value;
+    public $value;
 
     /**
      * @var string
      * @Groups({"user_record_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
      * @var string
      * @Groups({"user_record_norm"})
      */
-    private $updatedAt;
-
-    private $datatypeIri;
-    private $sportIri;
-    private $activityIri;
-
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
-
-    public function setId(?string $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getUser()
-    {
-        if (null !== $this->user) {
-            $this->user->_hydrate();
-        }
-
-        return $this->user;
-    }
-
-    public function setUser(?User $user): void
-    {
-        $this->user = $user;
-    }
-
-    public function getDatatype()
-    {
-        if (null !== $this->datatype) {
-            $this->datatype->_hydrate();
-        }
-
-        return $this->datatype;
-    }
-
-    public function getDatatypeId(): ?int
-    {
-        return $this->getDatatype()->getId();
-    }
-
-    public function setDatatype(?Datatype $datatype): void
-    {
-        $this->datatype = $datatype;
-    }
-
-    public function getValue(): ?float
-    {
-        return $this->value;
-    }
-
-    public function setValue(float $value): void
-    {
-        $this->value = $value;
-    }
-
-    public function getSport()
-    {
-        $this->sportIri = $this->sport;
-
-        return $this->hydrate($this->sport);
-    }
-
-    public function setSport($sport): void
-    {
-        $this->sport = $sport;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
-
-    public function getCreatedAt(): string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getUpdatedAt(): string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getActivity()
-    {
-        $this->activityIri = $this->activity;
-
-        return $this->hydrate($this->activity);
-    }
-
-    public function setActivity($activity): void
-    {
-        $this->activity = $activity;
-    }
-
-    public function getActivityId(): string
-    {
-        if (!$this->activityIri) {
-            $this->activityIri = $this->activity;
-        }
-
-        // Parse iri to get id.
-        return \explode('/', $this->activityIri)[3];
-    }
+    public $updatedAt;
 }
