@@ -338,22 +338,22 @@ class Sport extends ProxyObject
 //        $this->active = $active;
 //    }
 //
-//    public function hasNameByLocale(string $locale): ?bool
-//    {
-//        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
-//    }
-//
-//    public function getNameByLocale(string $locale): ?string
-//    {
-//        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
-//    }
-//
-//    public static function getIcon($id): string
-//    {
-//        if (isset(self::$slug_table[$id])) {
-//            return self::$slug_table[$id];
-//        }
-//
-//        return '';
-//    }
+    public function hasNameByLocale(string $locale): ?bool
+    {
+        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
+    }
+
+    public function getNameByLocale(string $locale): ?string
+    {
+        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
+    }
+
+    public static function getIcon($id): string
+    {
+        if (isset(self::$slug_table[$id])) {
+            return self::$slug_table[$id];
+        }
+
+        return '';
+    }
 }

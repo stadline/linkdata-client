@@ -16,7 +16,7 @@ abstract class ProxyObject
     private $_getData;
 
     /* internal metadata */
-    private $_hydrated;
+    private $_hydrated = false;
     private $_iri;
     private $_className;
 
@@ -27,7 +27,7 @@ abstract class ProxyObject
     public function _hydrate(?array $data = null): void
     {
         // already hydrated : ignore
-        if (true === $this->_hydrated) {
+        if (true === $this->_hydrated || null === $this->_iri) {
             return;
         }
 
