@@ -38,7 +38,7 @@ class LinkDataCollector extends DataCollector
         return \count($this->data);
     }
 
-    public function getTotalTime(): int
+    public function getTotalTime(): float
     {
         $time = 0;
         foreach ($this->data as $request) {

@@ -7,6 +7,7 @@ namespace Stadline\LinkdataClient\ClientHydra\Adapter;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Stadline\LinkdataClient\ClientHydra\Exception\RequestException;
 
 class GuzzleAdapter implements AdapterInterface
@@ -49,6 +50,7 @@ class GuzzleAdapter implements AdapterInterface
             }
         } else {
             try {
+                /** @var Response $response */
                 $response = $this->client->send(
                     new Request($method, $uri, $headers, $body)
                 );
@@ -57,6 +59,12 @@ class GuzzleAdapter implements AdapterInterface
                     $requestData['cache'] = false;
                 }
             } catch (GuzzleException $e) {
+                // User not on available for now, create it
+                if (442 === $e->getCode()) {
+                    $this->makeRequest('GET', '/v2/me');
+                    return $this->makeRequest($method, $uri, $headers, $body, $cacheEnable);
+                }
+                throw $e;
                 throw new RequestException(\sprintf('Error while requesting %s with %s method', $uri, $method), $body, $e);
             }
         }
