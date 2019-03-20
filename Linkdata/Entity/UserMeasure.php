@@ -9,22 +9,22 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method string      getId()
- * @method void        setId(string $id)
- * @method User        getUser()
- * @method void        setUser(User $user)
- * @method Datatype    getDatatype()
- * @method void        setDatatype(Datatype $datatype)
- * @method string      getDateTimezone()
- * @method void        setDateTimezone(string $dateTimezone)
- * @method float       getValue()
- * @method void        setValue(float $value) 
- * @method \DateTime   getDate()
- * @method void        setDate(\DateTime $date)
- * @method string      getCreatedAt()
- * @method void        setCreatedAt(string $createdAt)
- * @method string      getUpdatedAt()
- * @method void        setUpdatedAt(string $updatedAt)
+ * @method string    getId()
+ * @method void      setId(string $id)
+ * @method User      getUser()
+ * @method void      setUser(User $user)
+ * @method Datatype  getDatatype()
+ * @method void      setDatatype(Datatype $datatype)
+ * @method string    getDateTimezone()
+ * @method void      setDateTimezone(string $dateTimezone)
+ * @method float     getValue()
+ * @method void      setValue(float $value)
+ * @method \DateTime getDate()
+ * @method void      setDate(\DateTime $date)
+ * @method string    getCreatedAt()
+ * @method void      setCreatedAt(string $createdAt)
+ * @method string    getUpdatedAt()
+ * @method void      setUpdatedAt(string $updatedAt)
  */
 class UserMeasure extends ProxyObject
 {
