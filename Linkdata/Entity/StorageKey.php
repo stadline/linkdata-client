@@ -7,6 +7,20 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string getId()
+ * @method void   setId(string $id)
+ * @method string getSlug()
+ * @method void   setSlug(string $slug)
+ * @method string getComment()
+ * @method void   setComment(string $comment)
+ * @method bool   isActive()
+ * @method void   setActive(bool $active)
+ * @method string getCreatedAt()
+ * @method void   setCreatedAt(string $createdAt)
+ * @method string getUpdatedAt()
+ * @method void   setUpdatedAt(string $updatedAt)
+ */
 class StorageKey extends ProxyObject
 {
     /**
@@ -31,77 +45,17 @@ class StorageKey extends ProxyObject
      * @var string
      * @Groups({"storage_key_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
      * @var string
      * @Groups({"storage_key_norm"})
      */
-    private $updatedAt;
+    public $updatedAt;
 
     /**
      * @var bool
      * @Groups({"storage_key_norm"})
      */
-    private $active = true;
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(?string $slug): void
-    {
-        $this->slug = $slug;
-    }
-
-    public function getComment(): ?string
-    {
-        return $this->comment;
-    }
-
-    public function setComment(?string $comment): void
-    {
-        $this->comment = $comment;
-    }
-
-    public function getUpdatedAt(): string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): void
-    {
-        $this->active = $active;
-    }
+    public $active = true;
 }
