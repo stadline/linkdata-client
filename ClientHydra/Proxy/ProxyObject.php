@@ -14,11 +14,11 @@ abstract class ProxyObject
     private $_doRefresh;
     /** @var \Closure */
     private $_getData;
+    /** @var bool */
+    private $_isInit = false;
 
     /* internal metadata */
     private $_hydrated = false;
-    private $_iri;
-    private $_className;
 
     /**
      * Hydrate an object with an IRI given.
@@ -27,13 +27,13 @@ abstract class ProxyObject
     public function _hydrate(?array $data = null): void
     {
         // already hydrated : ignore
-        if (true === $this->_hydrated || null === $this->_iri) {
+        if (true === $this->_hydrated || null === $this->getId()) {
             return;
         }
 
         // if data is empty = get data from api
         if (null === $data) {
-            $data = ($this->_getData)($this->_iri);
+            $data = ($this->_getData)($this);
         }
 
         $this->_refresh($data);
@@ -47,7 +47,7 @@ abstract class ProxyObject
 
     public function _refreshPartial(array $data): void
     {
-        ($this->_doRefresh)($this, $this->_className, $data);
+        ($this->_doRefresh)($this, $data);
     }
 
     public function _isHydrated(): bool
@@ -55,46 +55,45 @@ abstract class ProxyObject
         return $this->_hydrated;
     }
 
+    public function _isInit(): bool
+    {
+        return $this->_isInit;
+    }
+
+    public function _getIri(): ?string
+    {
+        return ($this->_getIri)($this);
+    }
+    
     public function _init(
-        string $iri,
         \Closure $refreshClosure,
-        \Closure $getDataClosure,
-        string $className,
-        $id,
-        ?array $data = null
-    ): void {
+        \Closure $getDataClosure
+    ): void
+    {
         $this->_getData = $getDataClosure;
         $this->_doRefresh = $refreshClosure;
-        $this->_className = $className;
-        $reflectionClass = new \ReflectionClass($this);
-
-        // Special case : method setId exists so, we must to cast the id in needed type
-        if ($reflectionClass->hasMethod('setId')) {
-            $reflectionMethod = $reflectionClass->getMethod('setId');
-            $reflectionParameter = $reflectionMethod->getParameters()[0];
-
-            switch ($reflectionParameter->getType()) {
-                case 'string':
-                    $id = (string) $id;
-                    break;
-                case 'float':
-                    $id = (float) $id;
-                    break;
-                case 'int':
-                    $id = (int) $id;
-                    break;
-                default:
-                    throw new \RuntimeException('This parameter type is not supported in setId method');
-            }
-        }
-
-        $this->setId($id);
-        $this->_iri = $iri;
-        $this->_hydrated = false;
-
-        if (null !== $data) {
-            $this->_hydrate($data);
-        }
+        // @todo : delete
+//        $reflectionClass = new \ReflectionClass($this);
+//
+//        // Special case : method setId exists so, we must to cast the id in needed type
+//        if ($reflectionClass->hasMethod('setId')) {
+//            $reflectionMethod = $reflectionClass->getMethod('setId');
+//            $reflectionParameter = $reflectionMethod->getParameters()[0];
+//
+//            switch ($reflectionParameter->getType()) {
+//                case 'string':
+//                    $id = (string)$id;
+//                    break;
+//                case 'float':
+//                    $id = (float)$id;
+//                    break;
+//                case 'int':
+//                    $id = (int)$id;
+//                    break;
+//                default:
+//                    throw new \RuntimeException('This parameter type is not supported in setId method');
+//            }
+//        }
     }
 
     public function __call($name, $arguments)

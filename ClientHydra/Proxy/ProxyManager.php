@@ -29,6 +29,11 @@ class ProxyManager
         $this->serializer = $serializer;
     }
 
+    public function contains($object): bool
+    {
+        return in_array($object, $this->objects);
+    }
+
     public function getObjectFromIri(string $iri): ?ProxyObject
     {
         $object = $this->getProxyFromIri($iri);
@@ -37,6 +42,29 @@ class ProxyManager
         }
 
         return $object;
+    }
+
+    private function addObjectToManager(ProxyObject $proxyObject) {
+        $proxyObject->_init(
+            function (ProxyObject $proxyObject, $data): void {
+                $this->serializer->deserialize(\json_encode($data), get_class($proxyObject), 'json', [
+                    'object_to_populate' => $proxyObject,
+                    'groups' => [HydraParser::getDenormContext($data)],
+                ]);
+            },
+            function (ProxyObject $proxyObject): array {
+                $requestResponse = $this->getAdapter()->makeRequest(
+                    'GET',
+                    $this->iriConverter->getIriFromObject($proxyObject)
+                );
+
+                if (!$requestResponse instanceof JsonResponse) {
+                    throw new \RuntimeException('Cannot hydrate object with non json response');
+                }
+
+                return $requestResponse->getContent();
+            }
+        );
     }
 
     public function getProxyFromIri(string $iri): ?ProxyObject
@@ -50,29 +78,8 @@ class ProxyManager
         /** @var ProxyObject $proxyObject */
         $id = $this->iriConverter->getObjectIdFromIri($iri);
         $proxyObject = new $className();
-        $proxyObject->_init(
-            $this->iriConverter->getIriFromClassNameAndId($className, $id),
-            function (ProxyObject $proxyObject, string $className, $data): void {
-                $this->serializer->deserialize(\json_encode($data), $className, 'json', [
-                    'object_to_populate' => $proxyObject,
-                    'groups' => [HydraParser::getDenormContext($data)],
-                ]);
-            },
-            function (string $iri) {
-                $requestResponse = $this->getAdapter()->makeRequest(
-                    'GET',
-                    $iri
-                );
-
-                if (!$requestResponse instanceof JsonResponse) {
-                    throw new \RuntimeException('Cannot hydrate object with non json response');
-                }
-
-                return $requestResponse->getContent();
-            },
-            $className,
-            $id
-        );
+        $proxyObject->setId($id);
+        $this->addObjectToManager($proxyObject);
         $this->objects[$iri] = $proxyObject;
 
         return $proxyObject;
@@ -93,6 +100,10 @@ class ProxyManager
 
     public function addObject(string $iri, ProxyObject $object): void
     {
+        if (!$object->_isInit()) {
+            $this->addObjectToManager($object);
+        }
+
         $this->objects[$iri] = $object;
     }
 
@@ -108,6 +119,10 @@ class ProxyManager
 
     public function putObject(ProxyObject $object): ProxyObject
     {
+        if (!$this->contains($object)) {
+            throw new \RuntimeException('Object must be registred in ProxyManager before using PUT on it');
+        }
+
         $response = $this->adapter->makeRequest(
             'PUT',
             $this->iriConverter->getIriFromObject($object),
@@ -148,13 +163,18 @@ class ProxyManager
 
     public function postObject(ProxyObject $object): ProxyObject
     {
+        if (!$object->_isInit()) {
+            $this->addObjectToManager($object);
+        }
+
         $response = $this->adapter->makeRequest(
             'POST',
             $this->iriConverter->getCollectionIriFromClassName(\get_class($object)),
+            [],
             $this->serializer->serialize(
                 $object,
-                'application/json',
-                ['groups' => [HydraParser::getNormContext()]]
+                'json',
+                ['groups' => [HydraParser::getNormContext($object)], 'classContext' => \get_class($object)]
             )
         );
 
@@ -162,6 +182,7 @@ class ProxyManager
             throw new \RuntimeException('Error during update object');
         }
 
+        $object->setId($response->getContent()['id']);
         $object->_refresh($response->getContent());
 
         return $object;

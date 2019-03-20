@@ -140,7 +140,7 @@ class Activity extends ProxyObject
     /**
      * @var bool
      */
-    public $manual;
+    public $manual = false;
 
     /**
      * @var string
@@ -164,13 +164,13 @@ class Activity extends ProxyObject
      * @var array
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    public $images;
+    public $images = [];
 
     /**
      * @var bool
      * @Groups({"activity_norm"})
      */
-    public $correctedElevation;
+    public $correctedElevation = false;
 
     /**
      * @var string
@@ -182,25 +182,25 @@ class Activity extends ProxyObject
      * @var array
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    public $dataSummaries;
+    public $dataSummaries = [];
 
     /**
      * @var array
      * @Groups({"activity_norm", "activity_denorm"})
      */
-    public $tags;
+    public $tags = [];
 
     /**
      * @var bool
      * @Groups({"activity_norm"})
      */
-    public $trackFlag;
+    public $trackFlag = false;
 
     /**
      * @var bool
      * @Groups({"activity_norm"})
      */
-    public $datastreamFlag;
+    public $datastreamFlag = false;
 
     /**
      * @var string
@@ -212,7 +212,7 @@ class Activity extends ProxyObject
      * @var array
      * @Groups({"activity_norm"})
      */
-    public $availableDatatypes;
+    public $availableDatatypes = [];
 
     /**
      * @var string
@@ -232,7 +232,7 @@ class Activity extends ProxyObject
      * @var array
      * @Groups({"activity_norm"})
      */
-    public $locations;
+    public $locations = [];
 
     /**
      * Temp storage for datastream.
@@ -240,5 +240,5 @@ class Activity extends ProxyObject
      * @var array
      * @Groups({"activity_norm"})
      */
-    public $datastream;
+    public $datastream = [];
 }

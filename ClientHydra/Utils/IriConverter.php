@@ -11,24 +11,64 @@ class IriConverter
 {
     private $baseUri;
     private $entityNamespace;
+    private $classNameIdTypes;
 
     public function __construct(string $entityNamespace, string $baseUri = '')
     {
         $this->entityNamespace = $entityNamespace;
         $this->baseUri = $baseUri;
+        $this->classNameIdTypes = [];
     }
 
-    public function getIriFromObject(ProxyObject $object): string
+    public function getIriFromObject(ProxyObject $object): ?string
     {
+        if (!$object->getId()) {
+            return null;
+        }
         return \sprintf('%s/%s/%s', $this->baseUri, Inflector::tableize(Inflector::pluralize($this->getClassShortName($object))), $object->getId());
     }
+
+    public function getIdTypeFromClassName(string $className): string
+    {
+        if (isset($this->classNameIdTypes[$className])) {
+            return $this->classNameIdTypes[$className];
+        }
+
+        $reflectionClass = new \ReflectionClass($className);
+
+        // Special case : method setId exists so, we must to cast the id in needed type
+        if ($reflectionClass->hasMethod('setId')) {
+            $reflectionMethod = $reflectionClass->getMethod('setId');
+            $reflectionParameter = $reflectionMethod->getParameters()[0];
+
+            $this->classNameIdTypes[$className] = $reflectionParameter->getType()->getName();
+
+            return $this->classNameIdTypes[$className];
+        }
+
+        return $this->classNameIdTypes[$className] = 'unknown';
+}
 
     /**
      * @return int|string
      */
     public function getObjectIdFromIri(string $iri)
     {
-        return \explode('/', \substr($iri, \strlen($this->baseUri)))[2];
+        $id = \explode('/', \substr($iri, \strlen($this->baseUri)))[2];
+
+        switch ($this->getIdTypeFromClassName($this->getClassnameFromIri($iri))) {
+            case 'string':
+                $id = (string)\explode('/', \substr($iri, \strlen($this->baseUri)))[2];
+                break;
+            case 'float':
+                $id = (float)$id;
+                break;
+            case 'int':
+                $id = (int)$id;
+                break;
+        }
+
+        return $id;
     }
 
     public function getEntityNamespace(): string
