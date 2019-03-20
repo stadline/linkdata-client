@@ -8,7 +8,7 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int      getId()
+ * @method int         getId()
  * @method void        setId(int $id)
  * @method DeviceModel getModel()
  * @method void        setModel(DeviceModel $model)

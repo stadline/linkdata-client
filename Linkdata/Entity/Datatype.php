@@ -9,7 +9,7 @@ use Stadline\LinkdataClient\Linkdata\Utils\RelatedValue;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int getId()
+ * @method int    getId()
  * @method void   setId(int $id)
  * @method string getUnit()
  * @method void   setUnit(string $unit)
