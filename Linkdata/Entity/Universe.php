@@ -7,6 +7,20 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string  getId()
+ * @method void    setId(string $id)
+ * @method array   getTranslatedNames()
+ * @method void    setTranslatedNames(array $translatedNames)
+ * @method Sport[] getSports()
+ * @method void    setSports($sports)
+ * @method bool    isActive()
+ * @method void    setActive(bool $active)
+ * @method string  getCreatedAt()
+ * @method void    setCreatedAt(string $createdAt)
+ * @method string  getUpdatedAt()
+ * @method void    setUpdatedAt(string $updatedAt)
+ */
 class Universe extends ProxyObject
 {
     /**
@@ -50,84 +64,19 @@ class Universe extends ProxyObject
      * @Groups({"universe_norm"})
      */
     public $updatedAt;
-//
-//    public function __construct()
-//    {
-//        $this->sports = [];
-//    }
-//
-//    public function getId(): ?int
-//    {
-//        return $this->id;
-//    }
-//
-//    public function setId(?int $id): void
-//    {
-//        $this->id = $id;
-//    }
-//
-//    public function getTranslatedNames(): ?array
-//    {
-//        return $this->translatedNames;
-//    }
-//
-//    public function setTranslatedNames(?array $translatedNames): void
-//    {
-//        $this->translatedNames = $translatedNames;
-//    }
-//
-//    public function addSport(?string $sport): void
-//    {
-//        $this->sports[] = $sport;
-//    }
-//
-//    public function removeSport(string $sport): void
-//    {
-//        //todo implement the method
-//    }
-//
-//    public function getSports(): array
-//    {
-//        return $this->sports;
-//    }
-//
-//    public function isActive(): ?bool
-//    {
-//        return $this->active;
-//    }
-//
-//    public function setActive(?bool $active): void
-//    {
-//        $this->active = $active;
-//    }
-//
-//    public function getCreatedAt(): ?string
-//    {
-//        return $this->createdAt;
-//    }
-//
-//    public function setCreatedAt(?string $createdAt): void
-//    {
-//        $this->createdAt = $createdAt;
-//    }
-//
-//    public function getUpdatedAt(): ?string
-//    {
-//        return $this->updatedAt;
-//    }
-//
-//    public function setUpdatedAt(?string $updatedAt): void
-//    {
-//        $this->updatedAt = $updatedAt;
-//    }
-//
-//    public function hasNameByLocale(string $locale): ?bool
-//    {
-//        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
-//    }
-//
-//    public function getNameByLocale(string $locale): ?string
-//    {
-//        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
-//    }
+
+    public function __construct()
+    {
+        $this->sports = [];
+    }
+
+    public function hasNameByLocale(string $locale): ?bool
+    {
+        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
+    }
+
+    public function getNameByLocale(string $locale): ?string
+    {
+        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
+    }
 }
