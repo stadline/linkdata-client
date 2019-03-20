@@ -7,6 +7,38 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string   getId()
+ * @method void     setId(string $id)
+ * @method array    getTranslatedNames()
+ * @method void     setTranslatedNames()
+ * @method Datatype getTargetDatatype()
+ * @method void     setTargetDatatype()
+ * @method array    getTranslatedBeforeMessage()
+ * @method void     setTranslatedBeforeMessage()
+ * @method array    getTranslatedCurrentMessage()
+ * @method void     setTranslatedCurrentMessage()
+ * @method array    getTranslatedAfterMessage()
+ * @method void     setTranslatedAfterMessage()
+ * @method string   getPublishDate()
+ * @method void     setPublishDate()
+ * @method string   getStartedAt()
+ * @method void     setStartedAt()
+ * @method string   getEndedAt()
+ * @method void     setEndedAt()
+ * @method int      getTarget()
+ * @method void     setTarget()
+ * @method int      getResult()
+ * @method void     setResult()
+ * @method string   getImageUrl()
+ * @method void     setImageUrl()
+ * @method bool     isActive()
+ * @method void     setActive()
+ * @method string   getCreatedAt()
+ * @method void     setCreatedAt(string $createdAt)
+ * @method string   getUpdatedAt()
+ * @method void     setUpdatedAt(string $updatedAt)
+ */
 class GlobalChallenge extends ProxyObject
 {
     const STATE_BEFORE = -1;
@@ -17,241 +49,91 @@ class GlobalChallenge extends ProxyObject
      * @var string
      * @Groups({"global_challenge_norm"})
      */
-    private $id;
+    public $id;
 
     /**
      * @var array
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $translatedNames;
+    public $translatedNames;
 
     /**
      * @var Datatype
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $targetDatatype;
+    public $targetDatatype;
 
     /**
      * @var array
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $translatedBeforeMessage;
+    public $translatedBeforeMessage;
 
     /**
      * @var array
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $translatedCurrentMessage;
+    public $translatedCurrentMessage;
 
     /**
      * @var array
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $translatedAfterMessage;
+    public $translatedAfterMessage;
 
     /**
      * @var string
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $publishDate;
+    public $publishDate;
 
     /**
      * @var string
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $startedAt;
+    public $startedAt;
 
     /**
      * @var string
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $endedAt;
+    public $endedAt;
 
     /**
      * @var int
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $target;
+    public $target;
 
     /**
      * @var int
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $result = 0;
+    public $result = 0;
 
     /**
      * @var string
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $imageUrl;
+    public $imageUrl;
 
     /**
      * @var bool
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
-    private $active = true;
+    public $active = true;
 
     /**
      * @var string
      * @Groups({"global_challenge_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
      * @var string
      * @Groups({"global_challenge_norm"})
      */
-    private $updatedAt;
-
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
-
-    public function setId(string $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getTargetDatatype()
-    {
-        return $this->hydrate($this->targetDatatype);
-    }
-
-    public function setTargetDatatype($targetDatatype): void
-    {
-        $this->targetDatatype = $targetDatatype;
-    }
-
-    public function getTranslatedBeforeMessage(): ?array
-    {
-        return $this->translatedBeforeMessage;
-    }
-
-    public function setTranslatedBeforeMessage(?array $translatedBeforeMessage): void
-    {
-        $this->translatedBeforeMessage = $translatedBeforeMessage;
-    }
-
-    public function getTranslatedCurrentMessage(): ?array
-    {
-        return $this->translatedCurrentMessage;
-    }
-
-    public function setTranslatedCurrentMessage(?array $translatedCurrentMessage): void
-    {
-        $this->translatedCurrentMessage = $translatedCurrentMessage;
-    }
-
-    public function getTranslatedAfterMessage(): ?array
-    {
-        return $this->translatedAfterMessage;
-    }
-
-    public function setTranslatedAfterMessage(?array $translatedAfterMessage): void
-    {
-        $this->translatedAfterMessage = $translatedAfterMessage;
-    }
-
-    public function getPublishDate(): ?string
-    {
-        return $this->publishDate;
-    }
-
-    public function setPublishDate(?string $publishDate): void
-    {
-        $this->publishDate = $publishDate;
-    }
-
-    public function getStartedAt(): ?string
-    {
-        return $this->startedAt;
-    }
-
-    public function setStartedAt(?string $startedAt): void
-    {
-        $this->startedAt = $startedAt;
-    }
-
-    public function getEndedAt(): ?string
-    {
-        return $this->endedAt;
-    }
-
-    public function setEndedAt(?string $endedAt): void
-    {
-        $this->endedAt = $endedAt;
-    }
-
-    public function getTarget(): ?int
-    {
-        return $this->target;
-    }
-
-    public function setTarget(?int $target): void
-    {
-        $this->target = $target;
-    }
-
-    public function getResult(): ?int
-    {
-        return $this->result;
-    }
-
-    public function setResult(int $result): void
-    {
-        $this->result = $result;
-    }
-
-    public function getImageUrl(): ?string
-    {
-        return $this->imageUrl;
-    }
-
-    public function setImageUrl(?string $imageUrl): void
-    {
-        $this->imageUrl = $imageUrl;
-    }
-
-    public function getUpdatedAt(): ?string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): ?string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getTranslatedNames(): array
-    {
-        return $this->translatedNames;
-    }
-
-    public function setTranslatedNames(array $translatedNames): void
-    {
-        $this->translatedNames = $translatedNames;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): void
-    {
-        $this->active = $active;
-    }
+    public $updatedAt;
 
     public function hasNameByLocale(string $locale): bool
     {
