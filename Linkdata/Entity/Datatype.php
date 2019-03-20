@@ -8,6 +8,26 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\Linkdata\Utils\RelatedValue;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string getId()
+ * @method void   setId(string $id)
+ * @method string getUnit()
+ * @method void   setUnit()
+ * @method array  getTranslatedNames()
+ * @method void   setTranslatedNames()
+ * @method array  getTranslatedDescriptions()
+ * @method void   setTranslatedDescriptions()
+ * @method int    getRecordWay()
+ * @method void   setRecordWay()
+ * @method bool   isCumulable()
+ * @method void   setCumulable()
+ * @method bool   isActive()
+ * @method void   setActive()
+ * @method string getCreatedAt()
+ * @method void   setCreatedAt(string $createdAt)
+ * @method string getUpdatedAt()
+ * @method void   setUpdatedAt(string $updatedAt)
+ */
 class Datatype extends ProxyObject
 {
     // commonly used datatype
@@ -151,147 +171,57 @@ class Datatype extends ProxyObject
      * @var int
      * @Groups({"datatype_norm"})
      */
-    private $id;
+    public $id;
 
     /**
      * @var string
      * @Groups({"datatype_norm"})
      */
-    private $unit;
+    public $unit;
 
     /**
      * @var array
      *
      * @Groups({"datatype_norm"})
      */
-    private $translatedNames;
+    public $translatedNames;
 
     /**
      * @var array
      *
      * @Groups({"datatype_norm"})
      */
-    private $translatedDescriptions;
+    public $translatedDescriptions;
 
     /**
      * @var int
      * @Groups({"datatype_norm"})
      */
-    private $recordWay;
+    public $recordWay;
 
     /**
      * @var bool
      * @Groups({"datatype_norm"})
      */
-    private $cumulable;
+    public $cumulable;
 
     /**
      * @var bool
      * @Groups({"datatype_norm"})
      */
-    private $active = true;
+    public $active = true;
 
     /**
      * @var string
      * @Groups({"datatype_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
      * @var string
      * @Groups({"datatype_norm"})
      */
-    private $updatedAt;
-
-    public function getUpdatedAt(): string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getUnit(): ?string
-    {
-        return $this->unit;
-    }
-
-    public function setUnit(?string $unit): void
-    {
-        $this->unit = $unit;
-    }
-
-    public function getTranslatedNames(): array
-    {
-        return $this->translatedNames;
-    }
-
-    public function setTranslatedNames(array $translatedNames): void
-    {
-        $this->translatedNames = $translatedNames;
-    }
-
-    public function getTranslatedDescriptions(): ?array
-    {
-        return $this->translatedDescriptions;
-    }
-
-    public function setTranslatedDescriptions(?array $translatedDescriptions): void
-    {
-        $this->translatedDescriptions = $translatedDescriptions;
-    }
-
-    public function getRecordWay(): int
-    {
-        return $this->recordWay;
-    }
-
-    public function setRecordWay(int $recordWay): void
-    {
-        $this->recordWay = $recordWay;
-    }
-
-    public function isCumulable(): bool
-    {
-        return $this->cumulable;
-    }
-
-    public function setCumulable(bool $cumulable): void
-    {
-        $this->cumulable = $cumulable;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): void
-    {
-        $this->active = $active;
-    }
+    public $updatedAt;
 
     public function hasNameByLocale(string $locale): bool
     {
