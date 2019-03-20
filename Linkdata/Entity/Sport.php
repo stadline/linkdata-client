@@ -7,6 +7,20 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string   getId()
+ * @method void     setId(string $id)
+ * @method array    getTranslatedNames()
+ * @method void     setTranslatedNames()
+ * @method Universe getUniverse()
+ * @method void     setUniverse()
+ * @method bool     isActive()
+ * @method void     setActive()
+ * @method string   getCreatedAt()
+ * @method void     setCreatedAt(string $createdAt)
+ * @method string   getUpdatedAt()
+ * @method void     setUpdatedAt(string $updatedAt)
+ */
 class Sport extends ProxyObject
 {
     public const ALPINISME = 153;
@@ -273,71 +287,7 @@ class Sport extends ProxyObject
      * @Groups({"sport_norm"})
      */
     public $updatedAt;
-//
-//    public function getUpdatedAt(): ?string
-//    {
-//        return $this->updatedAt;
-//    }
-//
-//    public function setUpdatedAt(?string $updatedAt): void
-//    {
-//        $this->updatedAt = $updatedAt;
-//    }
-//
-//    public function getCreatedAt(): ?string
-//    {
-//        return $this->createdAt;
-//    }
-//
-//    public function setCreatedAt(?string $createdAt): void
-//    {
-//        $this->createdAt = $createdAt;
-//    }
-//
-//    public function getId(): ?int
-//    {
-//        return $this->id;
-//    }
-//
-//    public function setId(?int $id): void
-//    {
-//        $this->id = $id;
-//    }
-//
-//    public function getTranslatedNames(): ?array
-//    {
-//        return $this->translatedNames;
-//    }
-//
-//    public function setTranslatedNames(?array $translatedNames): void
-//    {
-//        $this->translatedNames = $translatedNames;
-//    }
-//
-//    public function getUniverse()
-//    {
-//        if (null !== $this->universe) {
-//            $this->universe->_hydrate();
-//        }
-//
-//        return $this->universe;
-//    }
-//
-//    public function setUniverse(?Universe $universe): void
-//    {
-//        $this->universe = $universe;
-//    }
-//
-//    public function isActive(): ?bool
-//    {
-//        return $this->active;
-//    }
-//
-//    public function setActive(?bool $active): void
-//    {
-//        $this->active = $active;
-//    }
-//
+
     public function hasNameByLocale(string $locale): ?bool
     {
         return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
