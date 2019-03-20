@@ -4,179 +4,80 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
-use DateTime;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string   getId()
+ * @method void     setId(string $id)
+ * @method User     getUser()
+ * @method void     setUser(User $user)
+ * @method Datatype getDatatype()
+ * @method void     setDatatype(Datatype $datatype)
+ * @method float    getInitial()
+ * @method void     setInitial(float $initial)
+ * @method float    getGoal()
+ * @method void     setGoal($goalfloat )
+ * @method string   getStartdate()
+ * @method void     setStartdate(string $startdate)
+ * @method string   getStartdateTimezone()
+ * @method void     setStartdateTimezone(string $startdateTimezone)
+ * @method string   getCreatedAt()
+ * @method void     setCreatedAt(string $createdAt)
+ * @method string   getUpdatedAt()
+ * @method void     setUpdatedAt(string $updatedAt)
+ */
 class UserMeasureGoal extends ProxyObject
 {
     /**
      * @var int
      * @Groups({"user_measure_goal_norm"})
      */
-    private $id;
+    public $id;
 
     /**
      * @var User
      * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
-    private $user;
+    public $user;
 
     /**
      * @var Datatype
      * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
-    private $datatype;
+    public $datatype;
 
     /**
      * @var float
      * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
-    private $initial;
+    public $initial;
 
     /**
      * @var float
      * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
-    private $goal;
-
-    /**
-     * @var DateTime
-     */
-    private $startdate;
+    public $goal;
 
     /**
      * @var string
      */
-    private $startdateTimezone;
+    public $startdate;
 
     /**
      * @var string
-     * @Groups({"user_measure_goal_norm"})
      */
-    private $createdAt;
+    public $startdateTimezone;
 
     /**
      * @var string
      * @Groups({"user_measure_goal_norm"})
      */
-    private $updatedAt;
-
-    private $datatypeIri;
-
-    public function __construct()
-    {
-        $this->startdate = new DateTime();
-        $this->startdateTimezone = '+00.00';
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getUser()
-    {
-        if (null !== $this->user) {
-            $this->user->_hydrate();
-        }
-
-        return $this->user;
-    }
-
-    public function setUser(?User $user): void
-    {
-        $this->user = $user;
-    }
-
-    public function getDatatype()
-    {
-        if (null !== $this->datatype) {
-            $this->datatype->_hydrate();
-        }
-
-        return $this->datatype;
-    }
-
-    public function getDatatypeId(): ?int
-    {
-        return $this->getDatatype()->getId();
-    }
-
-    public function setDatatype(?Datatype $datatype): void
-    {
-        $this->datatype = $datatype;
-    }
-
-    public function getInitial(): ?float
-    {
-        return $this->initial;
-    }
-
-    public function setInitial(?float $initial): void
-    {
-        $this->initial = $initial;
-    }
-
-    public function getGoal(): ?float
-    {
-        return $this->goal;
-    }
-
-    public function setGoal(float $goal): void
-    {
-        $this->goal = $goal;
-    }
+    public $createdAt;
 
     /**
-     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
+     * @var string
+     * @Groups({"user_measure_goal_norm"})
      */
-    public function getStartdate(): ?DateTime
-    {
-        return \DateTime::createFromFormat(
-            'Y-m-d H:i:s',
-            $this->startdate->format('Y-m-d H:i:s'),
-            new \DateTimeZone($this->startdateTimezone)
-        );
-    }
-
-    public function setStartdate($startdate): void
-    {
-        $this->startdate = $startdate;
-    }
-
-    public function getStartdateTimezone(): ?string
-    {
-        return $this->startdateTimezone;
-    }
-
-    public function setStartdateTimezone(string $startdateTimezone): void
-    {
-        $this->startdateTimezone = $startdateTimezone;
-    }
-
-    public function getCreatedAt(): ?string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getUpdatedAt(): ?string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
+    public $updatedAt;
 }
