@@ -27,19 +27,19 @@ class StorageKey extends ProxyObject
      * @var int
      * @Groups({"storage_key_norm"})
      */
-    protected $id;
+    public $id;
 
     /**
      * @var string
      * @Groups({"storage_key_norm"})
      */
-    protected $slug;
+    public $slug;
 
     /**
      * @var string
      * @Groups({"storage_key_norm"})
      */
-    protected $comment;
+    public $comment;
 
     /**
      * @var string
