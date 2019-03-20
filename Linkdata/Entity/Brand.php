@@ -9,107 +9,56 @@ use Doctrine\Common\Collections\Collection;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string          getId()
+ * @method void            setId(string $id)
+ * @method ArrayCollection getDeviceModels()
+ * @method void            setDeviceModels()
+ * @method array           getTranslatedNames()
+ * @method void            setTranslatedNames()
+ * @method bool            isActive()
+ * @method void            setActive()
+ * @method string          getCreatedAt()
+ * @method void            setCreatedAt(string $createdAt)
+ * @method string          getUpdatedAt()
+ * @method void            setUpdatedAt(string $updatedAt)
+ */
 class Brand extends ProxyObject
 {
     /**
      * @var int
      * @Groups({"brand_norm"})
      */
-    private $id;
+    public $id;
 
     /**
      * @var ArrayCollection
      */
-    private $deviceModels;
+    public $deviceModels;
 
     /**
      * @var array
      * @Groups({"brand_norm"})
      */
-    private $translatedNames;
+    public $translatedNames;
 
     /**
      * @var bool
      * @Groups({"brand_norm"})
      */
-    private $active = true;
+    public $active = true;
 
     /**
      * @var string
      * @Groups({"brand_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
      * @var string
      * @Groups({"brand_norm"})
      */
-    private $updatedAt;
-
-    public function addDeviceModel(DeviceModel $deviceModel): void
-    {
-        $this->deviceModels[] = $deviceModel;
-    }
-
-    public function removeDeviceModel(DeviceModel $deviceModel): void
-    {
-        $this->deviceModels->removeElement($deviceModel);
-    }
-
-    public function getDeviceModels(): Collection
-    {
-        return $this->deviceModels;
-    }
-
-    public function getUpdatedAt(): string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getTranslatedNames(): array
-    {
-        return $this->translatedNames;
-    }
-
-    public function setTranslatedNames(array $translatedNames): void
-    {
-        $this->translatedNames = $translatedNames;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): void
-    {
-        $this->active = $active;
-    }
+    public $updatedAt;
 
     public function hasNameByLocale(string $locale): bool
     {
@@ -123,6 +72,6 @@ class Brand extends ProxyObject
 
     public function __toString(): string
     {
-        return $this->translatedNames['en'];
+        return (string) $this->translatedNames['en'];
     }
 }
