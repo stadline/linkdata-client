@@ -12,12 +12,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void        setId(int $id)
  * @method DeviceModel getModel()
  * @method void        setModel(DeviceModel $model)
- * @method string      getVersion()
- * @method void        setVersion(string $version)
- * @method \DateTime   getRevisionDate()
- * @method void        setRevisionDate(\DateTime $revisionDate)
- * @method string      getPath()
- * @method void        setPath(string $path)
+ * @method ?string     getVersion()
+ * @method void        setVersion(?string $version)
+ * @method ?\DateTime  getRevisionDate()
+ * @method void        setRevisionDate(?\DateTime $revisionDate)
+ * @method ?string     getPath()
+ * @method void        setPath(?string $path)
  * @method bool        isIsLastFirmware()
  * @method void        setIsLastFirmware(bool $isLastFirmware)
  * @method bool        isActive()
@@ -42,19 +42,19 @@ class Firmware extends ProxyObject
     public $model;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"firmware_norm"})
      */
     public $version;
 
     /**
-     * @var \DateTime
+     * @var ?\DateTime
      * @Groups({"firmware_norm"})
      */
     public $revisionDate;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"firmware_norm"})
      */
     public $path;
