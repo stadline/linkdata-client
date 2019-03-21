@@ -8,36 +8,36 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method string    getId()
- * @method void      setId(string $id)
- * @method array     getTranslatedNames()
- * @method void      setTranslatedNames(array $translatedNames)
- * @method Datatype  getTargetDatatype()
- * @method void      setTargetDatatype(Datatype $targetDatatype)
- * @method array     getTranslatedBeforeMessage()
- * @method void      setTranslatedBeforeMessage(array $translatedBeforeMessage)
- * @method array     getTranslatedCurrentMessage()
- * @method void      setTranslatedCurrentMessage(array $translatedCurrentMessage)
- * @method array     getTranslatedAfterMessage()
- * @method void      setTranslatedAfterMessage(array $translatedAfterMessage)
- * @method \DateTime getPublishDate()
- * @method void      setPublishDate(\DateTime $publishDate)
- * @method \DateTime getStartedAt()
- * @method void      setStartedAt(\DateTime $startedAt)
- * @method \DateTime getEndedAt()
- * @method void      setEndedAt(\DateTime $endedAt)
- * @method int       getTarget()
- * @method void      setTarget(int $target)
- * @method int       getResult()
- * @method void      setResult(int $result)
- * @method string    getImageUrl()
- * @method void      setImageUrl(string $imageUrl)
- * @method bool      isActive()
- * @method void      setActive(bool $active)
- * @method \DateTime getCreatedAt()
- * @method void      setCreatedAt(\DateTime $createdAt)
- * @method \DateTime getUpdatedAt()
- * @method void      setUpdatedAt(\DateTime $updatedAt)
+ * @method string     getId()
+ * @method void       setId(string $id)
+ * @method array      getTranslatedNames()
+ * @method void       setTranslatedNames(array $translatedNames)
+ * @method Datatype   getTargetDatatype()
+ * @method void       setTargetDatatype(Datatype $targetDatatype)
+ * @method ?array     getTranslatedBeforeMessage()
+ * @method void       setTranslatedBeforeMessage(?array $translatedBeforeMessage)
+ * @method ?array     getTranslatedCurrentMessage()
+ * @method void       setTranslatedCurrentMessage(?array $translatedCurrentMessage)
+ * @method ?array     getTranslatedAfterMessage()
+ * @method void       setTranslatedAfterMessage(?array $translatedAfterMessage)
+ * @method ?\DateTime getPublishDate()
+ * @method void       setPublishDate(?\DateTime $publishDate)
+ * @method ?\DateTime getStartedAt()
+ * @method void       setStartedAt(?\DateTime $startedAt)
+ * @method ?\DateTime getEndedAt()
+ * @method void       setEndedAt(?\DateTime $endedAt)
+ * @method ?int       getTarget()
+ * @method void       setTarget(?int $target)
+ * @method int        getResult()
+ * @method void       setResult(int $result)
+ * @method ?string    getImageUrl()
+ * @method void       setImageUrl(?string $imageUrl)
+ * @method bool       isActive()
+ * @method void       setActive(bool $active)
+ * @method \DateTime  getCreatedAt()
+ * @method void       setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime  getUpdatedAt()
+ * @method void       setUpdatedAt(\DateTime $updatedAt)
  */
 class GlobalChallenge extends ProxyObject
 {
@@ -64,43 +64,43 @@ class GlobalChallenge extends ProxyObject
     public $targetDatatype;
 
     /**
-     * @var array
+     * @var ?array
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
     public $translatedBeforeMessage;
 
     /**
-     * @var array
+     * @var ?array
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
     public $translatedCurrentMessage;
 
     /**
-     * @var array
+     * @var ?array
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
     public $translatedAfterMessage;
 
     /**
-     * @var \DateTime
+     * @var ?\DateTime
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
     public $publishDate;
 
     /**
-     * @var \DateTime
+     * @var ?\DateTime
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
     public $startedAt;
 
     /**
-     * @var \DateTime
+     * @var ?\DateTime
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
     public $endedAt;
 
     /**
-     * @var int
+     * @var ?int
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
     public $target;
@@ -112,7 +112,7 @@ class GlobalChallenge extends ProxyObject
     public $result = 0;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"global_challenge_norm", "global_challenge_denorm"})
      */
     public $imageUrl;
