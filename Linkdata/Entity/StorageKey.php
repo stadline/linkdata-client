@@ -12,8 +12,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void      setId(int $id)
  * @method string    getSlug()
  * @method void      setSlug(string $slug)
- * @method string    getComment()
- * @method void      setComment(string $comment)
+ * @method ?string   getComment()
+ * @method void      setComment(?string $comment)
  * @method bool      isActive()
  * @method void      setActive(bool $active)
  * @method \DateTime getCreatedAt()
@@ -36,7 +36,7 @@ class StorageKey extends ProxyObject
     public $slug;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"storage_key_norm"})
      */
     public $comment;
