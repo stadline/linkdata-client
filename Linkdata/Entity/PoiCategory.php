@@ -23,35 +23,30 @@ class PoiCategory extends ProxyObject
 {
     /**
      * @var int
-     *
      * @Groups({"poi_category_norm"})
      */
     public $id;
 
     /**
      * @var array
-     *
      * @Groups({"poi_category_norm"})
      */
     public $translatedNames;
 
     /**
      * @var bool
-     *
      * @Groups({"poi_category_norm"})
      */
     public $active;
 
     /**
      * @var \DateTime
-     *
      * @Groups({"poi_category_norm"})
      */
     public $createdAt;
 
     /**
      * @var \DateTime
-     *
      * @Groups({"poi_category_norm"})
      */
     public $updatedAt;
