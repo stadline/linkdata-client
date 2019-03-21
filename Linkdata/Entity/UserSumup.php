@@ -61,6 +61,7 @@ class UserSumup extends ProxyObject
      * @Groups({"user_sumup_norm"})
      */
     public $datatype;
+
     /**
      * @var string
      * @Groups({"user_sumup_norm"})
