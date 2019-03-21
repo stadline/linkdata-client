@@ -14,8 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void      setUser(User $user)
  * @method Datatype  getDatatype()
  * @method void      setDatatype(Datatype $datatype)
- * @method float     getInitial()
- * @method void      setInitial(float $initial)
+ * @method ?float    getInitial()
+ * @method void      setInitial(?float $initial)
  * @method float     getGoal()
  * @method void      setGoal($goalfloat)
  * @method \DateTime getStartdate()
@@ -46,7 +46,7 @@ class UserMeasureGoal extends ProxyObject
     public $datatype;
 
     /**
-     * @var float
+     * @var ?float
      * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
     public $initial;
