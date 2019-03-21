@@ -7,14 +7,21 @@
 
 \set_time_limit(0);
 
-require_once './vendor/autoload.php';
-
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-$loader = require __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
+
+// Vars
+$baseLd2Path = $argv[1];
+$clientExtractFilename = 'client-extract.json';
+$fileContent = \file_get_contents(\sprintf('%s/%s', $baseLd2Path, $clientExtractFilename));
+$extractConf = \json_decode($fileContent, true);
+
+// Require ld2 autoload
+$loader = require \sprintf('%s/%s', $baseLd2Path, $extractConf['autoload_path']);
 AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 
 class UniversalAnnotationReader extends AnnotationReader
@@ -69,15 +76,6 @@ if (!\file_exists($argv[1])) {
     exit(1);
 }
 
-// Vars
-$baseLd2Path = $argv[1];
-$clientExtractFilename = 'client-extract.json';
-$fileContent = \file_get_contents(\sprintf('%s/%s', $baseLd2Path, $clientExtractFilename));
-$extractConf = \json_decode($fileContent, true);
-
-// Require ld2 autoload
-require_once \sprintf('%s/%s', $baseLd2Path, $extractConf['autoload_path']);
-
 $annotationReader = new UniversalAnnotationReader();
 
 main($baseLd2Path, $extractConf);
@@ -104,6 +102,7 @@ function main(string $baseLd2Path, array $extractConf): void
         $files = $finder->files()->name('*.php')->in(\sprintf('%s/%s', $baseLd2Path, $entityPath));
 
         foreach ($files as $file) {
+            echo "Parse file $file\n";
             if (!\strpos($file->getRealPath(), 'Interface.php')) {
                 list($entityName, $entityContent) = processEntity(\file_get_contents($file->getRealPath()));
 
