@@ -77,7 +77,6 @@ class DeviceModel extends ProxyObject
 
     /**
      * @var array
-     *
      * @Groups({"device_model_norm"})
      */
     public $translatedNames;

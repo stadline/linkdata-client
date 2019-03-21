@@ -43,6 +43,7 @@ class UserDevice extends ProxyObject
     public $serial;
 
     /**
+     * @var DeviceModel
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
     public $model;

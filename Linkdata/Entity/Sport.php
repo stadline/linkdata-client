@@ -248,42 +248,36 @@ class Sport extends ProxyObject
 
     /**
      * @var int
-     *
      * @Groups({"sport_norm"})
      */
     public $id;
 
     /**
      * @var array
-     *
      * @Groups({"sport_norm"})
      */
     public $translatedNames;
 
     /**
      * @var Universe
-     *
      * @Groups({"sport_norm"})
      */
     public $universe;
 
     /**
      * @var bool
-     *
      * @Groups({"sport_norm"})
      */
     public $active = true;
 
     /**
      * @var string
-     *
      * @Groups({"sport_norm"})
      */
     public $createdAt;
 
     /**
      * @var string
-     *
      * @Groups({"sport_norm"})
      */
     public $updatedAt;

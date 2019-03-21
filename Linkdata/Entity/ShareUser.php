@@ -27,7 +27,6 @@ class ShareUser extends ProxyObject
 
     /**
      * @var User
-     *
      * @Groups({"share_norm", "share_denorm"})
      */
     public $user;

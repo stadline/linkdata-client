@@ -69,35 +69,30 @@ class Activity extends ProxyObject
 {
     /**
      * @var string
-     *
      * @Groups({"activity_norm"})
      */
     public $id;
 
     /**
      * @var ?string
-     *
      * @Groups({"activity_norm", "activity_denorm"})
      */
     public $name;
 
     /**
      * @var User
-     *
      * @Groups({"activity_norm", "activity_denorm"})
      */
     public $user;
 
     /**
      * @var Sport
-     *
      * @Groups({"activity_norm", "activity_denorm"})
      */
     public $sport;
 
     /**
      * @var UserDevice
-     *
      * @Groups({"activity_norm", "activity_denorm"})
      */
     public $userDevice;

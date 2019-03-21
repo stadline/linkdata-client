@@ -181,14 +181,12 @@ class Datatype extends ProxyObject
 
     /**
      * @var array
-     *
      * @Groups({"datatype_norm"})
      */
     public $translatedNames;
 
     /**
      * @var array
-     *
      * @Groups({"datatype_norm"})
      */
     public $translatedDescriptions;

@@ -35,70 +35,60 @@ class User extends ProxyObject
 {
     /**
      * @var string
-     *
      * @Groups({"user_norm"})
      */
     public $id;
 
     /**
      * @var string
-     *
      * @Groups({"user_norm"})
      */
     public $oneId;
 
     /**
      * @var int
-     *
      * @Groups({"user_norm", "user_denorm"})
      */
     public $gender;
 
     /**
      * @var array
-     *
      * @Groups({"user_norm"})
      */
     public $roles;
 
     /**
      * @var string
-     *
      * @Groups({"user_norm", "user_denorm"})
      */
     public $language;
 
     /**
      * @var string
-     *
      * @Groups({"user_norm", "user_denorm"})
      */
     public $country;
 
     /**
      * @var string
-     *
      * @Groups({"user_norm", "user_denorm"})
      */
     public $imageUrl;
 
     /**
      * @var string
-     *
      * @Groups({"user_denorm"})
      */
     public $birthDate;
 
     /**
      * @var string
-     *
      * @Groups({"user_norm"})
      */
     public $createdAt;
 
     /**
      * @var string
-     *
      * @Groups({"user_norm"})
      */
     public $updatedAt;
@@ -137,7 +127,6 @@ class User extends ProxyObject
 
     /**
      * @var string
-     *
      * @Groups({"user_norm", "user_denorm"})
      */
     public $scheduleDelete;

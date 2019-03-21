@@ -25,42 +25,36 @@ class Universe extends ProxyObject
 {
     /**
      * @var int
-     *
      * @Groups({"universe_norm"})
      */
     public $id;
 
     /**
      * @var array
-     *
      * @Groups({"universe_norm"})
      */
     public $translatedNames;
 
     /**
      * @var Sport[]
-     *
      * @Groups({"universe_norm"})
      */
     public $sports = [];
 
     /**
      * @var bool
-     *
      * @Groups({"universe_norm"})
      */
     public $active = true;
 
     /**
      * @var string
-     *
      * @Groups({"universe_norm"})
      */
     public $createdAt;
 
     /**
      * @var string
-     *
      * @Groups({"universe_norm"})
      */
     public $updatedAt;
