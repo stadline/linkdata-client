@@ -11,8 +11,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @method int       getId()
  * @method void      setId(int $id)
- * @method string    getUnit()
- * @method void      setUnit(string $unit)
+ * @method ?string   getUnit()
+ * @method void      setUnit(?string $unit)
  * @method array     getTranslatedNames()
  * @method void      setTranslatedNames(array $translatedNames)
  * @method array     getTranslatedDescriptions()
@@ -174,7 +174,7 @@ class Datatype extends ProxyObject
     public $id;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"datatype_norm"})
      */
     public $unit;
