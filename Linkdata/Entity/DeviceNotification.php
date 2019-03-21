@@ -14,8 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void       setType(int $type)
  * @method string     getPath()
  * @method void       setPath(string $path)
- * @method \DateTime  getClosedAt()
- * @method void       setClosedAt(\DateTime $closedAt)
+ * @method ?\DateTime getClosedAt()
+ * @method void       setClosedAt(?\DateTime $closedAt)
  * @method UserDevice getUserDevice()
  * @method void       setUserDevice(UserDevice $userDevice)
  * @method \DateTime  getCreatedAt()
@@ -44,7 +44,7 @@ class DeviceNotification extends ProxyObject
     public $path;
 
     /**
-     * @var \DateTime
+     * @var ?\DateTime
      * @Groups({"device_notification_norm"})
      */
     public $closedAt;
