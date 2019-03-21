@@ -14,14 +14,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void        setUser(User $user)
  * @method PoiCategory getPoiCategory()
  * @method void        setPoiCategory(PoiCategory $poiCategory)
- * @method string      getName()
- * @method void        setName(string $name)
- * @method string      getDescription()
- * @method void        setDescription(string $description)
- * @method float       getLatitude()
- * @method void        setLatitude(float $latitude)
- * @method float       getLongitude()
- * @method void        setLongitude(float $longitude)
+ * @method ?string     getName()
+ * @method void        setName(?string $name)
+ * @method ?string     getDescription()
+ * @method void        setDescription(?string $description)
+ * @method ?float      getLatitude()
+ * @method void        setLatitude(?float $latitude)
+ * @method ?float      getLongitude()
+ * @method void        setLongitude(?float $longitude)
  * @method \DateTime   getCreatedAt()
  * @method void        setCreatedAt(\DateTime $createdAt)
  * @method \DateTime   getUpdatedAt()
@@ -38,56 +38,48 @@ class UserPoi extends ProxyObject
 
     /**
      * @var User
-     *
      * @Groups({"user_poi_norm", "user_poi_denorm"})
      */
     public $user;
 
     /**
      * @var PoiCategory
-     *
      * @Groups({"user_poi_norm", "user_poi_denorm"})
      */
     public $poiCategory;
 
     /**
-     * @var string
-     *
+     * @var ?string
      * @Groups({"user_poi_norm", "user_poi_denorm"})
      */
     public $name;
 
     /**
-     * @var string
-     *
+     * @var ?string
      * @Groups({"user_poi_norm", "user_poi_denorm"})
      */
     public $description;
 
     /**
-     * @var float
-     *
+     * @var ?float
      * @Groups({"user_poi_norm", "user_poi_denorm"})
      */
     public $latitude;
 
     /**
-     * @var float
-     *
+     * @var ?float
      * @Groups({"user_poi_norm", "user_poi_denorm"})
      */
     public $longitude;
 
     /**
      * @var \DateTime
-     *
      * @Groups({"user_poi_norm"})
      */
     public $createdAt;
 
     /**
      * @var \DateTime
-     *
      * @Groups({"user_poi_norm"})
      */
     public $updatedAt;
