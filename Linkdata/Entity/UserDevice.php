@@ -6,23 +6,22 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Tests\Model;
 
 /**
  * @method string      getId()
  * @method void        setId(string $id)
- * @method string      getSerial()
- * @method void        setSerial(string $serial)
+ * @method ?string     getSerial()
+ * @method void        setSerial(?string $serial)
  * @method DeviceModel getModel()
  * @method void        setModel(DeviceModel $model)
  * @method Firmware    getFirmware()
  * @method void        setFirmware(Firmware $firmware)
  * @method User        getUser()
  * @method void        setUserUser (User $user)
- * @method int         getOwnership()
- * @method void        setOwnership(int $ownership)
- * @method \DateTime   getLastConnectedAt()
- * @method void        setLastConnectedAt(\DateTime $lastConnectedAt)
+ * @method ?int        getOwnership()
+ * @method void        setOwnership(?int $ownership)
+ * @method ?\DateTime  getLastConnectedAt()
+ * @method void        setLastConnectedAt(?\DateTime $lastConnectedAt)
  * @method \DateTime   getCreatedAt()
  * @method void        setCreatedAt(\DateTime $createdAt)
  * @method \DateTime   getUpdatedAt()
@@ -37,7 +36,7 @@ class UserDevice extends ProxyObject
     public $id;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
     public $serial;
@@ -49,6 +48,7 @@ class UserDevice extends ProxyObject
     public $model;
 
     /**
+     * @var Firmware
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
     public $firmware;
@@ -60,13 +60,13 @@ class UserDevice extends ProxyObject
     public $user;
 
     /**
-     * @var int
+     * @var ?int
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
     public $ownership;
 
     /**
-     * @var \DateTime
+     * @var ?\DateTime
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
     public $lastConnectedAt;
