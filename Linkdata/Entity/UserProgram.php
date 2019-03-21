@@ -19,8 +19,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void            setUser(User $user)
  * @method bool            isCurrent()
  * @method void            setCurrent(bool $current)
- * @method \DateTime       getEndedAt()
- * @method void            setEndedAt(\DateTime $endedAt)
+ * @method ?\DateTime      getEndedAt()
+ * @method void            setEndedAt(?\DateTime $endedAt)
  * @method \DateTime       getCreatedAt()
  * @method void            setCreatedAt(\DateTime $createdAt)
  * @method \DateTime       getUpdatedAt()
@@ -47,13 +47,13 @@ class UserProgram extends ProxyObject
     public $user;
 
     /**
-     * @var bool
+     * @var ?bool
      * @Groups({"user_program_norm", "user_program_denorm"})
      */
     public $current;
 
     /**
-     * @var \DateTime
+     * @var ?\DateTime
      * @Groups({"user_program_norm", "user_program_denorm"})
      */
     public $endedAt;
