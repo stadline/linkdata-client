@@ -12,14 +12,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void      setId(int $id)
  * @method array     getTranslatedNames()
  * @method void      setTranslatedNames(array $translatedNames)
- * @method string    getVersion()
- * @method void      setVersion(string $version)
+ * @method ?string   getVersion()
+ * @method void      setVersion(?string $version)
  * @method string    getConnector()
  * @method void      setConnector(string $connector)
  * @method bool      isActive()
  * @method void      setActive(bool $active)
- * @method int       getLinkdataWorldId()
- * @method void      setLinkdataWorldId(int $linkdataWorldId)
  * @method \DateTime getCreatedAt()
  * @method void      setCreatedAt(\DateTime $createdAt)
  * @method \DateTime getUpdatedAt()
@@ -40,7 +38,7 @@ class Connector extends ProxyObject
     public $translatedNames;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"connector_norm"})
      */
     public $version;
@@ -56,11 +54,6 @@ class Connector extends ProxyObject
      * @Groups({"connector_norm"})
      */
     public $active;
-
-    /**
-     * @var int
-     */
-    public $linkdataWorldId;
 
     /**
      * @var \DateTime
