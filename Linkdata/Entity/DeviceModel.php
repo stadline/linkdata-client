@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -15,14 +14,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void      setTranslatedNames(array $translatedNames)
  * @method Brand     getBrand()
  * @method void      setBrand(Brand $brand)
- * @method string    getSerialRange()
- * @method void      setSerialRange(string $serialRange)
- * @method int       getCoder3()
- * @method void      setCoder3(int $coder3)
- * @method string    getNotice()
- * @method void      setNotice(string $notice)
- * @method array     getFirmwares()
- * @method void      setFirmwares(array $firmwares)
+ * @method ?string   getSerialRange()
+ * @method void      setSerialRange(?string $serialRange)
+ * @method ?int      getCoder3()
+ * @method void      setCoder3(?int $coder3)
+ * @method ?string   getNotice()
+ * @method void      setNotice(?string $notice)
  * @method bool      isHasNotificationChallenge()
  * @method void      setHasNotificationChallenge(bool $hasNotificationChallenge)
  * @method bool      isHasNotificationRoute()
@@ -88,27 +85,22 @@ class DeviceModel extends ProxyObject
     public $brand;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"device_model_norm"})
      */
     public $serialRange;
 
     /**
-     * @var int
+     * @var ?int
      * @Groups({"device_model_norm"})
      */
     public $coder3;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"device_model_norm"})
      */
     public $notice;
-
-    /**
-     * @var ArrayCollection
-     */
-    public $firmwares;
 
     /**
      * @var bool
