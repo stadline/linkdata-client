@@ -82,9 +82,4 @@ class UserDevice extends ProxyObject
      * @Groups({"user_device_norm"})
      */
     public $updatedAt;
-
-    public function getAssociatedUser(): ?User
-    {
-        return $this->getUser();
-    }
 }
