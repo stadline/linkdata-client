@@ -8,22 +8,22 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method string      getId()
- * @method void        setId(string $id)
- * @method string      getModelId()
- * @method void        setModelId(string $modelId)
- * @method UserProgram getUserProgram()
- * @method void        setUserProgram(UserProgram $userProgram)
- * @method User        getUser()
- * @method void        setUser(User $user)
- * @method int         getPosition()
- * @method void        setPosition(int $position)
- * @method string      getType()
- * @method void        setType(string $type)
- * @method \DateTime   getCreatedAt()
- * @method void        setCreatedAt(\DateTime $createdAt)
- * @method \DateTime   getUpdatedAt()
- * @method void        setUpdatedAt(\DateTime $updatedAt)
+ * @method string       getId()
+ * @method void         setId(string $id)
+ * @method string       getModelId()
+ * @method void         setModelId(string $modelId)
+ * @method ?UserProgram getUserProgram()
+ * @method void         setUserProgram(?UserProgram $userProgram)
+ * @method User         getUser()
+ * @method void         setUser(User $user)
+ * @method ?int         getPosition()
+ * @method void         setPosition(?int $position)
+ * @method ?string      getType()
+ * @method void         setType(?string $type)
+ * @method \DateTime    getCreatedAt()
+ * @method void         setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime    getUpdatedAt()
+ * @method void         setUpdatedAt(\DateTime $updatedAt)
  */
 class UserSession extends ProxyObject
 {
@@ -40,7 +40,7 @@ class UserSession extends ProxyObject
     public $modelId;
 
     /**
-     * @var UserProgram
+     * @var ?UserProgram
      * @Groups({"user_session_norm", "user_session_denorm"})
      */
     public $userProgram;
@@ -52,13 +52,13 @@ class UserSession extends ProxyObject
     public $user;
 
     /**
-     * @var int
+     * @var ?int
      * @Groups({"user_session_norm", "user_session_denorm"})
      */
     public $position;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"user_session_norm", "user_session_denorm"})
      */
     public $type;
