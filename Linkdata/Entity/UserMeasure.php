@@ -14,8 +14,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void      setUser(User $user)
  * @method Datatype  getDatatype()
  * @method void      setDatatype(Datatype $datatype)
- * @method string    getDateTimezone()
- * @method void      setDateTimezone(string $dateTimezone)
  * @method float     getValue()
  * @method void      setValue(float $value)
  * @method \DateTime getDate()
@@ -71,9 +69,4 @@ class UserMeasure extends ProxyObject
      * @Groups({"user_measure_norm", "user_measure_denorm"})
      */
     public $updatedAt;
-
-    public function __construct()
-    {
-        $this->dateTimezone = '+00.00';
-    }
 }
