@@ -148,6 +148,8 @@ class GlobalChallenge extends ProxyObject
     /**
      * Returns challenge state (BEFORE / CURRENT / AFTER).
      *
+     * @throws \Exception
+     *
      * @return int
      */
     public function getState()
@@ -167,6 +169,8 @@ class GlobalChallenge extends ProxyObject
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \DateTime
      */
     public function getStartedAtAsDateTimeObject()
@@ -177,6 +181,8 @@ class GlobalChallenge extends ProxyObject
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \DateTime
      */
     public function getEndedAtAsDateTimeObject()
@@ -187,6 +193,8 @@ class GlobalChallenge extends ProxyObject
     }
 
     /**
+     * @throws \Exception
+     *
      * @return bool
      */
     public function isOver()
@@ -195,6 +203,8 @@ class GlobalChallenge extends ProxyObject
     }
 
     /**
+     * @throws \Exception
+     *
      * @return bool
      */
     public function isInProgress()
@@ -203,6 +213,8 @@ class GlobalChallenge extends ProxyObject
     }
 
     /**
+     * @throws \Exception
+     *
      * @return bool
      */
     public function isNotStarted()
