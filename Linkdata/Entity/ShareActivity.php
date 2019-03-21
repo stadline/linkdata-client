@@ -23,36 +23,31 @@ class ShareActivity extends ProxyObject
 {
     /**
      * @var string
-     *
-     * @Groups({"share_activity_norm", "user.migration"})
+     * @Groups({"share_activity_norm"})
      */
     public $id;
 
     /**
      * @var User
-     *
-     * @Groups({"share_activity_norm", "share_activity_denorm", "user.migration"})
+     * @Groups({"share_activity_norm", "share_activity_denorm"})
      */
     public $user;
 
     /**
      * @var Activity
-     *
-     * @Groups({"share_activity_norm", "share_activity_denorm", "user.migration"})
+     * @Groups({"share_activity_norm", "share_activity_denorm"})
      */
     public $activity;
 
     /**
      * @var \DateTime
-     *
-     * @Groups({"activity_norm", "user.migration"})
+     * @Groups({"activity_norm"})
      */
     public $createdAt;
 
     /**
      * @var \DateTime
-     *
-     * @Groups({"activity_norm", "user.migration"})
+     * @Groups({"activity_norm"})
      */
     public $updatedAt;
 }

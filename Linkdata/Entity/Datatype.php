@@ -9,24 +9,24 @@ use Stadline\LinkdataClient\Linkdata\Utils\RelatedValue;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int    getId()
- * @method void   setId(int $id)
- * @method string getUnit()
- * @method void   setUnit(string $unit)
- * @method array  getTranslatedNames()
- * @method void   setTranslatedNames(array $translatedNames)
- * @method array  getTranslatedDescriptions()
- * @method void   setTranslatedDescriptions(array $translatedDescriptions)
- * @method int    getRecordWay()
- * @method void   setRecordWay(int $recordWay)
- * @method bool   isCumulable()
- * @method void   setCumulable(bool $cumulable)
- * @method bool   isActive()
- * @method void   setActive(bool $active)
- * @method string getCreatedAt()
- * @method void   setCreatedAt(string $createdAt)
- * @method string getUpdatedAt()
- * @method void   setUpdatedAt(string $updatedAt)
+ * @method int       getId()
+ * @method void      setId(int $id)
+ * @method string    getUnit()
+ * @method void      setUnit(string $unit)
+ * @method array     getTranslatedNames()
+ * @method void      setTranslatedNames(array $translatedNames)
+ * @method array     getTranslatedDescriptions()
+ * @method void      setTranslatedDescriptions(array $translatedDescriptions)
+ * @method int       getRecordWay()
+ * @method void      setRecordWay(int $recordWay)
+ * @method bool      isCumulable()
+ * @method void      setCumulable(bool $cumulable)
+ * @method bool      isActive()
+ * @method void      setActive(bool $active)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
  */
 class Datatype extends ProxyObject
 {
@@ -210,13 +210,13 @@ class Datatype extends ProxyObject
     public $active = true;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"datatype_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"datatype_norm"})
      */
     public $updatedAt;

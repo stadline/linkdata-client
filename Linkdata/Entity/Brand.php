@@ -17,10 +17,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void            setTranslatedNames(array $translatedNames)
  * @method bool            isActive()
  * @method void            setActive(bool $active)
- * @method string          getCreatedAt()
- * @method void            setCreatedAt(string $createdAt)
- * @method string          getUpdatedAt()
- * @method void            setUpdatedAt(string $updatedAt)
+ * @method \DateTime       getCreatedAt()
+ * @method void            setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime       getUpdatedAt()
+ * @method void            setUpdatedAt(\DateTime $updatedAt)
  */
 class Brand extends ProxyObject
 {
@@ -48,13 +48,13 @@ class Brand extends ProxyObject
     public $active = true;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"brand_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"brand_norm"})
      */
     public $updatedAt;

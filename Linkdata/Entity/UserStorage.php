@@ -16,10 +16,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void       setValue(string $value)
  * @method StorageKey getStorageKey()
  * @method void       setStorageKey(StorageKey $storageKey)
- * @method string     getCreatedAt()
- * @method void       setCreatedAt(string $createdAt)
- * @method string     getUpdatedAt()
- * @method void       setUpdatedAt(string $updatedAt)
+ * @method \DateTime  getCreatedAt()
+ * @method void       setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime  getUpdatedAt()
+ * @method void       setUpdatedAt(\DateTime $updatedAt)
  */
 class UserStorage extends ProxyObject
 {
@@ -48,13 +48,13 @@ class UserStorage extends ProxyObject
     public $storageKey;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
     public $updatedAt;

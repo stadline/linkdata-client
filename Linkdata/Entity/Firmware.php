@@ -14,18 +14,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void        setModel(DeviceModel $model)
  * @method string      getVersion()
  * @method void        setVersion(string $version)
- * @method string      getRevisionDate()
- * @method void        setRevisionDate(string $revisionDate)
+ * @method \DateTime   getRevisionDate()
+ * @method void        setRevisionDate(\DateTime $revisionDate)
  * @method string      getPath()
  * @method void        setPath(string $path)
  * @method bool        isIsLastFirmware()
  * @method void        setIsLastFirmware(bool $isLastFirmware)
  * @method bool        isActive()
  * @method void        setActive(bool $active)
- * @method string      getCreatedAt()
- * @method void        setCreatedAt(string $createdAt)
- * @method string      getUpdatedAt()
- * @method void        setUpdatedAt(string $updatedAt)
+ * @method \DateTime   getCreatedAt()
+ * @method void        setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime   getUpdatedAt()
+ * @method void        setUpdatedAt(\DateTime $updatedAt)
  */
 class Firmware extends ProxyObject
 {
@@ -48,7 +48,7 @@ class Firmware extends ProxyObject
     public $version;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"firmware_norm"})
      */
     public $revisionDate;
@@ -72,13 +72,13 @@ class Firmware extends ProxyObject
     public $active = true;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"firmware_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"firmware_norm"})
      */
     public $updatedAt;

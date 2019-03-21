@@ -8,18 +8,18 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int     getId()
- * @method void    setId(int $id)
- * @method array   getTranslatedNames()
- * @method void    setTranslatedNames(array $translatedNames)
- * @method Sport[] getSports()
- * @method void    setSports($sports)
- * @method bool    isActive()
- * @method void    setActive(bool $active)
- * @method string  getCreatedAt()
- * @method void    setCreatedAt(string $createdAt)
- * @method string  getUpdatedAt()
- * @method void    setUpdatedAt(string $updatedAt)
+ * @method int       getId()
+ * @method void      setId(int $id)
+ * @method array     getTranslatedNames()
+ * @method void      setTranslatedNames(array $translatedNames)
+ * @method Sport[]   getSports()
+ * @method void      setSports($sports)
+ * @method bool      isActive()
+ * @method void      setActive(bool $active)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
  */
 class Universe extends ProxyObject
 {
@@ -48,13 +48,13 @@ class Universe extends ProxyObject
     public $active = true;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"universe_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"universe_norm"})
      */
     public $updatedAt;

@@ -8,24 +8,24 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method string   getId()
- * @method void     setId(string $id)
- * @method User     getUser()
- * @method void     setUser(User $user)
- * @method Datatype getDatatype()
- * @method void     setDatatype(Datatype $datatype)
- * @method Activity getActivity()
- * @method void     setActivity(Activity $activity)
- * @method Sport    getSport()
- * @method void     setSport(Sport $sport)
- * @method string   getType()
- * @method void     setType(string $type)
- * @method float    getValue()
- * @method void     setValue(float $value)
- * @method string   getCreatedAt()
- * @method void     setCreatedAt(string $createdAt)
- * @method string   getUpdatedAt()
- * @method void     setUpdatedAt(string $updatedAt)
+ * @method string    getId()
+ * @method void      setId(string $id)
+ * @method User      getUser()
+ * @method void      setUser(User $user)
+ * @method Datatype  getDatatype()
+ * @method void      setDatatype(Datatype $datatype)
+ * @method Activity  getActivity()
+ * @method void      setActivity(Activity $activity)
+ * @method Sport     getSport()
+ * @method void      setSport(Sport $sport)
+ * @method string    getType()
+ * @method void      setType(string $type)
+ * @method float     getValue()
+ * @method void      setValue(float $value)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
  */
 class UserRecord extends ProxyObject
 {
@@ -87,13 +87,13 @@ class UserRecord extends ProxyObject
     public $value;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_record_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_record_norm"})
      */
     public $updatedAt;

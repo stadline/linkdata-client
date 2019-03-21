@@ -8,24 +8,22 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int      getId()
- * @method void     setId(int $id)
- * @method User     getUser()
- * @method void     setUser(User $user)
- * @method Datatype getDatatype()
- * @method void     setDatatype(Datatype $datatype)
- * @method float    getInitial()
- * @method void     setInitial(float $initial)
- * @method float    getGoal()
- * @method void     setGoal($goalfloat )
- * @method string   getStartdate()
- * @method void     setStartdate(string $startdate)
- * @method string   getStartdateTimezone()
- * @method void     setStartdateTimezone(string $startdateTimezone)
- * @method string   getCreatedAt()
- * @method void     setCreatedAt(string $createdAt)
- * @method string   getUpdatedAt()
- * @method void     setUpdatedAt(string $updatedAt)
+ * @method int       getId()
+ * @method void      setId(int $id)
+ * @method User      getUser()
+ * @method void      setUser(User $user)
+ * @method Datatype  getDatatype()
+ * @method void      setDatatype(Datatype $datatype)
+ * @method float     getInitial()
+ * @method void      setInitial(float $initial)
+ * @method float     getGoal()
+ * @method void      setGoal($goalfloat)
+ * @method \DateTime getStartdate()
+ * @method void      setStartdate(\DateTime $startdate)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
  */
 class UserMeasureGoal extends ProxyObject
 {
@@ -60,23 +58,19 @@ class UserMeasureGoal extends ProxyObject
     public $goal;
 
     /**
-     * @var string
+     * @var \DateTime
+     * @Groups({"user_measure_goal_norm", "user_measure_goal_denorm"})
      */
     public $startdate;
 
     /**
-     * @var string
-     */
-    public $startdateTimezone;
-
-    /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_measure_goal_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_measure_goal_norm"})
      */
     public $updatedAt;

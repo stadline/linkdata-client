@@ -8,18 +8,18 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int      getId()
- * @method void     setId(int $id)
- * @method array    getTranslatedNames()
- * @method void     setTranslatedNames(array $translatedNames)
- * @method Universe getUniverse()
- * @method void     setUniverse(Universe $universe)
- * @method bool     isActive()
- * @method void     setActive(bool $active)
- * @method string   getCreatedAt()
- * @method void     setCreatedAt(string $createdAt)
- * @method string   getUpdatedAt()
- * @method void     setUpdatedAt(string $updatedAt)
+ * @method int       getId()
+ * @method void      setId(int $id)
+ * @method array     getTranslatedNames()
+ * @method void      setTranslatedNames(array $translatedNames)
+ * @method Universe  getUniverse()
+ * @method void      setUniverse(Universe $universe)
+ * @method bool      isActive()
+ * @method void      setActive(bool $active)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
  */
 class Sport extends ProxyObject
 {
@@ -271,13 +271,13 @@ class Sport extends ProxyObject
     public $active = true;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"sport_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"sport_norm"})
      */
     public $updatedAt;

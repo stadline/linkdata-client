@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
-use DateTime;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -21,10 +20,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void      setValue(float $value)
  * @method \DateTime getDate()
  * @method void      setDate(\DateTime $date)
- * @method string    getCreatedAt()
- * @method void      setCreatedAt(string $createdAt)
- * @method string    getUpdatedAt()
- * @method void      setUpdatedAt(string $updatedAt)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
  */
 class UserMeasure extends ProxyObject
 {
@@ -56,23 +55,19 @@ class UserMeasure extends ProxyObject
     public $value;
 
     /**
-     * @var DateTime
+     * @var \DateTime
+     * @Groups({"user_measure_norm", "user_measure_denorm"})
      */
     public $date;
 
     /**
-     * @var string
-     */
-    public $dateTimezone;
-
-    /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_measure_norm", "user_measure_denorm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_measure_norm", "user_measure_denorm"})
      */
     public $updatedAt;

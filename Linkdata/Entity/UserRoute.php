@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
 /**
@@ -30,7 +32,7 @@ class UserRoute
      * @ORM\Column(type="string", nullable=false, unique=true, length=32)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="\AppBundle\Doctrine\IdGenerator")
-     * @Groups({"user_route_norm", "user_route_norm_cget", "user.migration"})
+     * @Groups({"user_route_norm", "user_route_norm_cget"})
      */
     protected $id;
 
@@ -48,7 +50,7 @@ class UserRoute
      * @ORM\Column(type="string", nullable=false)
      * @Assert\Type("string")
      * @Assert\NotNull
-     * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm", "user.migration"})
+     * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm"})
      */
     protected $libelle;
 
@@ -57,7 +59,7 @@ class UserRoute
      * @ORM\Column(type="integer", nullable=true)
      * @Assert\Type("integer")
      * @Assert\Range(min=0)
-     * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm", "user.migration"})
+     * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm"})
      */
     protected $distance;
 
@@ -65,7 +67,7 @@ class UserRoute
      * @var int
      * @ORM\Column(type="integer", nullable=true)
      * @Assert\Type("integer")
-     * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm", "user.migration"})
+     * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm"})
      */
     protected $ascendant;
 
@@ -73,7 +75,7 @@ class UserRoute
      * @var int
      * @ORM\Column(type="integer", nullable=true)
      * @Assert\Type("integer")
-     * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm", "user.migration"})
+     * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm"})
      */
     protected $descendant;
 
@@ -82,7 +84,7 @@ class UserRoute
      *
      * @var array
      *
-     * @Groups({"user_route_norm", "user_route_denorm", "user.migration"})
+     * @Groups({"user_route_norm", "user_route_denorm"})
      *
      * @Locations
      */
@@ -95,7 +97,7 @@ class UserRoute
      *     min=-90,
      *     max=90
      * )
-     * @Groups({"user_route_norm", "user.migration"})
+     * @Groups({"user_route_norm"})
      */
     private $latitude;
 
@@ -106,14 +108,14 @@ class UserRoute
      *     min=-180,
      *     max=180
      * )
-     * @Groups({"user_route_norm", "user.migration"})
+     * @Groups({"user_route_norm"})
      */
     private $longitude;
 
     /**
      * @var float
      * @ORM\Column(type="float", nullable=true)
-     * @Groups({"user_route_norm", "user.migration"})
+     * @Groups({"user_route_norm"})
      */
     private $elevation;
 
@@ -123,7 +125,7 @@ class UserRoute
     /**
      * @var bool
      * @ORM\Column(type="boolean", options={"default" = false})
-     * @Groups({"user_route_norm", "user.migration"})
+     * @Groups({"user_route_norm"})
      */
     private $correctedElevation = false;
 
@@ -131,7 +133,7 @@ class UserRoute
      * @var DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
-     * @Groups({"user_route_norm", "user_route_norm_cget", "user.migration"})
+     * @Groups({"user_route_norm", "user_route_norm_cget"})
      */
     private $createdAt;
 
@@ -139,7 +141,7 @@ class UserRoute
      * @var DateTime
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
-     * @Groups({"user_route_norm", "user_route_norm_cget", "user.migration"})
+     * @Groups({"user_route_norm", "user_route_norm_cget"})
      */
     private $updatedAt;
 

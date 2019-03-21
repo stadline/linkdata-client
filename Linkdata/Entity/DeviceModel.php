@@ -9,36 +9,36 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int    getId()
- * @method void   setId(int $id)
- * @method array  getTranslatedNames()
- * @method void   setTranslatedNames(array $translatedNames)
- * @method Brand  getBrand()
- * @method void   setBrand(Brand $brand)
- * @method string getSerialRange()
- * @method void   setSerialRange(string $serialRange)
- * @method int    getCoder3()
- * @method void   setCoder3(int $coder3)
- * @method string getNotice()
- * @method void   setNotice(string $notice)
- * @method array  getFirmwares()
- * @method void   setFirmwares(array $firmwares)
- * @method bool   isHasNotificationChallenge()
- * @method void   setHasNotificationChallenge(bool $hasNotificationChallenge)
- * @method bool   isHasNotificationRoute()
- * @method void   setHasNotificationRoute(bool $hasNotificationRoute)
- * @method bool   isHasNotificationPoi()
- * @method void   setHasNotificationPoi(bool $hasNotificationPoi)
- * @method bool   isHasCoaching()
- * @method void   setHasCoaching(bool $hasCoaching)
- * @method bool   isUsedForGlobalChallenge()
- * @method void   setUsedForGlobalChallenge(bool $usedForGlobalChallenge)
- * @method bool   isActive()
- * @method void   setActive(bool $active)
- * @method string getCreatedAt()
- * @method void   setCreatedAt(string $createdAt)
- * @method string getUpdatedAt()
- * @method void   setUpdatedAt(string $updatedAt)
+ * @method int       getId()
+ * @method void      setId(int $id)
+ * @method array     getTranslatedNames()
+ * @method void      setTranslatedNames(array $translatedNames)
+ * @method Brand     getBrand()
+ * @method void      setBrand(Brand $brand)
+ * @method string    getSerialRange()
+ * @method void      setSerialRange(string $serialRange)
+ * @method int       getCoder3()
+ * @method void      setCoder3(int $coder3)
+ * @method string    getNotice()
+ * @method void      setNotice(string $notice)
+ * @method array     getFirmwares()
+ * @method void      setFirmwares(array $firmwares)
+ * @method bool      isHasNotificationChallenge()
+ * @method void      setHasNotificationChallenge(bool $hasNotificationChallenge)
+ * @method bool      isHasNotificationRoute()
+ * @method void      setHasNotificationRoute(bool $hasNotificationRoute)
+ * @method bool      isHasNotificationPoi()
+ * @method void      setHasNotificationPoi(bool $hasNotificationPoi)
+ * @method bool      isHasCoaching()
+ * @method void      setHasCoaching(bool $hasCoaching)
+ * @method bool      isUsedForGlobalChallenge()
+ * @method void      setUsedForGlobalChallenge(bool $usedForGlobalChallenge)
+ * @method bool      isActive()
+ * @method void      setActive(bool $active)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
  */
 class DeviceModel extends ProxyObject
 {
@@ -147,13 +147,13 @@ class DeviceModel extends ProxyObject
     public $active = true;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"device_model_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"device_model_norm"})
      */
     public $updatedAt;

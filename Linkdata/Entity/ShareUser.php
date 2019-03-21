@@ -8,14 +8,14 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method string getId()
- * @method void   setId(string $id)
- * @method User   getUser()
- * @method void   setUser(User $user)
- * @method string getCreatedAt()
- * @method void   setCreatedAt(string $createdAt)
- * @method string getUpdatedAt()
- * @method void   setUpdatedAt(string $updatedAt)
+ * @method string    getId()
+ * @method void      setId(string $id)
+ * @method User      getUser()
+ * @method void      setUser(User $user)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
  */
 class ShareUser extends ProxyObject
 {
@@ -32,13 +32,13 @@ class ShareUser extends ProxyObject
     public $user;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"share_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"share_norm"})
      */
     public $updatedAt;

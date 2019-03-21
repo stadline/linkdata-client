@@ -25,7 +25,6 @@ class UserDeviceSetting extends ProxyObject
 {
     /**
      * @var int
-     *
      * @Groups({"user_device_setting_norm"})
      */
     public $id;
@@ -42,21 +41,18 @@ class UserDeviceSetting extends ProxyObject
 
     /**
      * @var UserDevice
-     *
      * @Groups({"user_device_setting_norm", "user_device_setting_denorm"})
      */
     public $userDevice;
 
     /**
      * @var \DateTime
-     *
      * @Groups({"user_device_setting_norm"})
      */
     public $createdAt;
 
     /**
      * @var \DateTime
-     *
      * @Groups({"user_device_setting_norm"})
      */
     public $updatedAt;

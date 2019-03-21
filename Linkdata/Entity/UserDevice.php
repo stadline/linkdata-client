@@ -9,24 +9,24 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Tests\Model;
 
 /**
- * @method string           getId()
- * @method void             setId(string $id)
- * @method string           getSerial()
- * @method void             setSerial(string $serial)
+ * @method string      getId()
+ * @method void        setId(string $id)
+ * @method string      getSerial()
+ * @method void        setSerial(string $serial)
  * @method DeviceModel getModel()
- * @method void             setModel(DeviceModel $model)
- * @method Firmware         getFirmware()
- * @method void             setFirmware(Firmware $firmware)
- * @method User             getUser()
- * @method void             setUserUser (User $user)
- * @method int              getOwnership()
- * @method void             setOwnership(int $ownership)
- * @method string           getLastConnectedAt()
- * @method void             setLastConnectedAt(string $lastConnectedAt)
- * @method string           getCreatedAt()
- * @method void             setCreatedAt(string $createdAt)
- * @method string           getUpdatedAt()
- * @method void             setUpdatedAt(string $updatedAt)
+ * @method void        setModel(DeviceModel $model)
+ * @method Firmware    getFirmware()
+ * @method void        setFirmware(Firmware $firmware)
+ * @method User        getUser()
+ * @method void        setUserUser (User $user)
+ * @method int         getOwnership()
+ * @method void        setOwnership(int $ownership)
+ * @method \DateTime   getLastConnectedAt()
+ * @method void        setLastConnectedAt(\DateTime $lastConnectedAt)
+ * @method \DateTime   getCreatedAt()
+ * @method void        setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime   getUpdatedAt()
+ * @method void        setUpdatedAt(\DateTime $updatedAt)
  */
 class UserDevice extends ProxyObject
 {
@@ -66,19 +66,19 @@ class UserDevice extends ProxyObject
     public $ownership;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
     public $lastConnectedAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_device_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_device_norm"})
      */
     public $updatedAt;

@@ -20,8 +20,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void        setUserDevice(UserDevice $userDevice)
  * @method \DateTime   getStartdate()
  * @method void        setStartdate(\DateTime $startdate)
- * @method string      getStartstringzone()
- * @method void        setStartstringzone(string $startstringzone)
  * @method int         getDuration()
  * @method void        setDuration(int $duration)
  * @method float       getLatitude()
@@ -56,14 +54,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void        setGlobalChallenge(string $globalChallenge)
  * @method array       getAvailableDatatypes()
  * @method void        setAvailableDatatypes(array $availableDatatypes)
- * @method string      getCreatedAt()
- * @method void        setCreatedAt(string $createdAt)
- * @method string      getUpdatedAt()
- * @method void        setUpdatedAt(string $updatedAt)
  * @method array       getLocations()
  * @method void        setLocations(array $locations)
  * @method array       getDatastream()
  * @method void        setDatastream(array $datastream)
+ * @method \DateTime   getCreatedAt()
+ * @method void        setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime   getUpdatedAt()
+ * @method void        setUpdatedAt(\DateTime $updatedAt)
  */
 class Activity extends ProxyObject
 {
@@ -102,11 +100,6 @@ class Activity extends ProxyObject
      * @Groups({"activity_norm", "activity_denorm"})
      */
     public $startdate;
-
-    /**
-     * @var string
-     */
-    public $startstringzone;
 
     /**
      * @var int
@@ -210,18 +203,6 @@ class Activity extends ProxyObject
     public $availableDatatypes = [];
 
     /**
-     * @var string
-     * @Groups({"activity_norm"})
-     */
-    public $createdAt;
-
-    /**
-     * @var string
-     * @Groups({"activity_norm"})
-     */
-    public $updatedAt;
-
-    /**
      * Temp storage for locations.
      *
      * @var array
@@ -236,4 +217,16 @@ class Activity extends ProxyObject
      * @Groups({"activity_norm"})
      */
     public $datastream = [];
+
+    /**
+     * @var \DateTime
+     * @Groups({"activity_norm"})
+     */
+    public $createdAt;
+
+    /**
+     * @var \DateTime
+     * @Groups({"activity_norm"})
+     */
+    public $updatedAt;
 }

@@ -8,28 +8,28 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method string getId()
- * @method void   setId(string $id)
- * @method string getOneId()
- * @method void   setOneId(string $oneId)
- * @method int    getGender()
- * @method void   setGender(int $gender)
- * @method array  getRoles()
- * @method void   setRoles(array $roles)
- * @method string getLanguage()
- * @method void   setLanguage(string $language)
- * @method string getCountry()
- * @method void   setCountry(string $country)
- * @method string getImageUrl()
- * @method void   setImageUrl(string $imageUrl)
- * @method string getBirthDate()
- * @method void   setBirthDate(string $birthDate)
- * @method string getScheduleDelete()
- * @method void   setScheduleDelete(string $scheduleDelete)
- * @method string getCreatedAt()
- * @method void   setCreatedAt(string $createdAt)
- * @method string getUpdatedAt()
- * @method void   setUpdatedAt(string $updatedAt)
+ * @method string    getId()
+ * @method void      setId(string $id)
+ * @method string    getOneId()
+ * @method void      setOneId(string $oneId)
+ * @method int       getGender()
+ * @method void      setGender(int $gender)
+ * @method array     getRoles()
+ * @method void      setRoles(array $roles)
+ * @method string    getLanguage()
+ * @method void      setLanguage(string $language)
+ * @method string    getCountry()
+ * @method void      setCountry(string $country)
+ * @method string    getImageUrl()
+ * @method void      setImageUrl(string $imageUrl)
+ * @method string    getBirthDate()
+ * @method void      setBirthDate(string $birthDate)
+ * @method string    getScheduleDelete()
+ * @method void      setScheduleDelete(string $scheduleDelete)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
  */
 class User extends ProxyObject
 {
@@ -76,19 +76,19 @@ class User extends ProxyObject
     public $imageUrl;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_denorm"})
      */
     public $birthDate;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_norm"})
      */
     public $updatedAt;
