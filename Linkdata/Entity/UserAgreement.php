@@ -8,24 +8,24 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int       getId()
- * @method void      setId(int $id)
- * @method User      getUser()
- * @method void      setUser(User $user)
- * @method string    getServiceKey()
- * @method void      setServiceKey(string $serviceKey)
- * @method string    getState()
- * @method void      setState(string $state)
- * @method \DateTime getDateAccept()
- * @method void      setDateAccept(\DateTime $dateAccept)
- * @method \DateTime getDateRepudiation()
- * @method void      setDateRepudiation(\DateTime $dateRepudiation)
- * @method string    getFilename()
- * @method void      setFilename(string $filename)
- * @method \DateTime getCreatedAt()
- * @method void      setCreatedAt(\DateTime $createdAt)
- * @method \DateTime getUpdatedAt()
- * @method void      setUpdatedAt(\DateTime $updatedAt)
+ * @method int        getId()
+ * @method void       setId(int $id)
+ * @method User       getUser()
+ * @method void       setUser(User $user)
+ * @method string     getServiceKey()
+ * @method void       setServiceKey(string $serviceKey)
+ * @method string     getState()
+ * @method void       setState(string $state)
+ * @method ?\DateTime getDateAccept()
+ * @method void       setDateAccept(?\DateTime $dateAccept)
+ * @method ?\DateTime getDateRepudiation()
+ * @method void       setDateRepudiation(?\DateTime $dateRepudiation)
+ * @method string     getFilename()
+ * @method void       setFilename(string $filename)
+ * @method \DateTime  getCreatedAt()
+ * @method void       setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime  getUpdatedAt()
+ * @method void       setUpdatedAt(\DateTime $updatedAt)
  */
 class UserAgreement extends ProxyObject
 {
@@ -54,13 +54,13 @@ class UserAgreement extends ProxyObject
     public $state;
 
     /**
-     * @var \DateTime
+     * @var ?\DateTime
      * @Groups({"user_agreement_norm"})
      */
     public $dateAccept;
 
     /**
-     * @var \DateTime
+     * @var ?\DateTime
      * @Groups({"user_agreement_norm"})
      */
     public $dateRepudiation;
