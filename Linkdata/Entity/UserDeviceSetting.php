@@ -10,10 +10,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @method int        getId()
  * @method void       setId(int $id)
- * @method            getName()
- * @method void       setName( $name)
- * @method            getValue()
- * @method void       setValue( $value)
+ * @method string     getName()
+ * @method void       setName(string $name)
+ * @method ?string    getValue()
+ * @method void       setValue(?string $value)
  * @method UserDevice getUserDevice()
  * @method void       setUserDevice(UserDevice $userDevice)
  * @method \DateTime  getCreatedAt()
@@ -30,11 +30,13 @@ class UserDeviceSetting extends ProxyObject
     public $id;
 
     /**
+     * @var string
      * @Groups({"user_device_setting_norm", "user_device_setting_denorm"})
      */
     public $name;
 
     /**
+     * @var string
      * @Groups({"user_device_setting_norm", "user_device_setting_denorm"})
      */
     public $value;
