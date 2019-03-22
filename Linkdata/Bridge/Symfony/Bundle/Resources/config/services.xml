@@ -8,25 +8,20 @@
         <service id="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient" alias="linkdata_client.client" />
         <service id="linkdata_client.adapter" alias="linkdata_client.adapter_guzzle" />
 
-        <service id="linkdata_client.client" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
-            <argument type="service" id="linkdata_client.proxy_manager" />
-            <argument type="service" id="linkdata_client.adapter_guzzle" />
-        </service>
-
         <service id="linkdata_client.adapter_guzzle" class="Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter">
             <argument>%linkdata_client.base_url%</argument>
             <argument>%kernel.debug%</argument>
         </service>
 
-        <service id="linkdata_client.metadata_manager" class="Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager">
-            <argument>%linkdata_client.entity_namespace%</argument>
-        </service>
-
-        <service id="linkdata_client.proxy_manager" class="Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager">
+        <service id="linkdata_client.client" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
             <argument type="service" id="linkdata_client.adapter" />
             <argument type="service" id="linkdata_client.iri_converter" />
             <argument type="service" id="Symfony\Component\Serializer\SerializerInterface" />
             <argument type="service" id="linkdata_client.metadata_manager" />
+        </service>
+
+        <service id="linkdata_client.metadata_manager" class="Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager">
+            <argument>%linkdata_client.entity_namespace%</argument>
         </service>
 
         <service id="linkdata_client.iri_converter" class="Stadline\LinkdataClient\ClientHydra\Utils\IriConverter">
@@ -35,8 +30,8 @@
         </service>
 
         <service id="linkdata_client.proxy_object_normalizer" class="Stadline\LinkdataClient\ClientHydra\Serializer\ProxyObjectNormalizer">
-            <call method="setProxyManager">
-                <argument type="service" id="linkdata_client.proxy_manager" />
+            <call method="setHydraClient">
+                <argument type="service" id="linkdata_client.client" />
             </call>
             <call method="setIriConverter">
                 <argument type="service" id="linkdata_client.iri_converter" />

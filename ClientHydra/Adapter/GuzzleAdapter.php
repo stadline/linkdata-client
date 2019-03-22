@@ -47,7 +47,6 @@ class GuzzleAdapter implements AdapterInterface
             $requestData['isError'] = false;
             $requestData['backtrace'] = json_encode(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10));
 
-
             $this->debugData[] = &$requestData;
         }
 
@@ -104,11 +103,6 @@ class GuzzleAdapter implements AdapterInterface
         }
 
         return new RawResponse($contentType, (string) $response->getBody());
-    }
-
-    public function makeRequestWithCache(string $method, string $uri, array $headers = [], string $body = null): ResponseInterface
-    {
-        return $this->makeRequest($method, $uri, $headers, $body, true);
     }
 
     public function setDefaultHeader(string $key, string $value): void

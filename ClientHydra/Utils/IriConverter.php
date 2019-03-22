@@ -104,6 +104,9 @@ class IriConverter
     {
         $response = '?';
         foreach ($filters as $key => $filter) {
+            if ($filter instanceof ProxyObject) {
+                $filter = $this->getIriFromObject($filter);
+            }
             $response .= \sprintf('%s=%s&', $key, $filter);
         }
 

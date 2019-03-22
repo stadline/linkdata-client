@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
+use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 
 class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
@@ -13,20 +14,19 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
     /** @var ProxyObject[] */
     private $objects;
-    /** @var ProxyManager */
-    private $proxyManager;
+    private $hydraClient;
 
     /* Internal metadata */
     private $currentIteratorPosition;
     private $nextPageUri;
 
     public function __construct(
-        ProxyManager $proxyManager,
+        HydraClientInterface $hydraClient,
         IriConverter $iriConverter,
         string $classname,
         array $filters = []
     ) {
-        $this->proxyManager = $proxyManager;
+        $this->hydraClient = $hydraClient;
         $this->objects = [];
         $this->currentIteratorPosition = self::INITAL_CURSOR_POSITION;
         $this->nextPageUri = $iriConverter->generateCollectionUri($classname, $filters);
@@ -65,9 +65,12 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
         $totalHydratedElements = 0;
         $lastHydratedElementsNumber = null;
         while ($this->isHydratationRequired($neededPosition) && ($lastHydratedElementsNumber > 0 || null === $lastHydratedElementsNumber)) {
-            $requestResponse = $this->proxyManager->getAdapter()->makeRequestWithCache(
+            $requestResponse = $this->hydraClient->getAdapter()->makeRequest(
                 'GET',
-                $this->nextPageUri
+                $this->nextPageUri,
+                [],
+                null,
+                true
             );
 
             if (!$requestResponse instanceof JsonResponse) {
@@ -78,7 +81,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
             // Members
             foreach ($data['hydra:member'] as $member) {
-                $object = $this->proxyManager->getProxyFromIri($member['@id']);
+                $object = $this->hydraClient->getProxyFromIri($member['@id']);
                 $object->_refresh($member);
                 $this->objects[] = $object;
             }

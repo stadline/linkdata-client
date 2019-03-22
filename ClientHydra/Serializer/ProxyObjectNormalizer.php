@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Serializer;
 
+use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
 use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
@@ -15,8 +15,8 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ProxyObjectNormalizer extends ObjectNormalizer
 {
-    /** @var ProxyManager */
-    private $proxyManager;
+    /** @var HydraClientInterface */
+    private $hydraClient;
     /** @var IriConverter */
     private $iriConverter;
     /** @var MetadataManager */
@@ -27,9 +27,9 @@ class ProxyObjectNormalizer extends ObjectNormalizer
         $this->metadataManager = $metadataManager;
     }
 
-    public function setProxyManager(ProxyManager $proxyManager): void
+    public function setHydraClient(HydraClientInterface $hydraClient): void
     {
-        $this->proxyManager = $proxyManager;
+        $this->hydraClient = $hydraClient;
     }
 
     public function setIriConverter(IriConverter $iriConverter): void
@@ -70,18 +70,18 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                         $properties = [];
                         foreach ($data[$propName] as $elt) {
                             if (\is_array($elt) && isset($elt['@id'])) {
-                                $subObject = $this->proxyManager->getProxyFromIri($elt['@id']);
+                                $subObject = $this->hydraClient->getProxyFromIri($elt['@id']);
                                 $subObject->_refresh($elt);
                                 $properties[] = $subObject;
                             } elseif (\is_string($elt) && $this->iriConverter->isIri($elt)) {
-                                $properties[] = $this->proxyManager->getProxyFromIri($elt);
+                                $properties[] = $this->hydraClient->getProxyFromIri($elt);
                             } else {
                                 $properties[] = $elt;
                             }
                         }
                         $data[$propName] = $properties;
                     } else {
-                        $data[$propName] = $this->proxyManager->getProxyFromIri($data[$propName]);
+                        $data[$propName] = $this->hydraClient->getProxyFromIri($data[$propName]);
                     }
                 }
             }
@@ -105,8 +105,6 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             return false;
         }
 
-        $reflectionClass = new \ReflectionClass($type);
-
-        return $reflectionClass->isSubclassOf(ProxyObject::class) && \is_array($data) && HydraParser::isHydraObjectResponse($data);
+        return (new \ReflectionClass($type))->isSubclassOf(ProxyObject::class) && \is_array($data) && HydraParser::isHydraObjectResponse($data);
     }
 }
