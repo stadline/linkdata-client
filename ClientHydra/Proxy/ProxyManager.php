@@ -6,6 +6,7 @@ namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
 use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
+use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -22,30 +23,14 @@ class ProxyManager
     public function __construct(
         AdapterInterface $adapter,
         IriConverter $iriConverter,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        MetadataManager $metadataManager
     ) {
         $this->adapter = $adapter;
         $this->iriConverter = $iriConverter;
         $this->serializer = $serializer;
-    }
 
-    public function contains($object): bool
-    {
-        return in_array($object, $this->objects);
-    }
-
-    public function getObjectFromIri(string $iri): ?ProxyObject
-    {
-        $object = $this->getProxyFromIri($iri);
-        if (null === $object) {
-            return null;
-        }
-
-        return $object;
-    }
-
-    private function addObjectToManager(ProxyObject $proxyObject) {
-        $proxyObject->_init(
+        ProxyObject::_init(
             function (ProxyObject $proxyObject, $data): void {
                 $this->serializer->deserialize(\json_encode($data), get_class($proxyObject), 'json', [
                     'object_to_populate' => $proxyObject,
@@ -63,8 +48,27 @@ class ProxyManager
                 }
 
                 return $requestResponse->getContent();
-            }
+            },
+            function ($className, $id) {
+                return $this->getObject($className, $id);
+            },
+            $metadataManager
         );
+    }
+
+    public function contains($object): bool
+    {
+        return in_array($object, $this->objects);
+    }
+
+    public function getObjectFromIri(string $iri): ?ProxyObject
+    {
+        $object = $this->getProxyFromIri($iri);
+        if (null === $object) {
+            return null;
+        }
+
+        return $object;
     }
 
     public function getProxyFromIri(string $iri): ?ProxyObject
@@ -79,7 +83,6 @@ class ProxyManager
         $id = $this->iriConverter->getObjectIdFromIri($iri);
         $proxyObject = new $className();
         $proxyObject->setId($id);
-        $this->addObjectToManager($proxyObject);
         $this->objects[$iri] = $proxyObject;
 
         return $proxyObject;
@@ -87,9 +90,10 @@ class ProxyManager
 
     public function getObject(string $className, $id): ?ProxyObject
     {
-        $iri = $this->iriConverter->getIriFromClassNameAndId($className, $id);
-
-        return $this->getObjectFromIri($iri);
+        if (!is_string($id) || !$this->iriConverter->isIri($id)) {
+            $id = $this->iriConverter->getIriFromClassNameAndId($className, $id);
+        }
+        return $this->getObjectFromIri($id);
     }
 
     public function hasObject(string $iri): bool
@@ -100,7 +104,6 @@ class ProxyManager
 
     public function addObject(string $iri, ProxyObject $object): void
     {
-        $this->addObjectToManager($object);
         $this->objects[$iri] = $object;
     }
 
@@ -160,8 +163,6 @@ class ProxyManager
 
     public function postObject(ProxyObject $object): ProxyObject
     {
-        $this->addObjectToManager($object);
-
         $response = $this->adapter->makeRequest(
             'POST',
             $this->iriConverter->getCollectionIriFromClassName(\get_class($object)),

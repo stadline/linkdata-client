@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
@@ -42,73 +41,61 @@ class UserRoute extends ProxyObject
      * @Groups({"user_route_norm", "user_route_norm_cget"})
      */
     public $id;
-
     /**
      * @var User
      * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm"})
      */
     public $user;
-
     /**
      * @var string
      * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm"})
      */
     public $libelle;
-
     /**
      * @var ?int
      * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm"})
      */
     public $distance;
-
     /**
      * @var ?int
      * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm"})
      */
     public $ascendant;
-
     /**
      * @var ?int
      * @Groups({"user_route_norm", "user_route_norm_cget", "user_route_denorm"})
      */
     public $descendant;
-
     /**
      * @var array
      * @Groups({"user_route_norm", "user_route_denorm"})
      */
     public $locations;
-
     /**
      * @var ?float
      * @Groups({"user_route_norm"})
      */
     public $latitude;
-
     /**
      * @var ?float
      * @Groups({"user_route_norm"})
      */
     public $longitude;
-
     /**
      * @var ?float
      * @Groups({"user_route_norm"})
      */
     public $elevation;
-
     /**
      * @var bool
      * @Groups({"user_route_norm"})
      */
     public $correctedElevation;
-
     /**
      * @var \DateTime
      * @Groups({"user_route_norm", "user_route_norm_cget"})
      */
     public $createdAt;
-
     /**
      * @var \DateTime
      * @Groups({"user_route_norm", "user_route_norm_cget"})

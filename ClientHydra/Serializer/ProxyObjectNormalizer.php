@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Serializer;
 
-use ReflectionMethod;
+use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
@@ -17,20 +17,19 @@ class ProxyObjectNormalizer extends ObjectNormalizer
 {
     /** @var ProxyManager */
     private $proxyManager;
-    /** @var string */
-    private $entityNamespace;
     /** @var IriConverter */
     private $iriConverter;
-    private $proxyObjectMetadata = [];
+    /** @var MetadataManager */
+    private $metadataManager;
+
+    public function setMetadataManager(MetadataManager $metadataManager): void
+    {
+        $this->metadataManager = $metadataManager;
+    }
 
     public function setProxyManager(ProxyManager $proxyManager): void
     {
         $this->proxyManager = $proxyManager;
-    }
-
-    public function setEntityNamespace(string $entityNamespace): void
-    {
-        $this->entityNamespace = $entityNamespace;
     }
 
     public function setIriConverter(IriConverter $iriConverter): void
@@ -40,7 +39,14 @@ class ProxyObjectNormalizer extends ObjectNormalizer
 
     public function normalize($object, $format = null, array $context = [])
     {
-        if (($context['classContext'] ?? null) === \get_class($object)) {
+        $classContext = $context['classContext'] ?? null;
+        if (is_string($classContext)) {
+            $context['classContext'] = [$classContext];
+        } elseif (null === $classContext) {
+            $context['classContext'] = [];
+        }
+
+        if (in_array(\get_class($object), $context['classContext'], true)) {
             return parent::normalize($object, $format, $context);
         }
 
@@ -57,42 +63,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             throw new InvalidArgumentException('ProxyObjectDenormalizer::denormalize requires an array in parameter');
         }
 
-        // generate metadata cache
-        if (!isset($this->proxyObjectMetadata[$class])) {
-            $metadata = [];
-
-            $reflexionClass = new \ReflectionClass($context[AbstractNormalizer::OBJECT_TO_POPULATE]);
-            foreach ($reflexionClass->getProperties() as $property) {
-                if (false !== $property->getDocComment() && \preg_match('/@var\s+([a-zA-Z0-9_]+)(\[\])?/', $property->getDocComment(), $matches)) {
-                    list(, $type) = $matches;
-                    if (!\class_exists($type)) {
-                        $type = $this->entityNamespace.'\\'.$type;
-                    }
-                    if (!\class_exists($type)) {
-                        continue;
-                    }
-                    if ((new \ReflectionClass($type))->isSubclassOf(ProxyObject::class)) {
-                        $metadata[] = $property->getName();
-                    }
-                }
-            }
-            foreach ($reflexionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-                if (0 === \strpos($method->getName(), 'set')) {
-                    $propertyName = \lcfirst(\substr($method->getName(), 3));
-                    if (\in_array($propertyName, $metadata, true)) {
-                        continue;
-                    }
-                    // If parameter is proxy object
-                    if (null !== ($param = $method->getParameters()[0] ?? null) && $param->getType() && \class_exists($param->getType()->getName()) && (new \ReflectionClass($param->getType()->getName()))->isSubclassOf(ProxyObject::class)) {
-                        $metadata[] = $propertyName;
-                    }
-                }
-            }
-            $this->proxyObjectMetadata[$class] = $metadata;
-        }
-
-        if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject && null !== ($metadata = $this->proxyObjectMetadata[\get_class($context[AbstractNormalizer::OBJECT_TO_POPULATE])])) {
-            foreach ($metadata as $propName) {
+        if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject && null !== ($metadata = $this->metadataManager->getClassMetadata(\get_class($context[AbstractNormalizer::OBJECT_TO_POPULATE])))) {
+            foreach ($metadata->getPropertiesNameByTypes(ProxyObject::class) as $propName) {
                 if (isset($data[$propName])) {
                     if (\is_array($data[$propName])) {
                         $properties = [];

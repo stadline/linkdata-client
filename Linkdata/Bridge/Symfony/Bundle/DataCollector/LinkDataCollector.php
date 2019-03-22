@@ -57,7 +57,11 @@ class LinkDataCollector extends DataCollector
     public function getNbrErrors(): int
     {
         $errors = 0;
-
+        foreach ($this->data as $request) {
+            if (true === $request['isError']) {
+                $errors++;
+            }
+        }
         return $errors;
     }
 

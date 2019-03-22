@@ -18,10 +18,15 @@
             <argument>%kernel.debug%</argument>
         </service>
 
+        <service id="linkdata_client.metadata_manager" class="Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager">
+            <argument>%linkdata_client.entity_namespace%</argument>
+        </service>
+
         <service id="linkdata_client.proxy_manager" class="Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager">
             <argument type="service" id="linkdata_client.adapter" />
             <argument type="service" id="linkdata_client.iri_converter" />
             <argument type="service" id="Symfony\Component\Serializer\SerializerInterface" />
+            <argument type="service" id="linkdata_client.metadata_manager" />
         </service>
 
         <service id="linkdata_client.iri_converter" class="Stadline\LinkdataClient\ClientHydra\Utils\IriConverter">
@@ -30,14 +35,14 @@
         </service>
 
         <service id="linkdata_client.proxy_object_normalizer" class="Stadline\LinkdataClient\ClientHydra\Serializer\ProxyObjectNormalizer">
-            <call method="setEntityNamespace">
-                <argument>%linkdata_client.entity_namespace%</argument>
-            </call>
             <call method="setProxyManager">
                 <argument type="service" id="linkdata_client.proxy_manager" />
             </call>
             <call method="setIriConverter">
                 <argument type="service" id="linkdata_client.iri_converter" />
+            </call>
+            <call method="setMetadataManager">
+                <argument type="service" id="linkdata_client.metadata_manager" />
             </call>
             <tag name="serializer.normalizer" />
         </service>

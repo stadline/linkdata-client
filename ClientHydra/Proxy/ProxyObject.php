@@ -4,16 +4,36 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
+use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
+use Stadline\LinkdataClient\ClientHydra\Metadata\ProxyObjectMetadata;
+
 /**
  * @method void            setId(null|int|string $id)
  * @method null|int|string getId()
  */
 abstract class ProxyObject
 {
+    public static function _init(
+        \Closure $refreshClosure,
+        \Closure $getDataClosure,
+        \Closure $getObjectClosure,
+        MetadataManager $metadataManager
+    ): void
+    {
+        self::$_getData = $getDataClosure;
+        self::$_doRefresh = $refreshClosure;
+        self::$_getObject = $getObjectClosure;
+        self::$_metadataManager = $metadataManager;
+    }
+
     /** @var \Closure */
-    private $_doRefresh;
+    private static $_doRefresh;
     /** @var \Closure */
-    private $_getData;
+    private static $_getData;
+    /** @var \Closure */
+    private static $_getObject;
+    /** @var MetadataManager */
+    private static $_metadataManager;
 
     /* internal metadata */
     private $_hydrated = false;
@@ -24,16 +44,7 @@ abstract class ProxyObject
         foreach ($data as $k => $v) {
             $this->_hydratedProperties[$k] = true;
         }
-        ($this->_doRefresh)($this, $data);
-    }
-
-    public function _init(
-        \Closure $refreshClosure,
-        \Closure $getDataClosure
-    ): void
-    {
-        $this->_getData = $getDataClosure;
-        $this->_doRefresh = $refreshClosure;
+        (self::$_doRefresh)($this, $data);
     }
 
     public function __call($name, $arguments)
@@ -77,7 +88,7 @@ abstract class ProxyObject
 
         // if data is empty = get data from api
         if (null === $data) {
-            $data = ($this->_getData)($this);
+            $data = (self::$_getData)($this);
         }
 
         $this->_refresh($data);
@@ -85,9 +96,23 @@ abstract class ProxyObject
         $this->_hydrated = true;
     }
 
+    protected function _getMetadata(): ProxyObjectMetadata
+    {
+        return self::$_metadataManager->getClassMetadata(get_class($this));
+    }
+
     protected function _set($property, $value): void
     {
         $this->_hydratedProperties[$property] = true;
+
+        if (
+            $value !== null &&
+            !$value instanceof self &&
+            $this->_getMetadata()->testPropertyType($property, __CLASS__)
+        ) {
+            $value = (self::$_getObject)($this->_getMetadata()->getProperty($property)['class'], $value);
+        }
+
         $this->{$property} = $value;
     }
 
