@@ -7,6 +7,7 @@ namespace Stadline\LinkdataClient\Linkdata\Client;
 use Stadline\LinkdataClient\ClientHydra\Client\AbstractHydraClient;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
+use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\Linkdata\Entity\Activity;
 use Stadline\LinkdataClient\Linkdata\Entity\Brand;
 use Stadline\LinkdataClient\Linkdata\Entity\Datatype;
@@ -182,5 +183,21 @@ class LinkdataClient extends AbstractHydraClient
             'GET',
             \sprintf('/v2/share_users_stats/%s', $id)
         )->getContent();
+    }
+
+    public function postActivityGPX($gpxString): Activity
+    {
+        $object =$this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'POST',
+                \sprintf('/v2/activities'),
+                ['Content-Type' => 'application/gpx+xml'],
+                $gpxString
+            )
+        );
+
+        if ($object instanceof ProxyObject) {
+            return $object;
+        }
     }
 }

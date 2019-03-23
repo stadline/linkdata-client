@@ -36,7 +36,7 @@ class LinkDataCollector extends DataCollector
     public function getNbrCall(): int
     {
         $c = 0;
-        foreach ($this->data as $request) {
+        foreach ($this->getCalls() as $request) {
             if (false === $request['cache']) {
                 $c++;
             }
@@ -47,7 +47,7 @@ class LinkDataCollector extends DataCollector
     public function getTotalTime(): float
     {
         $time = 0;
-        foreach ($this->data as $request) {
+        foreach ($this->getCalls() as $request) {
             $time += $request['time'];
         }
 
@@ -57,7 +57,7 @@ class LinkDataCollector extends DataCollector
     public function getNbrErrors(): int
     {
         $errors = 0;
-        foreach ($this->data as $request) {
+        foreach ($this->getCalls() as $request) {
             if (true === $request['isError']) {
                 $errors++;
             }
@@ -67,11 +67,16 @@ class LinkDataCollector extends DataCollector
 
     public function getNbrCacheCall(): int
     {
-        return \count($this->data);
+        return \count($this->getCalls());
     }
 
     public function getCalls(): array
     {
-        return $this->data;
+        return $this->data['calls'];
+    }
+
+    public function getConfiguration(): ?array
+    {
+        return $this->data['config'];
     }
 }

@@ -22,14 +22,14 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
     public function __construct(
         HydraClientInterface $hydraClient,
-        IriConverter $iriConverter,
-        string $classname,
-        array $filters = []
-    ) {
+        array $initialData
+    )
+    {
         $this->hydraClient = $hydraClient;
         $this->objects = [];
         $this->currentIteratorPosition = self::INITAL_CURSOR_POSITION;
-        $this->nextPageUri = $iriConverter->generateCollectionUri($classname, $filters);
+
+        $this->_refresh($initialData);
     }
 
     public function hasNext(): bool
@@ -77,27 +77,33 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
                 throw new \RuntimeException('Cannot hydrate collection with non json response');
             }
 
-            $data = $requestResponse->getContent();
+            $lastHydratedElementsNumber =$this->_refresh($requestResponse->getContent());
+            $totalHydratedElements += $lastHydratedElementsNumber;
+        }
 
-            // Members
+        return $totalHydratedElements;
+    }
+
+    private function _refresh(array $data): int
+    {
+        // Members
+        if (isset($data['hydra:member'])) {
             foreach ($data['hydra:member'] as $member) {
                 $object = $this->hydraClient->getProxyFromIri($member['@id']);
                 $object->_refresh($member);
                 $this->objects[] = $object;
             }
-
-            // Update metadata
-            if (null !== ($data['hydra:view']['hydra:next'] ?? null)) {
-                $this->nextPageUri = $data['hydra:view']['hydra:next'];
-            } else {
-                $this->nextPageUri = null;
-            }
-
-            $lastHydratedElementsNumber = \count($data['hydra:member']);
-            $totalHydratedElements += $lastHydratedElementsNumber;
         }
 
-        return $totalHydratedElements;
+        // Update metadata
+        if (null !== ($data['hydra:view']['hydra:next'] ?? null)) {
+            $this->nextPageUri = $data['hydra:view']['hydra:next'];
+        } else {
+            $this->nextPageUri = null;
+        }
+
+        // return number of added elements
+        return \count($data['hydra:member'] ?? []);
     }
 
     public function current()

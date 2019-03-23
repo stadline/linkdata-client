@@ -13,6 +13,7 @@ use Stadline\LinkdataClient\ClientHydra\Exception\RequestException;
 class GuzzleAdapter implements AdapterInterface
 {
     private $client;
+    private $baseUrl;
     private $defaultHeaders = [
         'Content-Type' => 'application/ld+json',
     ];
@@ -22,6 +23,7 @@ class GuzzleAdapter implements AdapterInterface
 
     public function __construct(string $baseUrl, $debugEnabled = false)
     {
+        $this->baseUrl = $baseUrl;
         $this->client = new Client(['base_uri' => $baseUrl]);
         $this->debugEnabled = $debugEnabled;
         $this->debugData = [];
@@ -32,10 +34,10 @@ class GuzzleAdapter implements AdapterInterface
      */
     public function makeRequest(string $method, string $uri, array $headers = [], string $body = null, bool $cacheEnable = false): ResponseInterface
     {
-        $requestStartTime = \microtime(true);
         $headers = \array_merge($this->defaultHeaders, $headers);
 
         if ($this->debugEnabled) {
+            $requestStartTime = \microtime(true);
             $requestData = [];
             $requestData['headers'] = $headers;
             $requestData['body'] = $body;
@@ -57,7 +59,7 @@ class GuzzleAdapter implements AdapterInterface
         /** @var \GuzzleHttp\Exception\RequestException $e */
         $e = null;
 
-        $requestHash = \sha1(\json_encode($headers).'.'.$method.'.'.$uri.'.'.$body);
+        $requestHash = \sha1(\json_encode($headers) . '.' . $method . '.' . $uri . '.' . $body);
         if ($cacheEnable && isset($this->cache[$requestHash])) {
             if ($this->debugEnabled) {
                 $requestData['cache'] = true;
@@ -79,7 +81,7 @@ class GuzzleAdapter implements AdapterInterface
             $requestEndTime = \microtime(true);
             $requestData['time'] = $requestEndTime - $requestStartTime;
             $requestData['status'] = $e ? $e->getResponse()->getStatusCode() : $response->getStatusCode();
-            $requestData['response'] = $e ? $e->getResponse()->getBody()->getContents() : (string) $response->getBody();
+            $requestData['response'] = $e ? $e->getResponse()->getBody()->getContents() : (string)$response->getBody();
             $requestData['isError'] = $e ? true : false;
         }
 
@@ -91,6 +93,7 @@ class GuzzleAdapter implements AdapterInterface
                 return $this->makeRequest($method, $uri, $headers, $body, $cacheEnable);
             }
 
+            throw $e;
             throw new RequestException(\sprintf('Error while requesting %s with %s method', $uri, $method), $body, $e);
         }
 
@@ -99,10 +102,10 @@ class GuzzleAdapter implements AdapterInterface
 
 
         if (\in_array($contentType, ['application/ld+json', 'application/json'], true)) {
-            return new JsonResponse((string) $response->getBody());
+            return new JsonResponse($response->getStatusCode(), (string)$response->getBody());
         }
 
-        return new RawResponse($contentType, (string) $response->getBody());
+        return new RawResponse($response->getStatusCode(), $contentType, (string)$response->getBody());
     }
 
     public function setDefaultHeader(string $key, string $value): void
@@ -112,6 +115,13 @@ class GuzzleAdapter implements AdapterInterface
 
     public function getDebugData(): array
     {
-        return $this->debugData;
+        return [
+            'config' => [
+                'base_uri' => $this->baseUrl,
+                'cache' => $this->cache,
+                'debug' => $this->debugEnabled,
+            ],
+            'calls' => $this->debugData
+        ];
     }
 }

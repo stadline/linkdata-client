@@ -79,7 +79,7 @@ abstract class ProxyObject
      * Hydrate an object with an IRI given.
      * If hydrate is set to false, it returns the IRI given.
      */
-    protected function _hydrate(?array $data = null): void
+    public function _hydrate(?array $data = null): void
     {
         // already hydrated : ignore
         if (true === $this->_hydrated || null === $this->getId()) {

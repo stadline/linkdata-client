@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
 use Doctrine\Common\Inflector\Inflector;
+use GuzzleHttp\Handler\Proxy;
 use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
+use Stadline\LinkdataClient\ClientHydra\Adapter\ResponseInterface;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Exception\FormatException;
 use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
@@ -118,15 +120,19 @@ abstract class AbstractHydraClient implements HydraClientInterface
         return in_array($object, $this->objects);
     }
 
-    public function getObjectFromIri(string $iri): ?ProxyObject
+    public function getObjectFromIri(string $iri, ?bool $autoHydrate = true): ?ProxyObject
     {
         $object = $this->getProxyFromIri($iri);
         if (null === $object) {
             return null;
         }
 
+        if ($autoHydrate) {
+            $object->_hydrate();
+        }
         return $object;
     }
+
 
     public function getProxyFromIri(string $iri): ?ProxyObject
     {
@@ -145,12 +151,48 @@ abstract class AbstractHydraClient implements HydraClientInterface
         return $proxyObject;
     }
 
-    public function getObject(string $className, $id): ?ProxyObject
+    public function getObject(string $className, $id, ?bool $autoHydrate = true): ?ProxyObject
     {
         if (!is_string($id) || !$this->iriConverter->isIri($id)) {
             $id = $this->iriConverter->getIriFromClassNameAndId($className, $id);
         }
-        return $this->getObjectFromIri($id);
+        return $this->getObjectFromIri($id, $autoHydrate);
+    }
+
+    /**
+     * @return ProxyObject|ProxyCollection|null
+     */
+    protected function parseResponse(ResponseInterface $response)
+    {
+        if (!$response instanceof JsonResponse) {
+            return null;
+        }
+
+        $elt = $response->getContent();
+        if (!isset($elt['@type'])) {
+            return null;
+        }
+
+        /* Collection case */
+        if ($elt['@type'] === 'hydra:Collection') {
+            return new ProxyCollection(
+                $this,
+                $elt
+            );
+        }
+
+        /* Object case */
+        if (!$elt['@id']) {
+            throw new \RuntimeException('Method getObjectFromResponse only support object or collection');
+        }
+
+        $object = $this->getObjectFromIri($elt['@id']);
+        if (null === $object) {
+            throw new \RuntimeException(sprintf('Cannot create object with iri : %s', $elt['@id']));
+        }
+
+        $object->_refresh($elt);
+        return $object;
     }
 
     public function hasObject(string $iri): bool
@@ -168,9 +210,11 @@ abstract class AbstractHydraClient implements HydraClientInterface
     {
         return new ProxyCollection(
             $this,
-            $this->iriConverter,
-            $classname,
-            $filters
+            [
+                'hydra:view' => [
+                    'hydra:next' => $this->iriConverter->generateCollectionUri($classname, $filters)
+                ]
+            ]
         );
     }
 
