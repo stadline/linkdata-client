@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void       setType(int $type)
  * @method string     getPath()
  * @method void       setPath(string $path)
- * @method ?\DateTime getClosedAt()
+ * @method null|\DateTime getClosedAt()
  * @method void       setClosedAt(?\DateTime $closedAt)
  * @method UserDevice getUserDevice()
  * @method void       setUserDevice(UserDevice $userDevice)

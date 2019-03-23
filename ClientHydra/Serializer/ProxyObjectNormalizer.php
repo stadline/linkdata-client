@@ -43,7 +43,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
         if (is_string($classContext)) {
             $context['classContext'] = [$classContext];
         } elseif (null === $classContext) {
-            $context['classContext'] = [];
+            $context['classContext'] = [get_class($object)];
         }
 
         if (in_array(\get_class($object), $context['classContext'], true)) {

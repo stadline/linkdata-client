@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void       setId(string $id)
  * @method User       getUser()
  * @method void       setUser(User $user)
- * @method ?string    getValue()
+ * @method null|string    getValue()
  * @method void       setValue(?string $value)
  * @method StorageKey getStorageKey()
  * @method void       setStorageKey(StorageKey $storageKey)

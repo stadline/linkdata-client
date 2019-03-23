@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void       setId(int $id)
  * @method string     getName()
  * @method void       setName(string $name)
- * @method ?string    getValue()
+ * @method null|string    getValue()
  * @method void       setValue(?string $value)
  * @method UserDevice getUserDevice()
  * @method void       setUserDevice(UserDevice $userDevice)

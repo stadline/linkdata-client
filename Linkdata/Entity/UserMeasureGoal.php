@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void      setUser(User $user)
  * @method Datatype  getDatatype()
  * @method void      setDatatype(Datatype $datatype)
- * @method ?float    getInitial()
+ * @method null|float    getInitial()
  * @method void      setInitial(?float $initial)
  * @method float     getGoal()
  * @method void      setGoal($goalfloat)

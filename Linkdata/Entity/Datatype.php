@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @method int       getId()
  * @method void      setId(int $id)
- * @method ?string   getUnit()
+ * @method null|string   getUnit()
  * @method void      setUnit(?string $unit)
  * @method array     getTranslatedNames()
  * @method void      setTranslatedNames(array $translatedNames)

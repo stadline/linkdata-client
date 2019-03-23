@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void      setId(int $id)
  * @method array     getTranslatedNames()
  * @method void      setTranslatedNames(array $translatedNames)
- * @method ?string   getVersion()
+ * @method null|string   getVersion()
  * @method void      setVersion(?string $version)
  * @method string    getConnector()
  * @method void      setConnector(string $connector)
