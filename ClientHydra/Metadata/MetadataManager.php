@@ -30,32 +30,114 @@ class MetadataManager
         $metadata = new ProxyObjectMetadata($class);
 
         $reflexionClass = new ReflectionClass($class);
+
+        // search in properties
         foreach ($reflexionClass->getProperties() as $property) {
-            if (false !== $property->getDocComment() && \preg_match('/@var\s+([a-zA-Z0-9_]+)(\[\])?/', $property->getDocComment(), $matches)) {
-                list(, $type) = $matches;
-                if (!\class_exists($type)) {
-                    $type = $this->entityNamespace.'\\'.$type;
-                }
-                if (!\class_exists($type)) {
-                    continue;
-                }
-                if ((new ReflectionClass($type))->isSubclassOf(ProxyObject::class)) {
-                    $metadata->setProperty($property->getName(), ProxyObject::class, $type);
-                }
+            if (false !== $property->getDocComment() && \preg_match('/@var\s+\\\\?\??([a-zA-Z0-9_]+)(\[\])?/', $property->getDocComment(), $matches)) {
+                [, $type] = $matches;
+
+                $type = $this->parseType($type);
+
+                $metadata->setProperty(
+                    $property->getName(),
+                    $type['type'],
+                    [
+                        'isProxyObject' => $type['isProxyObject'] ?? false
+                    ]
+                );
             }
         }
+
+        // search in setters parameters
         foreach ($reflexionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             if (0 === \strpos($method->getName(), 'set')) {
                 $propertyName = \lcfirst(\substr($method->getName(), 3));
+
+                // property already known : ignore
                 if (\in_array($propertyName, $metadata, true)) {
                     continue;
                 }
-                // If parameter is proxy object
-                if (null !== ($param = $method->getParameters()[0] ?? null) && $param->getType() && \class_exists($param->getType()->getName()) && (new ReflectionClass($param->getType()->getName()))->isSubclassOf(ProxyObject::class)) {
-                    $metadata->setProperty($propertyName, ProxyObject::class, $param->getType()->getName());
+
+                // missing parameter : ignore
+                if (null === ($param = $method->getParameters()[0] ?? null)) {
+                    continue;
                 }
+
+                // no parameter typing : ignore
+                if (!$param->getType()) {
+                    continue;
+                }
+
+                $type = $this->parseType($param->getType()->getName());
+
+                $metadata->setProperty(
+                    $propertyName,
+                    $type['type'],
+                    [
+                        'isProxyObject' => $type['isProxyObject'] ?? false
+                    ]
+                );
             }
         }
+
         $this->proxyObjectMetadata[$class] = $metadata;
+    }
+
+    private function parseType(string $type): array
+    {
+        $return = [
+            'type' => null,
+            'isProxyObject' => false,
+        ];
+
+        // basic type case
+        if ($normalizedType = (static function (string $type): ?string {
+            if (\in_array($type, [
+                'integer',
+                'int'
+            ])) {
+                return ProxyObjectMetadata::TYPE_INTEGER;
+            }
+
+            if (\in_array($type, [
+                'float',
+                'double'
+            ])) {
+                return ProxyObjectMetadata::TYPE_FLOAT;
+            }
+
+            if (\in_array($type, [
+                'boolean',
+                'bool'
+            ])) {
+                return ProxyObjectMetadata::TYPE_BOOLEAN;
+            }
+
+            if ('string' === $type) {
+                return ProxyObjectMetadata::TYPE_STRING;
+            }
+
+            if ('array' === $type) {
+                return ProxyObjectMetadata::TYPE_STRING;
+            }
+
+            return null;
+        })($type)
+        ) {
+            $return['type'] = $normalizedType;
+            return $return;
+        }
+
+        // object case
+        if (\class_exists($type) || \class_exists($type = $this->entityNamespace . '\\' . $type)) {
+            $return['type'] = $type; // special flag for proxyobject
+            // test proxy object
+            if ((new ReflectionClass($type))->isSubclassOf(ProxyObject::class)) {
+                $return['isProxyObject'] = true;
+            }
+            return $return;
+        }
+
+        throw new \RuntimeException(\sprintf('Unsupported property type : %s', $type));
     }
 }

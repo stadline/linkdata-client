@@ -6,6 +6,7 @@ namespace Stadline\LinkdataClient\ClientHydra\Serializer;
 
 use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
 use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
+use Stadline\LinkdataClient\ClientHydra\Metadata\ProxyObjectMetadata;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
@@ -46,7 +47,11 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             $context['classContext'] = [get_class($object)];
         }
 
-        if (in_array(\get_class($object), $context['classContext'], true)) {
+        if ($object instanceof \DateTime) {
+            return $object->format(DATE_ATOM);
+        }
+
+        if (!$object instanceof ProxyObject || in_array(\get_class($object), $context['classContext'], true)) {
             return parent::normalize($object, $format, $context);
         }
 
@@ -83,6 +88,11 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                     } else {
                         $data[$propName] = $this->hydraClient->getProxyFromIri($data[$propName]);
                     }
+                }
+            }
+            foreach ($metadata->getPropertiesNameByTypes(ProxyObjectMetadata::TYPE_DATETIME) as $propName) {
+                if (\is_string($data[$propName])) {
+                    $data[$propName] = new \DateTime($data[$propName]);
                 }
             }
         }

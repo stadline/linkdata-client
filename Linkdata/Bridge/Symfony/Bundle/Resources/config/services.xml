@@ -39,7 +39,7 @@
             <call method="setMetadataManager">
                 <argument type="service" id="linkdata_client.metadata_manager" />
             </call>
-            <tag name="serializer.normalizer" />
+            <tag name="serializer.normalizer" priority="-980" />
         </service>
 
         <service id="linkdata_client.data_collector" class="Stadline\LinkdataClient\Linkdata\Bridge\Symfony\Bundle\DataCollector\LinkDataCollector">

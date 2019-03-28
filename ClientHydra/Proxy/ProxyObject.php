@@ -6,6 +6,9 @@ namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
 use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
 use Stadline\LinkdataClient\ClientHydra\Metadata\ProxyObjectMetadata;
+use Stadline\LinkdataClient\Linkdata\Entity\User;
+use Stadline\LinkdataClient\Linkdata\Entity\UserMeasure;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * @method void            setId(null|int|string $id)
@@ -96,7 +99,7 @@ abstract class ProxyObject
         $this->_hydrated = true;
     }
 
-    protected function _getMetadata(): ProxyObjectMetadata
+    public function _getMetadata(): ProxyObjectMetadata
     {
         return self::$_metadataManager->getClassMetadata(get_class($this));
     }
@@ -104,16 +107,33 @@ abstract class ProxyObject
     protected function _set($property, $value): void
     {
         $this->_hydratedProperties[$property] = true;
+        $this->{$property} = (function() use($property, $value) {
+            if (null === $value) {
+                return null;
+            }
 
-        if (
-            $value !== null &&
-            !$value instanceof self &&
-            $this->_getMetadata()->testPropertyType($property, __CLASS__)
-        ) {
-            $value = (self::$_getObject)($this->_getMetadata()->getProperty($property)['class'], $value);
-        }
+            $prop = $this->_getMetadata()->getProperty($property);
+            // Basic types
+            switch ($prop['type']) {
+                case ProxyObjectMetadata::TYPE_INTEGER:
+                    return (int) $value;
+                case ProxyObjectMetadata::TYPE_BOOLEAN:
+                    return (bool) $value;
+                case ProxyObjectMetadata::TYPE_FLOAT:
+                    return (float) $value;
+                case ProxyObjectMetadata::TYPE_STRING:
+                    return (string) $value;
+                case ProxyObjectMetadata::TYPE_DATETIME:
+                    return $value instanceof \DateTime ? $value : new \DateTime($value);
+            }
 
-        $this->{$property} = $value;
+            // ProxyObject
+            if (!$value instanceof ProxyObject && $prop['isProxyObject']) {
+                return (self::$_getObject)($prop['type'], $value);
+            }
+
+            return $value;
+        })();
     }
 
     protected function _get($property)

@@ -139,6 +139,16 @@ class LinkdataClient extends AbstractHydraClient
         }
     }
 
+    public function getCurrentUserMeasure(string $userId): ProxyCollection
+    {
+        return $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/user_measures/%s/current', $userId)
+            )
+        );
+    }
+
     /**
      * @throws ClientHydraException
      */
@@ -196,7 +206,7 @@ class LinkdataClient extends AbstractHydraClient
             )
         );
 
-        if ($object instanceof ProxyObject) {
+        if ($object instanceof Activity) {
             return $object;
         }
     }

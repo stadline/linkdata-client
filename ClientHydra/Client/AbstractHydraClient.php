@@ -109,7 +109,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
                 return $requestResponse->getContent();
             },
             function ($className, $id) {
-                return $this->getObject($className, $id);
+                return $this->getObject($className, $id, false);
             },
             $metadataManager
         );
