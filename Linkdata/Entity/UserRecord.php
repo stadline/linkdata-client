@@ -75,6 +75,12 @@ class UserRecord extends ProxyObject
     public $sport;
 
     /**
+     * @var \DateTime
+     * @Groups({"user_record_norm"})
+     */
+    public $date;
+
+    /**
      * @var string
      * @Groups({"user_record_norm"})
      */

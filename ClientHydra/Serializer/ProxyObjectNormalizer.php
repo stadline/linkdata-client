@@ -91,7 +91,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                 }
             }
             foreach ($metadata->getPropertiesNameByTypes(ProxyObjectMetadata::TYPE_DATETIME) as $propName) {
-                if (\is_string($data[$propName])) {
+                if (\is_string($data[$propName] ?? null)) {
                     $data[$propName] = new \DateTime($data[$propName]);
                 }
             }

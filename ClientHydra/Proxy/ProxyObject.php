@@ -6,9 +6,6 @@ namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
 use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
 use Stadline\LinkdataClient\ClientHydra\Metadata\ProxyObjectMetadata;
-use Stadline\LinkdataClient\Linkdata\Entity\User;
-use Stadline\LinkdataClient\Linkdata\Entity\UserMeasure;
-use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * @method void            setId(null|int|string $id)
@@ -39,7 +36,6 @@ abstract class ProxyObject
     private static $_metadataManager;
 
     /* internal metadata */
-    private $_hydrated = false;
     private $_hydratedProperties = [];
 
     public function _refresh(array $data): void
@@ -78,6 +74,11 @@ abstract class ProxyObject
         }
     }
 
+    protected function isHydrated(): bool
+    {
+        return \count($this->_getMetadata()->getProperties()) === \count($this->_hydratedProperties);
+    }
+
     /**
      * Hydrate an object with an IRI given.
      * If hydrate is set to false, it returns the IRI given.
@@ -85,7 +86,7 @@ abstract class ProxyObject
     public function _hydrate(?array $data = null): void
     {
         // already hydrated : ignore
-        if (true === $this->_hydrated || null === $this->getId()) {
+        if ($this->isHydrated() || null === $this->getId()) {
             return;
         }
 
@@ -95,11 +96,9 @@ abstract class ProxyObject
         }
 
         $this->_refresh($data);
-
-        $this->_hydrated = true;
     }
 
-    public function _getMetadata(): ProxyObjectMetadata
+    protected function _getMetadata(): ProxyObjectMetadata
     {
         return self::$_metadataManager->getClassMetadata(get_class($this));
     }
@@ -107,6 +106,8 @@ abstract class ProxyObject
     protected function _set($property, $value): void
     {
         $this->_hydratedProperties[$property] = true;
+
+
         $this->{$property} = (function() use($property, $value) {
             if (null === $value) {
                 return null;
@@ -128,8 +129,8 @@ abstract class ProxyObject
             }
 
             // ProxyObject
-            if (!$value instanceof ProxyObject && $prop['isProxyObject']) {
-                return (self::$_getObject)($prop['type'], $value);
+            if (!$value instanceof ProxyObject && ($prop['isProxyObject'] ?? false)) {
+                return (self::$_getObject)($prop['type'], $value, false);
             }
 
             return $value;

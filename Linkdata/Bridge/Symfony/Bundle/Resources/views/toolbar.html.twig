@@ -130,6 +130,20 @@
         <li><b>Total calls (with cache) : </b> {{ collector.nbrCacheCall }}</li>
     </ul>
 
+    <h4>Metadatas <a href="#" onclick="$('#client_metadata').toggle();">+</a></h4>
+    <div style="display:none;" id="client_metadata">
+    {% for meta in collector.metadata %}
+           <u>{{ meta.class }} </u>
+            <ul>
+                {% for k,v in meta.properties %}
+                <li>
+                    <b>{{ k }} : </b>{{ v.type }} {% if v.isProxyObject is defined %}(ProxyObject){% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+    {% endfor %}
+    </div>
+
 
     <h4>Details</h4>
     <table>

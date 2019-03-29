@@ -10,15 +10,15 @@ use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
 
 interface HydraClientInterface
 {
-    public function getObjectFromIri(string $iri): ?ProxyObject;
-    public function contains($object): bool;
-    public function getProxyFromIri(string $iri): ?ProxyObject;
-    public function getObject(string $className, $id): ?ProxyObject;
-    public function hasObject(string $iri): bool;
-    public function addObject(string $iri, ProxyObject $object): void;
     public function getCollection(string $classname, array $filters = []): ProxyCollection;
+    public function getObject(string $className, $id, bool $autoHydrate = false): ?ProxyObject;
+
+    public function contains($object): bool;
+    public function addObject(string $iri, ProxyObject $object): void;
+
     public function putObject(ProxyObject $object): ProxyObject;
     public function deleteObject(...$objectOrId): void;
     public function postObject(ProxyObject $object): ProxyObject;
+
     public function getAdapter(): AdapterInterface;
 }

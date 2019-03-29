@@ -17,6 +17,11 @@ class MetadataManager
         $this->entityNamespace = $entityNamespace;
     }
 
+    public function getClassMetadatas(): array
+    {
+        return $this->proxyObjectMetadata;
+    }
+
     public function getClassMetadata(string $class): ProxyObjectMetadata
     {
         if (!isset($this->proxyObjectMetadata[$class])) {
@@ -118,7 +123,7 @@ class MetadataManager
             }
 
             if ('array' === $type) {
-                return ProxyObjectMetadata::TYPE_STRING;
+                return ProxyObjectMetadata::TYPE_ARRAY;
             }
 
             return null;

@@ -44,6 +44,7 @@
 
         <service id="linkdata_client.data_collector" class="Stadline\LinkdataClient\Linkdata\Bridge\Symfony\Bundle\DataCollector\LinkDataCollector">
             <argument type="service" id="linkdata_client.client" />
+            <argument type="service" id="linkdata_client.metadata_manager" />
             <tag name="data_collector" template="LinkdataClientBundle::toolbar.html.twig" id="linkdata_client.linkdata_collector" />
         </service>
     </services>

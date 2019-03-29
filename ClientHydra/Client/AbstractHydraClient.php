@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
 use Doctrine\Common\Inflector\Inflector;
-use GuzzleHttp\Handler\Proxy;
 use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
 use Stadline\LinkdataClient\ClientHydra\Adapter\ResponseInterface;
@@ -26,57 +25,6 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
     /** @var ProxyObject[] */
     private $objects = [];
-
-    /**
-     * @throws ClientHydraException
-     * @deprecated
-     */
-    public function __call(string $method, array $args)
-    {
-        if (1 !== \preg_match('/^(?<method>[a-z]+)(?<className>[A-Za-z]+)$/', $method, $matches)) {
-            throw new FormatException(\sprintf('The method %s is not recognized.', $method));
-        }
-
-        $method = \strtolower($matches['method']);
-        $className = Inflector::singularize($matches['className']);
-
-        switch ($method) {
-            case 'get':
-                // collection case
-                if (!isset($args[0]) || \is_array($args[0])) {
-                    return $this->getCollection($className, $args[0]['filters'] ?? []);
-                }
-
-                // item (string | int) case
-                if (\is_int($args[0]) || \is_string($args[0])) {
-                    return $this->getObject($className, $args[0]);
-                }
-
-                throw new \RuntimeException('Unknown error during call get');
-            case 'put':
-                if (!$args[0] instanceof ProxyObject) {
-                    throw new \RuntimeException('Put require a proxy object in parameter');
-                }
-
-                return $this->putObject($args[0]);
-            case 'delete':
-                if (!\is_string($args[0]) || !\is_int($args[0])) {
-                    throw new \RuntimeException('Delete require a string or an int in parameter');
-                }
-
-                $this->deleteObject($className, $args[0]);
-
-                return null;
-            case 'post':
-                if (!$args[0] instanceof ProxyObject) {
-                    throw new \RuntimeException('Post require a proxy object in parameter');
-                }
-
-                return $this->postObject($args[0]);
-        }
-
-        throw new \RuntimeException('Cannot determine method to call');
-    }
 
     public function __construct(
         AdapterInterface $adapter,
@@ -117,46 +65,39 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
     public function contains($object): bool
     {
-        return in_array($object, $this->objects);
+        return \in_array($object, $this->objects, true);
     }
 
-    public function getObjectFromIri(string $iri, ?bool $autoHydrate = true): ?ProxyObject
+    protected function getProxyFromIri(string $iri, ?bool $autoHydrate = false): ?ProxyObject
     {
-        $object = $this->getProxyFromIri($iri);
-        if (null === $object) {
-            return null;
+        // check if object not already store
+        if (!isset($this->objects[$iri])) {
+            $className = $this->iriConverter->getClassnameFromIri($iri);
+            /** @var ProxyObject $proxyObject */
+            $id = $this->iriConverter->getObjectIdFromIri($iri);
+            $proxyObject = new $className();
+            $proxyObject->setId($id);
+            $this->objects[$iri] = $proxyObject;
+        } else {
+            $proxyObject = $this->objects[$iri];
         }
 
-        if ($autoHydrate) {
-            $object->_hydrate();
+        if (true === $autoHydrate) {
+            $proxyObject->_hydrate();
         }
-        return $object;
-    }
-
-
-    public function getProxyFromIri(string $iri): ?ProxyObject
-    {
-        // check if object already store
-        if (isset($this->objects[$iri])) {
-            return $this->objects[$iri];
-        }
-
-        $className = $this->iriConverter->getClassnameFromIri($iri);
-        /** @var ProxyObject $proxyObject */
-        $id = $this->iriConverter->getObjectIdFromIri($iri);
-        $proxyObject = new $className();
-        $proxyObject->setId($id);
-        $this->objects[$iri] = $proxyObject;
 
         return $proxyObject;
     }
 
-    public function getObject(string $className, $id, ?bool $autoHydrate = true): ?ProxyObject
+    /**
+     * @return $className
+     */
+    public function getObject(string $className, $id, ?bool $autoHydrate = false): ?ProxyObject
     {
         if (!is_string($id) || !$this->iriConverter->isIri($id)) {
             $id = $this->iriConverter->getIriFromClassNameAndId($className, $id);
         }
-        return $this->getObjectFromIri($id, $autoHydrate);
+        return $this->getProxyFromIri($id, $autoHydrate);
     }
 
     /**
@@ -164,12 +105,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
      */
     protected function parseResponse(ResponseInterface $response)
     {
-        if (!$response instanceof JsonResponse) {
-            return null;
-        }
-
-        $elt = $response->getContent();
-        if (!isset($elt['@type'])) {
+        if (!$response instanceof JsonResponse || !isset(($elt = $response->getContent())['@type'])) {
             return null;
         }
 
@@ -186,19 +122,13 @@ abstract class AbstractHydraClient implements HydraClientInterface
             throw new \RuntimeException('Method getObjectFromResponse only support object or collection');
         }
 
-        $object = $this->getObjectFromIri($elt['@id']);
+        $object = $this->getProxyFromIri($elt['@id'], false);
         if (null === $object) {
             throw new \RuntimeException(sprintf('Cannot create object with iri : %s', $elt['@id']));
         }
 
         $object->_refresh($elt);
         return $object;
-    }
-
-    public function hasObject(string $iri): bool
-    {
-        // check if object already store
-        return isset($this->objects[$iri]);
     }
 
     public function addObject(string $iri, ProxyObject $object): void
@@ -221,7 +151,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
     public function putObject(ProxyObject $object): ProxyObject
     {
         if (!$this->contains($object)) {
-            throw new \RuntimeException('Object must be registred in ProxyManager before using PUT on it');
+            throw new \RuntimeException('Object must be registered in HydraClient before using PUT on it');
         }
 
         $response = $this->adapter->makeRequest(
@@ -288,5 +218,56 @@ abstract class AbstractHydraClient implements HydraClientInterface
     public function getAdapter(): AdapterInterface
     {
         return $this->adapter;
+    }
+
+    /**
+     * @throws ClientHydraException
+     * @deprecated
+     */
+    public function __call(string $method, array $args)
+    {
+        if (1 !== \preg_match('/^(?<method>[a-z]+)(?<className>[A-Za-z]+)$/', $method, $matches)) {
+            throw new FormatException(\sprintf('The method %s is not recognized.', $method));
+        }
+
+        $method = \strtolower($matches['method']);
+        $className = Inflector::singularize($matches['className']);
+
+        switch ($method) {
+            case 'get':
+                // collection case
+                if (!isset($args[0]) || \is_array($args[0])) {
+                    return $this->getCollection($className, $args[0]['filters'] ?? []);
+                }
+
+                // item (string | int) case
+                if (\is_int($args[0]) || \is_string($args[0])) {
+                    return $this->getObject($className, $args[0], false);
+                }
+
+                throw new \RuntimeException('Unknown error during call get');
+            case 'put':
+                if (!$args[0] instanceof ProxyObject) {
+                    throw new \RuntimeException('Put require a proxy object in parameter');
+                }
+
+                return $this->putObject($args[0]);
+            case 'delete':
+                if (!\is_string($args[0]) || !\is_int($args[0])) {
+                    throw new \RuntimeException('Delete require a string or an int in parameter');
+                }
+
+                $this->deleteObject($className, $args[0]);
+
+                return null;
+            case 'post':
+                if (!$args[0] instanceof ProxyObject) {
+                    throw new \RuntimeException('Post require a proxy object in parameter');
+                }
+
+                return $this->postObject($args[0]);
+        }
+
+        throw new \RuntimeException('Cannot determine method to call');
     }
 }
