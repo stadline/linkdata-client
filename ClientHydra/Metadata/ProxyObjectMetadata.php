@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Stadline\LinkdataClient\ClientHydra\Metadata;
 
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
@@ -53,19 +55,21 @@ class ProxyObjectMetadata
     public function getPropertiesNameByTypes(string $type): array
     {
         if (!isset($this->cache['getPropertiesNameByTypes'][$type])) {
-            $this->cache['getPropertiesNameByTypes'][$type] = array_keys(array_filter($this->properties, function ($elt) use ($type) {
-                return ($elt['type'] === $type || ($type === ProxyObject::class && true === ($elt['isProxyObject'] ?? false)));
+            $this->cache['getPropertiesNameByTypes'][$type] = \array_keys(\array_filter($this->properties, function ($elt) use ($type) {
+                return $elt['type'] === $type || (ProxyObject::class === $type && true === ($elt['isProxyObject'] ?? false));
             }));
         }
+
         return $this->cache['getPropertiesNameByTypes'][$type];
     }
 
     public function testPropertyType(string $property, string $type): bool
     {
-        if (!isset($this->cache['testPropertyType'][$property . ':' . $type])) {
-            $this->cache['testPropertyType'][$property . ':' . $type] = in_array($property, $this->getPropertiesNameByTypes($type), true);
+        if (!isset($this->cache['testPropertyType'][$property.':'.$type])) {
+            $this->cache['testPropertyType'][$property.':'.$type] = \in_array($property, $this->getPropertiesNameByTypes($type), true);
         }
-        return $this->cache['testPropertyType'][$property . ':' . $type];
+
+        return $this->cache['testPropertyType'][$property.':'.$type];
     }
 
     private function resetCache(): void

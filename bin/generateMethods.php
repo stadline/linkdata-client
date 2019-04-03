@@ -102,7 +102,7 @@ function main(string $baseLd2Path, array $extractConf): void
         $files = $finder->files()->name('*.php')->in(\sprintf('%s/%s', $baseLd2Path, $entityPath));
 
         foreach ($files as $file) {
-            echo "Parse file $file\n";
+            echo "Parse file ${file}\n";
             if (!\strpos($file->getRealPath(), 'Interface.php')) {
                 list($entityName, $entityContent) = processEntity(\file_get_contents($file->getRealPath()));
 

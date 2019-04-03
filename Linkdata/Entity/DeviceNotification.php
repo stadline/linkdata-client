@@ -8,20 +8,20 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method string     getId()
- * @method void       setId(string $id)
- * @method int        getType()
- * @method void       setType(int $type)
- * @method string     getPath()
- * @method void       setPath(string $path)
+ * @method string         getId()
+ * @method void           setId(string $id)
+ * @method int            getType()
+ * @method void           setType(int $type)
+ * @method string         getPath()
+ * @method void           setPath(string $path)
  * @method null|\DateTime getClosedAt()
- * @method void       setClosedAt(?\DateTime $closedAt)
- * @method UserDevice getUserDevice()
- * @method void       setUserDevice(UserDevice $userDevice)
- * @method \DateTime  getCreatedAt()
- * @method void       setCreatedAt(\DateTime $createdAt)
- * @method \DateTime  getUpdatedAt()
- * @method void       setUpdatedAt(\DateTime $updatedAt)
+ * @method void           setClosedAt(?\DateTime $closedAt)
+ * @method UserDevice     getUserDevice()
+ * @method void           setUserDevice(UserDevice $userDevice)
+ * @method \DateTime      getCreatedAt()
+ * @method void           setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime      getUpdatedAt()
+ * @method void           setUpdatedAt(\DateTime $updatedAt)
  */
 class DeviceNotification extends ProxyObject
 {

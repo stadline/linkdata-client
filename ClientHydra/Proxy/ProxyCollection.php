@@ -6,7 +6,6 @@ namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
 use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
-use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 
 class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 {
@@ -23,8 +22,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
     public function __construct(
         HydraClientInterface $hydraClient,
         array $initialData
-    )
-    {
+    ) {
         $this->hydraClient = $hydraClient;
         $this->objects = [];
         $this->currentIteratorPosition = self::INITAL_CURSOR_POSITION;
@@ -77,7 +75,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
                 throw new \RuntimeException('Cannot hydrate collection with non json response');
             }
 
-            $lastHydratedElementsNumber =$this->_refresh($requestResponse->getContent());
+            $lastHydratedElementsNumber = $this->_refresh($requestResponse->getContent());
             $totalHydratedElements += $lastHydratedElementsNumber;
         }
 

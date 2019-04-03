@@ -18,8 +18,7 @@ abstract class ProxyObject
         \Closure $getDataClosure,
         \Closure $getObjectClosure,
         MetadataManager $metadataManager
-    ): void
-    {
+    ): void {
         self::$_getData = $getDataClosure;
         self::$_doRefresh = $refreshClosure;
         self::$_getObject = $getObjectClosure;
@@ -100,15 +99,14 @@ abstract class ProxyObject
 
     protected function _getMetadata(): ProxyObjectMetadata
     {
-        return self::$_metadataManager->getClassMetadata(get_class($this));
+        return self::$_metadataManager->getClassMetadata(\get_class($this));
     }
 
     protected function _set($property, $value): void
     {
         $this->_hydratedProperties[$property] = true;
 
-
-        $this->{$property} = (function() use($property, $value) {
+        $this->{$property} = (function () use ($property, $value) {
             if (null === $value) {
                 return null;
             }
@@ -129,7 +127,7 @@ abstract class ProxyObject
             }
 
             // ProxyObject
-            if (!$value instanceof ProxyObject && ($prop['isProxyObject'] ?? false)) {
+            if (!$value instanceof self && ($prop['isProxyObject'] ?? false)) {
                 return (self::$_getObject)($prop['type'], $value, false);
             }
 

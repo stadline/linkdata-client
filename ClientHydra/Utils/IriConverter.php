@@ -25,6 +25,7 @@ class IriConverter
         if (!$object->getId()) {
             return null;
         }
+
         return \sprintf('%s/%s/%s', $this->baseUri, Inflector::tableize(Inflector::pluralize($this->getClassShortName($object))), $object->getId());
     }
 
@@ -47,7 +48,7 @@ class IriConverter
         }
 
         return $this->classNameIdTypes[$className] = 'unknown';
-}
+    }
 
     /**
      * @return int|string
@@ -58,13 +59,13 @@ class IriConverter
 
         switch ($this->getIdTypeFromClassName($this->getClassnameFromIri($iri))) {
             case 'string':
-                $id = (string)\explode('/', \substr($iri, \strlen($this->baseUri)))[2];
+                $id = (string) \explode('/', \substr($iri, \strlen($this->baseUri)))[2];
                 break;
             case 'float':
-                $id = (float)$id;
+                $id = (float) $id;
                 break;
             case 'int':
-                $id = (int)$id;
+                $id = (int) $id;
                 break;
         }
 

@@ -8,18 +8,18 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int        getId()
- * @method void       setId(int $id)
- * @method string     getName()
- * @method void       setName(string $name)
- * @method null|string    getValue()
- * @method void       setValue(?string $value)
- * @method UserDevice getUserDevice()
- * @method void       setUserDevice(UserDevice $userDevice)
- * @method \DateTime  getCreatedAt()
- * @method void       setCreatedAt(\DateTime $createdAt)
- * @method \DateTime  getUpdatedAt()
- * @method void       setUpdatedAt(\DateTime $updatedAt)
+ * @method int         getId()
+ * @method void        setId(int $id)
+ * @method string      getName()
+ * @method void        setName(string $name)
+ * @method null|string getValue()
+ * @method void        setValue(?string $value)
+ * @method UserDevice  getUserDevice()
+ * @method void        setUserDevice(UserDevice $userDevice)
+ * @method \DateTime   getCreatedAt()
+ * @method void        setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime   getUpdatedAt()
+ * @method void        setUpdatedAt(\DateTime $updatedAt)
  */
 class UserDeviceSetting extends ProxyObject
 {

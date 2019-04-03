@@ -31,15 +31,14 @@ abstract class AbstractHydraClient implements HydraClientInterface
         IriConverter $iriConverter,
         SerializerInterface $serializer,
         MetadataManager $metadataManager
-    )
-    {
+    ) {
         $this->adapter = $adapter;
         $this->iriConverter = $iriConverter;
         $this->serializer = $serializer;
 
         ProxyObject::_init(
             function (ProxyObject $proxyObject, $data): void {
-                $this->serializer->deserialize(\json_encode($data), get_class($proxyObject), 'json', [
+                $this->serializer->deserialize(\json_encode($data), \get_class($proxyObject), 'json', [
                     'object_to_populate' => $proxyObject,
                     'groups' => [HydraParser::getDenormContext($data)],
                 ]);
@@ -94,14 +93,15 @@ abstract class AbstractHydraClient implements HydraClientInterface
      */
     public function getObject(string $className, $id, ?bool $autoHydrate = false): ?ProxyObject
     {
-        if (!is_string($id) || !$this->iriConverter->isIri($id)) {
+        if (!\is_string($id) || !$this->iriConverter->isIri($id)) {
             $id = $this->iriConverter->getIriFromClassNameAndId($className, $id);
         }
+
         return $this->getProxyFromIri($id, $autoHydrate);
     }
 
     /**
-     * @return ProxyObject|ProxyCollection|null
+     * @return null|ProxyCollection|ProxyObject
      */
     protected function parseResponse(ResponseInterface $response)
     {
@@ -110,7 +110,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
         }
 
         /* Collection case */
-        if ($elt['@type'] === 'hydra:Collection') {
+        if ('hydra:Collection' === $elt['@type']) {
             return new ProxyCollection(
                 $this,
                 $elt
@@ -124,10 +124,11 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
         $object = $this->getProxyFromIri($elt['@id'], false);
         if (null === $object) {
-            throw new \RuntimeException(sprintf('Cannot create object with iri : %s', $elt['@id']));
+            throw new \RuntimeException(\sprintf('Cannot create object with iri : %s', $elt['@id']));
         }
 
         $object->_refresh($elt);
+
         return $object;
     }
 
@@ -142,8 +143,8 @@ abstract class AbstractHydraClient implements HydraClientInterface
             $this,
             [
                 'hydra:view' => [
-                    'hydra:next' => $this->iriConverter->generateCollectionUri($classname, $filters)
-                ]
+                    'hydra:next' => $this->iriConverter->generateCollectionUri($classname, $filters),
+                ],
             ]
         );
     }
@@ -222,6 +223,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
     /**
      * @throws ClientHydraException
+     *
      * @deprecated
      */
     public function __call(string $method, array $args)

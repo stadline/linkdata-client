@@ -8,18 +8,18 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int       getId()
- * @method void      setId(int $id)
- * @method string    getSlug()
- * @method void      setSlug(string $slug)
- * @method null|string   getComment()
- * @method void      setComment(?string $comment)
- * @method bool      isActive()
- * @method void      setActive(bool $active)
- * @method \DateTime getCreatedAt()
- * @method void      setCreatedAt(\DateTime $createdAt)
- * @method \DateTime getUpdatedAt()
- * @method void      setUpdatedAt(\DateTime $updatedAt)
+ * @method int         getId()
+ * @method void        setId(int $id)
+ * @method string      getSlug()
+ * @method void        setSlug(string $slug)
+ * @method null|string getComment()
+ * @method void        setComment(?string $comment)
+ * @method bool        isActive()
+ * @method void        setActive(bool $active)
+ * @method \DateTime   getCreatedAt()
+ * @method void        setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime   getUpdatedAt()
+ * @method void        setUpdatedAt(\DateTime $updatedAt)
  */
 class StorageKey extends ProxyObject
 {

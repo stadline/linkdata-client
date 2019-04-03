@@ -8,22 +8,22 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int       getId()
- * @method void      setId(int $id)
- * @method User      getUser()
- * @method void      setUser(User $user)
- * @method Datatype  getDatatype()
- * @method void      setDatatype(Datatype $datatype)
- * @method null|float    getInitial()
- * @method void      setInitial(?float $initial)
- * @method float     getGoal()
- * @method void      setGoal($goalfloat)
- * @method \DateTime getStartdate()
- * @method void      setStartdate(\DateTime $startdate)
- * @method \DateTime getCreatedAt()
- * @method void      setCreatedAt(\DateTime $createdAt)
- * @method \DateTime getUpdatedAt()
- * @method void      setUpdatedAt(\DateTime $updatedAt)
+ * @method int        getId()
+ * @method void       setId(int $id)
+ * @method User       getUser()
+ * @method void       setUser(User $user)
+ * @method Datatype   getDatatype()
+ * @method void       setDatatype(Datatype $datatype)
+ * @method null|float getInitial()
+ * @method void       setInitial(?float $initial)
+ * @method float      getGoal()
+ * @method void       setGoal($goalfloat)
+ * @method \DateTime  getStartdate()
+ * @method void       setStartdate(\DateTime $startdate)
+ * @method \DateTime  getCreatedAt()
+ * @method void       setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime  getUpdatedAt()
+ * @method void       setUpdatedAt(\DateTime $updatedAt)
  */
 class UserMeasureGoal extends ProxyObject
 {

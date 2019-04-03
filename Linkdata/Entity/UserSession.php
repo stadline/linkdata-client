@@ -8,22 +8,22 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method string       getId()
- * @method void         setId(string $id)
- * @method string       getModelId()
- * @method void         setModelId(string $modelId)
+ * @method string           getId()
+ * @method void             setId(string $id)
+ * @method string           getModelId()
+ * @method void             setModelId(string $modelId)
  * @method null|UserProgram getUserProgram()
- * @method void         setUserProgram(?UserProgram $userProgram)
- * @method User         getUser()
- * @method void         setUser(User $user)
+ * @method void             setUserProgram(?UserProgram $userProgram)
+ * @method User             getUser()
+ * @method void             setUser(User $user)
  * @method null|int         getPosition()
- * @method void         setPosition(?int $position)
+ * @method void             setPosition(?int $position)
  * @method null|string      getType()
- * @method void         setType(?string $type)
- * @method \DateTime    getCreatedAt()
- * @method void         setCreatedAt(\DateTime $createdAt)
- * @method \DateTime    getUpdatedAt()
- * @method void         setUpdatedAt(\DateTime $updatedAt)
+ * @method void             setType(?string $type)
+ * @method \DateTime        getCreatedAt()
+ * @method void             setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime        getUpdatedAt()
+ * @method void             setUpdatedAt(\DateTime $updatedAt)
  */
 class UserSession extends ProxyObject
 {

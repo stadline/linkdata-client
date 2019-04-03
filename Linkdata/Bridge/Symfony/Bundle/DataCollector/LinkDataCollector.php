@@ -42,9 +42,10 @@ class LinkDataCollector extends DataCollector
         $c = 0;
         foreach ($this->getCalls() as $request) {
             if (false === $request['cache']) {
-                $c++;
+                ++$c;
             }
         }
+
         return $c;
     }
 
@@ -68,9 +69,10 @@ class LinkDataCollector extends DataCollector
         $errors = 0;
         foreach ($this->getCalls() as $request) {
             if (true === $request['isError']) {
-                $errors++;
+                ++$errors;
             }
         }
+
         return $errors;
     }
 

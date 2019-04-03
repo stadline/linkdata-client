@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void            setUser(User $user)
  * @method bool            isCurrent()
  * @method void            setCurrent(bool $current)
- * @method null|\DateTime      getEndedAt()
+ * @method null|\DateTime  getEndedAt()
  * @method void            setEndedAt(?\DateTime $endedAt)
  * @method \DateTime       getCreatedAt()
  * @method void            setCreatedAt(\DateTime $createdAt)

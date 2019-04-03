@@ -47,7 +47,7 @@ class GuzzleAdapter implements AdapterInterface
             $requestData['time'] = null;
             $requestData['response'] = '?';
             $requestData['isError'] = false;
-            $requestData['backtrace'] = json_encode(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10));
+            $requestData['backtrace'] = \json_encode(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10));
 
             $this->debugData[] = &$requestData;
         }
@@ -59,7 +59,7 @@ class GuzzleAdapter implements AdapterInterface
         /** @var \GuzzleHttp\Exception\RequestException $e */
         $e = null;
 
-        $requestHash = \sha1(\json_encode($headers) . '.' . $method . '.' . $uri . '.' . $body);
+        $requestHash = \sha1(\json_encode($headers).'.'.$method.'.'.$uri.'.'.$body);
         if ($cacheEnable && isset($this->cache[$requestHash])) {
             if ($this->debugEnabled) {
                 $requestData['cache'] = true;
@@ -81,7 +81,7 @@ class GuzzleAdapter implements AdapterInterface
             $requestEndTime = \microtime(true);
             $requestData['time'] = $requestEndTime - $requestStartTime;
             $requestData['status'] = $e ? $e->getResponse()->getStatusCode() : $response->getStatusCode();
-            $requestData['response'] = $e ? $e->getResponse()->getBody()->getContents() : (string)$response->getBody();
+            $requestData['response'] = $e ? $e->getResponse()->getBody()->getContents() : (string) $response->getBody();
             $requestData['isError'] = $e ? true : false;
         }
 
@@ -100,12 +100,11 @@ class GuzzleAdapter implements AdapterInterface
         $contentType = $response->getHeader('Content-Type')[0] ?? 'unknown';
         $contentType = \explode(';', $contentType)[0];
 
-
         if (\in_array($contentType, ['application/ld+json', 'application/json'], true)) {
-            return new JsonResponse($response->getStatusCode(), (string)$response->getBody());
+            return new JsonResponse($response->getStatusCode(), (string) $response->getBody());
         }
 
-        return new RawResponse($response->getStatusCode(), $contentType, (string)$response->getBody());
+        return new RawResponse($response->getStatusCode(), $contentType, (string) $response->getBody());
     }
 
     public function setDefaultHeader(string $key, string $value): void
@@ -121,7 +120,7 @@ class GuzzleAdapter implements AdapterInterface
                 'cache' => $this->cache,
                 'debug' => $this->debugEnabled,
             ],
-            'calls' => $this->debugData
+            'calls' => $this->debugData,
         ];
     }
 }

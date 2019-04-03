@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
@@ -7,32 +8,32 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method string    getId()
- * @method void      setId(string $id)
- * @method User      getUser()
- * @method void      setUser(User $user)
- * @method string    getLibelle()
- * @method void      setLibelle(string $libelle)
- * @method null|int      getDistance()
- * @method void      setDistance(?int $distance)
- * @method null|int      getAscendant()
- * @method void      setAscendant(?int $ascendant)
- * @method null|int      getDescendant()
- * @method void      setDescendant(?int $descendant)
- * @method array     getLocations()
- * @method void      setLocations(array $locations)
- * @method null|float    getLatitude()
- * @method void      setLatitude(?float $latitude)
- * @method null|float    getLongitude()
- * @method void      setLongitude(?float $longitude)
- * @method null|float    getElevation()
- * @method void      setElevation(?float $elevation)
- * @method bool      isCorrectedElevation()
- * @method void      setCorrectedElevation(bool $correctedElevation)
- * @method \DateTime getCreatedAt()
- * @method void      setCreatedAt(\DateTime $createdAt)
- * @method \DateTime getUpdatedAt()
- * @method void      setUpdatedAt(\DateTime $updatedAt)
+ * @method string     getId()
+ * @method void       setId(string $id)
+ * @method User       getUser()
+ * @method void       setUser(User $user)
+ * @method string     getLibelle()
+ * @method void       setLibelle(string $libelle)
+ * @method null|int   getDistance()
+ * @method void       setDistance(?int $distance)
+ * @method null|int   getAscendant()
+ * @method void       setAscendant(?int $ascendant)
+ * @method null|int   getDescendant()
+ * @method void       setDescendant(?int $descendant)
+ * @method array      getLocations()
+ * @method void       setLocations(array $locations)
+ * @method null|float getLatitude()
+ * @method void       setLatitude(?float $latitude)
+ * @method null|float getLongitude()
+ * @method void       setLongitude(?float $longitude)
+ * @method null|float getElevation()
+ * @method void       setElevation(?float $elevation)
+ * @method bool       isCorrectedElevation()
+ * @method void       setCorrectedElevation(bool $correctedElevation)
+ * @method \DateTime  getCreatedAt()
+ * @method void       setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime  getUpdatedAt()
+ * @method void       setUpdatedAt(\DateTime $updatedAt)
  */
 class UserRoute extends ProxyObject
 {

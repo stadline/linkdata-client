@@ -8,20 +8,20 @@ use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method int       getId()
- * @method void      setId(int $id)
- * @method array     getTranslatedNames()
- * @method void      setTranslatedNames(array $translatedNames)
- * @method null|string   getVersion()
- * @method void      setVersion(?string $version)
- * @method string    getConnector()
- * @method void      setConnector(string $connector)
- * @method bool      isActive()
- * @method void      setActive(bool $active)
- * @method \DateTime getCreatedAt()
- * @method void      setCreatedAt(\DateTime $createdAt)
- * @method \DateTime getUpdatedAt()
- * @method void      setUpdatedAt(\DateTime $updatedAt)
+ * @method int         getId()
+ * @method void        setId(int $id)
+ * @method array       getTranslatedNames()
+ * @method void        setTranslatedNames(array $translatedNames)
+ * @method null|string getVersion()
+ * @method void        setVersion(?string $version)
+ * @method string      getConnector()
+ * @method void        setConnector(string $connector)
+ * @method bool        isActive()
+ * @method void        setActive(bool $active)
+ * @method \DateTime   getCreatedAt()
+ * @method void        setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime   getUpdatedAt()
+ * @method void        setUpdatedAt(\DateTime $updatedAt)
  */
 class Connector extends ProxyObject
 {

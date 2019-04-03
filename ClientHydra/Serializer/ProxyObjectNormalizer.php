@@ -41,17 +41,17 @@ class ProxyObjectNormalizer extends ObjectNormalizer
     public function normalize($object, $format = null, array $context = [])
     {
         $classContext = $context['classContext'] ?? null;
-        if (is_string($classContext)) {
+        if (\is_string($classContext)) {
             $context['classContext'] = [$classContext];
         } elseif (null === $classContext) {
-            $context['classContext'] = [get_class($object)];
+            $context['classContext'] = [\get_class($object)];
         }
 
         if ($object instanceof \DateTime) {
             return $object->format(DATE_ATOM);
         }
 
-        if (!$object instanceof ProxyObject || in_array(\get_class($object), $context['classContext'], true)) {
+        if (!$object instanceof ProxyObject || \in_array(\get_class($object), $context['classContext'], true)) {
             return parent::normalize($object, $format, $context);
         }
 

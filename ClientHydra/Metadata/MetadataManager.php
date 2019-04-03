@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Stadline\LinkdataClient\ClientHydra\Metadata;
 
 use ReflectionClass;
@@ -27,6 +29,7 @@ class MetadataManager
         if (!isset($this->proxyObjectMetadata[$class])) {
             $this->parseClassMetadata($class);
         }
+
         return $this->proxyObjectMetadata[$class];
     }
 
@@ -39,7 +42,7 @@ class MetadataManager
         // search in properties
         foreach ($reflexionClass->getProperties() as $property) {
             if (false !== $property->getDocComment() && \preg_match('/@var\s+\\\\?\??([a-zA-Z0-9_]+)(\[\])?/', $property->getDocComment(), $matches)) {
-                [, $type] = $matches;
+                list(, $type) = $matches;
 
                 $type = $this->parseType($type);
 
@@ -47,7 +50,7 @@ class MetadataManager
                     $property->getName(),
                     $type['type'],
                     [
-                        'isProxyObject' => $type['isProxyObject'] ?? false
+                        'isProxyObject' => $type['isProxyObject'] ?? false,
                     ]
                 );
             }
@@ -79,7 +82,7 @@ class MetadataManager
                     $propertyName,
                     $type['type'],
                     [
-                        'isProxyObject' => $type['isProxyObject'] ?? false
+                        'isProxyObject' => $type['isProxyObject'] ?? false,
                     ]
                 );
             }
@@ -99,22 +102,22 @@ class MetadataManager
         if ($normalizedType = (static function (string $type): ?string {
             if (\in_array($type, [
                 'integer',
-                'int'
-            ])) {
+                'int',
+            ], true)) {
                 return ProxyObjectMetadata::TYPE_INTEGER;
             }
 
             if (\in_array($type, [
                 'float',
-                'double'
-            ])) {
+                'double',
+            ], true)) {
                 return ProxyObjectMetadata::TYPE_FLOAT;
             }
 
             if (\in_array($type, [
                 'boolean',
-                'bool'
-            ])) {
+                'bool',
+            ], true)) {
                 return ProxyObjectMetadata::TYPE_BOOLEAN;
             }
 
@@ -130,16 +133,18 @@ class MetadataManager
         })($type)
         ) {
             $return['type'] = $normalizedType;
+
             return $return;
         }
 
         // object case
-        if (\class_exists($type) || \class_exists($type = $this->entityNamespace . '\\' . $type)) {
+        if (\class_exists($type) || \class_exists($type = $this->entityNamespace.'\\'.$type)) {
             $return['type'] = $type; // special flag for proxyobject
             // test proxy object
             if ((new ReflectionClass($type))->isSubclassOf(ProxyObject::class)) {
                 $return['isProxyObject'] = true;
             }
+
             return $return;
         }
 
