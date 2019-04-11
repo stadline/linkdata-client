@@ -72,19 +72,27 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             foreach ($metadata->getPropertiesNameByTypes(ProxyObject::class) as $propName) {
                 if (isset($data[$propName])) {
                     if (\is_array($data[$propName])) {
-                        $properties = [];
-                        foreach ($data[$propName] as $elt) {
-                            if (\is_array($elt) && isset($elt['@id'])) {
-                                $subObject = $this->hydraClient->getProxyFromIri($elt['@id']);
-                                $subObject->_refresh($elt);
-                                $properties[] = $subObject;
-                            } elseif (\is_string($elt) && $this->iriConverter->isIri($elt)) {
-                                $properties[] = $this->hydraClient->getProxyFromIri($elt);
-                            } else {
-                                $properties[] = $elt;
-                            }
+                        if (isset($data[$propName]['@id'])) {
+                            $subObject = $this->hydraClient->getProxyFromIri($data[$propName]['@id']);
+                            $subObject->_refresh($data[$propName]);
+                            $data[$propName] = $subObject;
                         }
-                        $data[$propName] = $properties;
+                        else {
+                            $properties = [];
+                            foreach ($data[$propName] as $elt) {
+                                if (\is_array($elt) && isset($elt['@id'])) {
+                                    $subObject = $this->hydraClient->getProxyFromIri($elt['@id']);
+                                    $subObject->_refresh($elt);
+                                    $properties[] = $subObject;
+                                    break;
+                                } elseif (\is_string($elt) && $this->iriConverter->isIri($elt)) {
+                                    $properties[] = $this->hydraClient->getProxyFromIri($elt);
+                                } else {
+                                    $properties[] = $elt;
+                                }
+                            }
+                            $data[$propName] = $properties;
+                        }
                     } else {
                         $data[$propName] = $this->hydraClient->getProxyFromIri($data[$propName]);
                     }
