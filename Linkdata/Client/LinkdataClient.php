@@ -214,11 +214,35 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
     /**
      * @throws ClientHydraException
      */
-    public function getUserStatistics(string $id): array
+    public function getUserStatistics(string $id, $filters = []): array
     {
         return $this->getAdapter()->makeRequest(
             'GET',
-            \sprintf('/v2/users/%s/stats', $id)
+            \sprintf('/v2/users/%s/stats%s', $id, $this->getUrlFilters($filters))
         )->getContent();
+    }
+
+    /**
+     * @throws ClientHydraException
+     */
+    public function getCurrentUserRecords(string $id, $filters = []): ProxyCollection
+    {
+        return $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+            'GET',
+            \sprintf('/v2/user_records/%s/current%s', $id, $this->getUrlFilters($filters))
+        ));
+    }
+
+    private function getUrlFilters(?array $filters)
+    {
+        $urlFilters = '';
+        if (null !== $filters) {
+            foreach ($filters['filters'] as $key => $filter) {
+                $urlFilters .= sprintf('&%s=%s', $key, $filter);
+            }
+            $urlFilters = sprintf('?%s', ltrim($urlFilters, '&'));
+        }
+        return $urlFilters;
     }
 }
