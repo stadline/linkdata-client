@@ -16,8 +16,6 @@ interface HydraClientInterface
 
     public function contains($object): bool;
 
-    public function addObject(string $iri, ProxyObject $object): void;
-
     public function putObject(ProxyObject $object): ProxyObject;
 
     public function deleteObject(...$objectOrId): void;

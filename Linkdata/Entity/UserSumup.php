@@ -31,6 +31,7 @@ class UserSumup extends ProxyObject
 {
     const MONTHLY_SUMUP = 'MonthlySumup';
     const YEARLY_SUMUP = 'YearlySumup';
+    const LIFELY_SUMUP = 'LifelySumup';
 
     /**
      * @var string

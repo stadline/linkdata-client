@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\Linkdata\Client;
 
 use Stadline\LinkdataClient\ClientHydra\Client\AbstractHydraClient;
+use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
 use Stadline\LinkdataClient\Linkdata\Entity\Activity;
@@ -124,7 +125,7 @@ use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
  * @method UserSumup           getUserSumup(string $id, array $options = [])
  * @method ProxyCollection     getUserSumups(array $options = [])
  */
-class LinkdataClient extends AbstractHydraClient
+class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
 {
     public function getActivityDatastream(string $activityId): array
     {
@@ -151,11 +152,11 @@ class LinkdataClient extends AbstractHydraClient
     /**
      * @throws ClientHydraException
      */
-    public function getSimilarActivities(string $activityId, $datatypeId): array
+    public function getSimilarActivities(string $activityId, $datatypeId, int $limit = 3): array
     {
         return $this->getAdapter()->makeRequest(
             'GET',
-            \sprintf('/v2/activities/%s/similar/%s?limit=3', $activityId, $datatypeId)
+            \sprintf('/v2/activities/%s/similar/%s?limit=%d', $activityId, $datatypeId, $limit)
         )->getContent();
     }
 
@@ -208,5 +209,16 @@ class LinkdataClient extends AbstractHydraClient
         if ($object instanceof Activity) {
             return $object;
         }
+    }
+
+    /**
+     * @throws ClientHydraException
+     */
+    public function getUserStatistics(string $id): array
+    {
+        return $this->getAdapter()->makeRequest(
+            'GET',
+            \sprintf('/v2/users/%s/stats', $id)
+        )->getContent();
     }
 }

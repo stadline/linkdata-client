@@ -17,7 +17,7 @@ use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
 
-abstract class AbstractHydraClient implements HydraClientInterface
+abstract class AbstractHydraClient
 {
     private $adapter;
     private $iriConverter;
@@ -130,11 +130,6 @@ abstract class AbstractHydraClient implements HydraClientInterface
         $object->_refresh($elt);
 
         return $object;
-    }
-
-    public function addObject(string $iri, ProxyObject $object): void
-    {
-        $this->objects[$iri] = $object;
     }
 
     public function getCollection(string $classname, array $filters = []): ProxyCollection
