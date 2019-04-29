@@ -237,7 +237,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
     private function getUrlFilters(?array $filters)
     {
         $urlFilters = '';
-        if (null !== $filters) {
+        if (null !== $filters && !empty($filters)) {
             foreach ($filters['filters'] as $key => $filter) {
                 $urlFilters .= sprintf('&%s=%s', $key, $filter);
             }
