@@ -229,9 +229,9 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
     {
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(
-            'GET',
-            \sprintf('/v2/user_records/%s/current%s', $id, $this->getUrlFilters($filters))
-        ));
+                'GET',
+                \sprintf('/v2/user_records/%s/current%s', $id, $this->getUrlFilters($filters))
+            ));
     }
 
     private function getUrlFilters(?array $filters)
