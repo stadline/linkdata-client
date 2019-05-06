@@ -221,24 +221,24 @@ class Datatype extends ProxyObject
      */
     public $updatedAt;
 
-    public function hasNameByLocale(string $locale): bool
+    public function hasNameByLocale(string $locale): ?bool
     {
-        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
+        return isset($this->getTranslatedNames()[$locale]) && !empty($this->getTranslatedNames()[$locale]);
     }
 
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
+        return $this->hasNameByLocale($locale) ? $this->getTranslatedNames()[$locale] : null;
     }
 
     public function hasDescriptionByLocale(string $locale): bool
     {
-        return isset($this->translatedDescriptions[$locale]) && !empty($this->translatedDescriptions[$locale]);
+        return isset($this->getTranslatedDescriptions()[$locale]) && !empty($this->getTranslatedDescriptions()[$locale]);
     }
 
     public function getDescriptionByLocale(string $locale): ?string
     {
-        return $this->hasDescriptionByLocale($locale) ? $this->translatedDescriptions[$locale] : null;
+        return $this->hasDescriptionByLocale($locale) ? $this->getTranslatedDescriptions()[$locale] : null;
     }
 
     /**

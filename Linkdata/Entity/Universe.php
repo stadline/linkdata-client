@@ -66,11 +66,11 @@ class Universe extends ProxyObject
 
     public function hasNameByLocale(string $locale): ?bool
     {
-        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
+        return isset($this->getTranslatedNames()[$locale]) && !empty($this->getTranslatedNames()[$locale]);
     }
 
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
+        return $this->hasNameByLocale($locale) ? $this->getTranslatedNames()[$locale] : null;
     }
 }

@@ -135,14 +135,44 @@ class GlobalChallenge extends ProxyObject
      */
     public $updatedAt;
 
-    public function hasNameByLocale(string $locale): bool
+    public function hasNameByLocale(string $locale): ?bool
     {
-        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
+        return isset($this->getTranslatedNames()[$locale]) && !empty($this->getTranslatedNames()[$locale]);
     }
 
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
+        return $this->hasNameByLocale($locale) ? $this->getTranslatedNames()[$locale] : null;
+    }
+
+    public function hasBeforeMessageByLocale(string $locale): ?bool
+    {
+        return isset($this->getTranslatedBeforeMessage()[$locale]) && !empty($this->getTranslatedBeforeMessage()[$locale]);
+    }
+
+    public function getBeforeMessageByLocale(string $locale): ?string
+    {
+        return $this->hasBeforeMessageByLocale($locale) ? $this->getTranslatedBeforeMessage()[$locale] : null;
+    }
+
+    public function hasCurrentMessageByLocale(string $locale): ?bool
+    {
+        return isset($this->getTranslatedCurrentMessage()[$locale]) && !empty($this->getTranslatedCurrentMessage()[$locale]);
+    }
+
+    public function getCurrentMessageByLocale(string $locale): ?string
+    {
+        return $this->hasCurrentMessageByLocale($locale) ? $this->getTranslatedCurrentMessage()[$locale] : null;
+    }
+    
+    public function hasAfterMessageByLocale(string $locale): ?bool
+    {
+        return isset($this->getTranslatedAfterMessage()[$locale]) && !empty($this->getTranslatedAfterMessage()[$locale]);
+    }
+
+    public function getAfterMessageByLocale(string $locale): ?string
+    {
+        return $this->hasAfterMessageByLocale($locale) ? $this->getTranslatedAfterMessage()[$locale] : null;
     }
 
     /**
@@ -175,7 +205,7 @@ class GlobalChallenge extends ProxyObject
      */
     public function getStartedAtAsDateTimeObject()
     {
-        $startedAt = new \DateTime($this->startedAt);
+        $startedAt = new \DateTime($this->getStartedAt());
 
         return \DateTime::createFromFormat('Y-m-d H:i:s', $startedAt);
     }
@@ -187,7 +217,7 @@ class GlobalChallenge extends ProxyObject
      */
     public function getEndedAtAsDateTimeObject()
     {
-        $endedAt = new \DateTime($this->endedAt);
+        $endedAt = new \DateTime($this->getEndedAt());
 
         return \DateTime::createFromFormat('Y-m-d H:i:s', $endedAt);
     }

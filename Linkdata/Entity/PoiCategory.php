@@ -50,4 +50,14 @@ class PoiCategory extends ProxyObject
      * @Groups({"poi_category_norm"})
      */
     public $updatedAt;
+
+    public function hasNameByLocale(string $locale): ?bool
+    {
+        return isset($this->getTranslatedNames()[$locale]) && !empty($this->getTranslatedNames()[$locale]);
+    }
+
+    public function getNameByLocale(string $locale): ?string
+    {
+        return $this->hasNameByLocale($locale) ? $this->getTranslatedNames()[$locale] : null;
+    }
 }
