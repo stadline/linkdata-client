@@ -112,6 +112,8 @@ class IriConverter
                 foreach ($filter as $arrayVal) {
                     $response .= \sprintf('%s[]=%s&', $key, $arrayVal);
                 }
+            } elseif (null === $filter) {
+                $response .= \sprintf("%s&", $key);
             } else {
                 $response .= \sprintf('%s=%s&', $key, $filter);
             }
