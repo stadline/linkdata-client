@@ -327,4 +327,17 @@ class Datatype extends ProxyObject
 
         return new RelatedValue((($hrValue - $userHrRest) / ($userHrMax - $userHrRest)) * 100, self::HR_PERCENTAGE_MAX);
     }
+
+    public static function getPublicValuesByDatatype($values)
+    {
+        $publicValues = [];
+
+        foreach (self::$publicDatatypes as $datatypeId) {
+            if (isset($values[$datatypeId])) {
+                $publicValues[$datatypeId] = $values[$datatypeId];
+            }
+        }
+
+        return $publicValues;
+    }
 }
