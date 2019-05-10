@@ -164,6 +164,37 @@ class Datatype extends ProxyObject
         self::CURRENT_HOME_TRAINER_POWER => 'icon-geonaute-power',
     ];
 
+    public static $publicDatatypes = [
+        // Distance
+        self::DISTANCE,
+        // Speed
+        self::SPEED_AVG,
+        // Heart-rate
+        self::HR_CURRENT,
+        self::HR_AVG,
+        self::HR_PERCENTAGE_MIN,
+        self::HR_PERCENTAGE_MAX,
+        // Duration
+        self::DURATION,
+        self::ACTIVE_TIME,
+        // Calories
+        self::CALORIES_BURNT,
+        // Elevation
+        self::ELEVATION_CURRENT,
+        self::ELEVATION_MIN,
+        self::ELEVATION_MAX,
+        self::ASCENT,
+        self::DESCENT,
+        // Segments
+        self::LAP,
+        // Cadence
+        self::STEP_NUMBER,
+        self::RPM_CURRENT,
+        self::RPM_AVG,
+        // Points
+        self::POINTS_EARNED,
+    ];
+
     public static $userHrMax = 220;
     public static $userHrRest = 120;
 
