@@ -249,7 +249,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
     /**
      * @throws ClientHydraException
      */
-    public function getUserTags(string $userId): ProxyCollection
+    public function getUserTags(string $userId): array
     {
         try {
             return $this->getAdapter()->makeRequest(
