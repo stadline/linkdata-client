@@ -36,13 +36,28 @@ abstract class ProxyObject
 
     /* internal metadata */
     private $_hydratedProperties = [];
+    private $_currentDistantValues = [];
 
     public function _refresh(array $data): void
     {
+        (self::$_doRefresh)($this, $data);
         foreach ($data as $k => $v) {
             $this->_hydratedProperties[$k] = true;
+            $this->_currentDistantValues[$k] = $v;
         }
-        (self::$_doRefresh)($this, $data);
+    }
+
+    public function _getEditedProperties(): array {
+        $editedProperties = [];
+
+        foreach ($this->_getMetadata()->getProperties() as $name => $property) {
+            // Check property value change
+            if ($this->_currentDistantValues[$name] !== $this->$name) {
+                $editedProperties[] = $name;
+            }
+        }
+
+        return $editedProperties;
     }
 
     public function __call($name, $arguments)

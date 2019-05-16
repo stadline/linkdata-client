@@ -157,7 +157,7 @@ abstract class AbstractHydraClient
             $this->serializer->serialize(
                 $object,
                 'json',
-                ['groups' => [HydraParser::getNormContext($object)], 'classContext' => \get_class($object)]
+                ['groups' => [HydraParser::getNormContext($object)], 'classContext' => \get_class($object), 'putContext' => true]
             )
         );
 
