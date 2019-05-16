@@ -245,4 +245,19 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         }
         return $urlFilters;
     }
+
+    /**
+     * @throws ClientHydraException
+     */
+    public function getUserTags(string $userId): array
+    {
+        try {
+            return $this->getAdapter()->makeRequest(
+                    'GET',
+                    \sprintf('/v2/users/%s/tags', $userId)
+                )->getContent();
+        } catch (ClientHydraException $e) {
+            return [];
+        }
+    }
 }
