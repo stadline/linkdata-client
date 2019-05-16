@@ -52,7 +52,22 @@ class ProxyObjectNormalizer extends ObjectNormalizer
         }
 
         if (!$object instanceof ProxyObject || \in_array(\get_class($object), $context['classContext'], true)) {
-            return parent::normalize($object, $format, $context);
+            // save current class context
+            $context['currentClassContext'] = \get_class($object);
+            $data = parent::normalize($object, $format, $context);
+
+            // In put case, only add field if value is modified
+            if (true === $context['putContext'] ?? null) {
+                $editedProperties = $object->_getEditedProperties();
+                foreach ($data as $fieldName => $useless) {
+                    if (!\in_array($fieldName, $editedProperties, true)) {
+                        unset($data[$fieldName]);
+                    }
+                }
+                var_dump($data);
+                var_dump("coucou");
+            }
+            return $data;
         }
 
         return $this->iriConverter->getIriFromObject($object);
