@@ -226,4 +226,21 @@ class Activity extends ProxyObject
      * @Groups({"activity_norm"})
      */
     public $updatedAt;
+
+    public function getCorrectedDatastream()
+    {
+        if (!$this->isDatastreamFlag()) {
+            return [];    
+        }
+        
+        $datastream = $this->getDatastream();
+
+        // Add measure at elapsed_time = 0 if not set (legacy linkdata-bundle)
+        if (0 < \count($datastream) && !isset($datastream[0]) && !isset($datastream[1])) {
+            $datastream[0] = [Datatype::DISTANCE => 0];
+        }
+        ksort($datastream);
+
+        return $datastream;
+    }
 }
