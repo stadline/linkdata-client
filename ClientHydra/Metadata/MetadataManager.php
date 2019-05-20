@@ -41,7 +41,7 @@ class MetadataManager
 
         // search in properties
         foreach ($reflexionClass->getProperties() as $property) {
-            if (false !== $property->getDocComment() && \preg_match('/@var\s+\\\\?\??([a-zA-Z0-9_]+)(\[\])?/', $property->getDocComment(), $matches)) {
+            if (false !== $property->getDocComment() && \preg_match('/@var\s+\\\\?\??([\\\\a-zA-Z0-9_]+)(\[\])?/', $property->getDocComment(), $matches)) {
                 list(, $type) = $matches;
 
                 $type = $this->parseType($type);

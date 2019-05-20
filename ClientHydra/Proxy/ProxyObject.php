@@ -18,7 +18,8 @@ abstract class ProxyObject
         \Closure $getDataClosure,
         \Closure $getObjectClosure,
         MetadataManager $metadataManager
-    ): void {
+    ): void
+    {
         self::$_getData = $getDataClosure;
         self::$_doRefresh = $refreshClosure;
         self::$_getObject = $getObjectClosure;
@@ -37,22 +38,53 @@ abstract class ProxyObject
     /* internal metadata */
     private $_hydratedProperties = [];
     private $_currentDistantValues = [];
+    private $_isHydrating = false;
 
-    public function _refresh(array $data): void
+    public function _refresh(array $data, bool $overrideAlreadyHydratedFields = true): void
     {
-        (self::$_doRefresh)($this, $data);
+        $this->_isHydrating = true;
         foreach ($data as $k => $v) {
+            if (false === $overrideAlreadyHydratedFields && true === ($this->_hydratedProperties[$k] ?? false)) {
+                unset($data[$k]);
+            }
             $this->_hydratedProperties[$k] = true;
             $this->_currentDistantValues[$k] = $v;
         }
+        (self::$_doRefresh)($this, $data);
+        $this->_isHydrating = false;
     }
 
-    public function _getEditedProperties(): array {
+    public function _getEditedProperties(array $normalizedProperties): array
+    {
         $editedProperties = [];
 
         foreach ($this->_getMetadata()->getProperties() as $name => $property) {
+            if ('id' === $name) {
+                continue;
+            }
+
+            $distantValueNormalized = $this->_currentDistantValues[$name] ?? null;
+            $currentValueNormalized = $normalizedProperties[$name] ?? null;
+
+            // normalize value
+            if (\is_array($distantValueNormalized)) {
+                if (array_values($distantValueNormalized) === $distantValueNormalized) {
+                    sort($distantValueNormalized);
+                } else {
+                    ksort($distantValueNormalized);
+                }
+                if (array_values($currentValueNormalized) === $currentValueNormalized) {
+                    sort($currentValueNormalized);
+                } else {
+                    ksort($currentValueNormalized);
+                }
+
+                $distantValueNormalized = json_encode($distantValueNormalized);
+                $currentValueNormalized = json_encode($currentValueNormalized);
+            }
+
             // Check property value change
-            if ($this->_currentDistantValues[$name] !== $this->$name) {
+            if ($distantValueNormalized !== $currentValueNormalized) {
                 $editedProperties[] = $name;
             }
         }
@@ -109,7 +141,7 @@ abstract class ProxyObject
             $data = (self::$_getData)($this);
         }
 
-        $this->_refresh($data);
+        $this->_refresh($data, false);
     }
 
     protected function _getMetadata(): ProxyObjectMetadata
@@ -119,6 +151,10 @@ abstract class ProxyObject
 
     protected function _set($property, $value): void
     {
+        if (!$this->_isHydrating && true !== ($this->_hydratedProperties[$property] ?? false)) {
+            $this->_hydrate();
+        }
+
         $this->_hydratedProperties[$property] = true;
 
         $this->{$property} = (function () use ($property, $value) {
@@ -130,13 +166,13 @@ abstract class ProxyObject
             // Basic types
             switch ($prop['type']) {
                 case ProxyObjectMetadata::TYPE_INTEGER:
-                    return (int) $value;
+                    return (int)$value;
                 case ProxyObjectMetadata::TYPE_BOOLEAN:
-                    return (bool) $value;
+                    return (bool)$value;
                 case ProxyObjectMetadata::TYPE_FLOAT:
-                    return (float) $value;
+                    return (float)$value;
                 case ProxyObjectMetadata::TYPE_STRING:
-                    return (string) $value;
+                    return (string)$value;
                 case ProxyObjectMetadata::TYPE_DATETIME:
                     return $value instanceof \DateTime ? $value : new \DateTime($value);
             }

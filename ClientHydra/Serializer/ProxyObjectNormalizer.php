@@ -57,15 +57,13 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             $data = parent::normalize($object, $format, $context);
 
             // In put case, only add field if value is modified
-            if (true === $context['putContext'] ?? null) {
-                $editedProperties = $object->_getEditedProperties();
+            if (true === ($context['putContext'] ?? null)) {
+                $editedProperties = $object->_getEditedProperties($data);
                 foreach ($data as $fieldName => $useless) {
                     if (!\in_array($fieldName, $editedProperties, true)) {
                         unset($data[$fieldName]);
                     }
                 }
-                var_dump($data);
-                var_dump("coucou");
             }
             return $data;
         }
