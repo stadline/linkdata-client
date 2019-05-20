@@ -151,15 +151,22 @@ abstract class AbstractHydraClient
             throw new \RuntimeException('Object must be registered in HydraClient before using PUT on it');
         }
 
+        $putData = $this->serializer->serialize(
+            $object,
+            'json',
+            ['groups' => [HydraParser::getNormContext($object)], 'classContext' => \get_class($object), 'putContext' => true]
+        );
+
+        // no changes : ignore !
+        if (empty($putData)) {
+            return $object;
+        }
+
         $response = $this->adapter->makeRequest(
             'PUT',
             $this->iriConverter->getIriFromObject($object),
             [],
-            $this->serializer->serialize(
-                $object,
-                'json',
-                ['groups' => [HydraParser::getNormContext($object)], 'classContext' => \get_class($object), 'putContext' => true]
-            )
+            $putData
         );
 
         if (!$response instanceof JsonResponse) {
