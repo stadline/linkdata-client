@@ -31,7 +31,8 @@ abstract class AbstractHydraClient
         IriConverter $iriConverter,
         SerializerInterface $serializer,
         MetadataManager $metadataManager
-    ) {
+    )
+    {
         $this->adapter = $adapter;
         $this->iriConverter = $iriConverter;
         $this->serializer = $serializer;
@@ -158,7 +159,7 @@ abstract class AbstractHydraClient
         );
 
         // no changes : ignore !
-        if (empty($putData)) {
+        if ('[]' === $putData) {
             return $object;
         }
 
