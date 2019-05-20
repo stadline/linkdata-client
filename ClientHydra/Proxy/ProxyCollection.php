@@ -18,11 +18,14 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
     /* Internal metadata */
     private $currentIteratorPosition;
     private $nextPageUri;
+    private $cacheEnable;
 
     public function __construct(
         HydraClientInterface $hydraClient,
-        array $initialData
+        array $initialData,
+        bool $cacheEnable = true
     ) {
+        $this->cacheEnable = $cacheEnable;
         $this->hydraClient = $hydraClient;
         $this->objects = [];
         $this->currentIteratorPosition = self::INITAL_CURSOR_POSITION;
@@ -68,7 +71,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
                 $this->nextPageUri,
                 [],
                 null,
-                true
+                $this->cacheEnable
             );
 
             if (!$requestResponse instanceof JsonResponse) {

@@ -132,7 +132,7 @@ abstract class AbstractHydraClient
         return $object;
     }
 
-    public function getCollection(string $classname, array $filters = []): ProxyCollection
+    public function getCollection(string $classname, array $filters = [], bool $cacheEnable = true): ProxyCollection
     {
         return new ProxyCollection(
             $this,
@@ -140,7 +140,8 @@ abstract class AbstractHydraClient
                 'hydra:view' => [
                     'hydra:next' => $this->iriConverter->generateCollectionUri($classname, $filters),
                 ],
-            ]
+            ],
+            $cacheEnable
         );
     }
 
