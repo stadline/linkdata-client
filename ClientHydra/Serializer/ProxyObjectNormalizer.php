@@ -65,6 +65,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                     }
                 }
             }
+
             return $data;
         }
 
@@ -89,8 +90,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                             $subObject = $this->hydraClient->getProxyFromIri($data[$propName]['@id']);
                             $subObject->_refresh($data[$propName]);
                             $data[$propName] = $subObject;
-                        }
-                        else {
+                        } else {
                             $properties = [];
                             foreach ($data[$propName] as $elt) {
                                 if (\is_array($elt) && isset($elt['@id'])) {
@@ -98,7 +98,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                                     $subObject->_refresh($elt);
                                     $properties[] = $subObject;
                                     break;
-                                } elseif (\is_string($elt) && $this->iriConverter->isIri($elt)) {
+                                }
+                                if (\is_string($elt) && $this->iriConverter->isIri($elt)) {
                                     $properties[] = $this->hydraClient->getProxyFromIri($elt);
                                 } else {
                                     $properties[] = $elt;

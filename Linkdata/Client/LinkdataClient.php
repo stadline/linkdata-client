@@ -239,10 +239,11 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         $urlFilters = '';
         if (null !== $filters && !empty($filters)) {
             foreach ($filters['filters'] as $key => $filter) {
-                $urlFilters .= sprintf('&%s=%s', $key, $filter);
+                $urlFilters .= \sprintf('&%s=%s', $key, $filter);
             }
-            $urlFilters = sprintf('?%s', ltrim($urlFilters, '&'));
+            $urlFilters = \sprintf('?%s', \ltrim($urlFilters, '&'));
         }
+
         return $urlFilters;
     }
 

@@ -108,12 +108,12 @@ class IriConverter
             if ($filter instanceof ProxyObject) {
                 $filter = $this->getIriFromObject($filter);
                 $response .= \sprintf('%s=%s&', $key, $filter);
-            } elseif (is_array($filter)) {
+            } elseif (\is_array($filter)) {
                 foreach ($filter as $arrayVal) {
                     $response .= \sprintf('%s[]=%s&', $key, $arrayVal);
                 }
             } elseif (null === $filter) {
-                $response .= \sprintf("%s&", $key);
+                $response .= \sprintf('%s&', $key);
             } else {
                 $response .= \sprintf('%s=%s&', $key, $filter);
             }

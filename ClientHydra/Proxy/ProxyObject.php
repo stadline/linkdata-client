@@ -18,8 +18,7 @@ abstract class ProxyObject
         \Closure $getDataClosure,
         \Closure $getObjectClosure,
         MetadataManager $metadataManager
-    ): void
-    {
+    ): void {
         self::$_getData = $getDataClosure;
         self::$_doRefresh = $refreshClosure;
         self::$_getObject = $getObjectClosure;
@@ -68,19 +67,19 @@ abstract class ProxyObject
 
             // normalize value
             if (\is_array($distantValueNormalized)) {
-                if (array_values($distantValueNormalized) === $distantValueNormalized) {
-                    sort($distantValueNormalized);
+                if (\array_values($distantValueNormalized) === $distantValueNormalized) {
+                    \sort($distantValueNormalized);
                 } else {
-                    ksort($distantValueNormalized);
+                    \ksort($distantValueNormalized);
                 }
-                if (array_values($currentValueNormalized) === $currentValueNormalized) {
-                    sort($currentValueNormalized);
+                if (\array_values($currentValueNormalized) === $currentValueNormalized) {
+                    \sort($currentValueNormalized);
                 } else {
-                    ksort($currentValueNormalized);
+                    \ksort($currentValueNormalized);
                 }
 
-                $distantValueNormalized = json_encode($distantValueNormalized);
-                $currentValueNormalized = json_encode($currentValueNormalized);
+                $distantValueNormalized = \json_encode($distantValueNormalized);
+                $currentValueNormalized = \json_encode($currentValueNormalized);
             }
 
             // Check property value change
@@ -166,13 +165,13 @@ abstract class ProxyObject
             // Basic types
             switch ($prop['type']) {
                 case ProxyObjectMetadata::TYPE_INTEGER:
-                    return (int)$value;
+                    return (int) $value;
                 case ProxyObjectMetadata::TYPE_BOOLEAN:
-                    return (bool)$value;
+                    return (bool) $value;
                 case ProxyObjectMetadata::TYPE_FLOAT:
-                    return (float)$value;
+                    return (float) $value;
                 case ProxyObjectMetadata::TYPE_STRING:
-                    return (string)$value;
+                    return (string) $value;
                 case ProxyObjectMetadata::TYPE_DATETIME:
                     return $value instanceof \DateTime ? $value : new \DateTime($value);
             }

@@ -164,7 +164,7 @@ class GlobalChallenge extends ProxyObject
     {
         return $this->hasCurrentMessageByLocale($locale) ? $this->getTranslatedCurrentMessage()[$locale] : null;
     }
-    
+
     public function hasAfterMessageByLocale(string $locale): ?bool
     {
         return isset($this->getTranslatedAfterMessage()[$locale]) && !empty($this->getTranslatedAfterMessage()[$locale]);
