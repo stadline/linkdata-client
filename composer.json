@@ -5,6 +5,14 @@
   "license": "proprietary",
   "authors": [
     {
+      "name": "Thomas Glachant",
+      "email": "thomas.glachant@stadline.com"
+    },
+    {
+      "name": "Guillaume Copin",
+      "email": "guillaume.copin@stadline.com"
+    },
+    {
       "name": "Raphael Bonini",
       "email": "raphael.bonini@stadline.com"
     },
