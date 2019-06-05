@@ -102,4 +102,9 @@ class UserRoute extends ProxyObject
      * @Groups({"user_route_norm", "user_route_norm_cget"})
      */
     public $updatedAt;
+
+    public function __toString()
+    {
+        return $this->getId();
+    }
 }

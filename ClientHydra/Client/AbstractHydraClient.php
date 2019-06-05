@@ -133,9 +133,9 @@ abstract class AbstractHydraClient
         return $object;
     }
 
-    public function getCollection(string $classname, array $filters = [], bool $cacheEnable = true): ProxyCollection
+    public function getCollection(string $classname, array $filters = [], bool $cacheEnable = true, bool $autoHydrate = false): ProxyCollection
     {
-        return new ProxyCollection(
+        $collection = new ProxyCollection(
             $this,
             [
                 'hydra:view' => [
@@ -144,6 +144,12 @@ abstract class AbstractHydraClient
             ],
             $cacheEnable
         );
+
+        if ($autoHydrate) {
+            foreach($collection as $i) {}
+        }
+
+        return $collection;
     }
 
     public function putObject(ProxyObject $object): ProxyObject
