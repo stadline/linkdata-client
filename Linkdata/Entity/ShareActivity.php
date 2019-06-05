@@ -34,7 +34,7 @@ class ShareActivity extends ProxyObject
     public $user;
 
     /**
-     * @var Activity
+     * @var array
      * @Groups({"share_activity_norm", "share_activity_denorm"})
      */
     public $activity;
