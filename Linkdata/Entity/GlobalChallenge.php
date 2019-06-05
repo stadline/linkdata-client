@@ -205,9 +205,8 @@ class GlobalChallenge extends ProxyObject
      */
     public function getStartedAtAsDateTimeObject()
     {
-        $startedAt = new \DateTime($this->getStartedAt());
+        return null !== $this->getStartedAt() ? new \DateTime($this->getStartedAt()) : null;
 
-        return \DateTime::createFromFormat('Y-m-d H:i:s', $startedAt);
     }
 
     /**
@@ -217,9 +216,7 @@ class GlobalChallenge extends ProxyObject
      */
     public function getEndedAtAsDateTimeObject()
     {
-        $endedAt = new \DateTime($this->getEndedAt());
-
-        return \DateTime::createFromFormat('Y-m-d H:i:s', $endedAt);
+        return null !== $this->getEndedAt() ? new \DateTime($this->getEndedAt()) : null;
     }
 
     /**
@@ -240,6 +237,14 @@ class GlobalChallenge extends ProxyObject
     public function isInProgress()
     {
         return self::STATE_CURRENT === $this->getState();
+    }
+
+    /**
+     * @return float between 0 and 100
+     */
+    public function getProgress()
+    {
+        return 100 * $this->getResult() / $this->getTarget();
     }
 
     /**

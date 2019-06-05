@@ -234,6 +234,79 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
             ));
     }
 
+    /**
+     * @throws ClientHydraException
+     */
+    public function getUserTags(string $userId): array
+    {
+        try {
+            return $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/users/%s/tags', $userId)
+            )->getContent();
+        } catch (ClientHydraException $e) {
+            return [];
+        }
+    }
+
+
+    public function getUsersGlobalChallenges(string $ldid, string $country, string $orderStartedAt = 'DESC', bool $active = true)
+    {
+        // todo : waiting ld2 dev
+        // die
+
+        return json_decode('{
+            "globalChallenge": {
+                "id": "eu29f59bcf725806c915",
+                "targetDatatype": "/v2/datatypes/5",
+                "translatedBeforeMessage": null,
+                "translatedCurrentMessage": null,
+                "translatedAfterMessage": null,
+                "publishDate": null,
+                "startedAt": "2019-05-28T08:00:00+00:00",
+                "endedAt": null,
+                "target": 10000,
+                "result": 2000,
+                "imageUrl": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/training-pace-calculator-1534874738.jpg",
+                "translatedNames": {
+                        "de": "Gleitschirmfliegen",
+                    "en": "Paragliding",
+                    "es": "Parapente",
+                    "fr": "Parapente",
+                    "hu": "Siklóernyős",
+                    "it": "Parapendio",
+                    "nl": "Paragliding",
+                    "pl": "Paralotniarstwo",
+                    "pt": "Parapente",
+                    "ru": "Параплан",
+                    "zh": "滑翔伞"
+                },
+                "active": true,
+                "createdAt": "2019-05-28T08:34:55+00:00",
+                "updatedAt": "2019-05-28T09:07:26+00:00",
+                "sport": null,
+                "country": "fr"
+            },
+            "userContribution": 0,
+            "averageContribution": 0
+        }', true);
+
+
+        $filters = [
+            'ldid' => $ldid,
+            'country' => $country,
+            'order[startedAt]' => $orderStartedAt,
+            'active' => $active
+        ];
+
+        return $this->getAdapter()->makeRequest(
+            'GET',
+            \sprintf('/v2/users/%s/global_challenge%s', $ldid, $this->getUrlFilters($filters))
+        )->getContent();
+    }
+    
+    /* ------ */
+
     private function getUrlFilters(?array $filters)
     {
         $urlFilters = '';
@@ -245,20 +318,5 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         }
 
         return $urlFilters;
-    }
-
-    /**
-     * @throws ClientHydraException
-     */
-    public function getUserTags(string $userId): array
-    {
-        try {
-            return $this->getAdapter()->makeRequest(
-                    'GET',
-                    \sprintf('/v2/users/%s/tags', $userId)
-                )->getContent();
-        } catch (ClientHydraException $e) {
-            return [];
-        }
     }
 }
