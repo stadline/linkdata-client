@@ -31,10 +31,6 @@ class Configuration implements ConfigurationInterface
                 ->cannotBeEmpty()
                 ->defaultValue('Stadline\LinkdataClient\Linkdata\Entity')
                 ->end()
-                ->integerNode('max_result_per_page')
-                ->info('Max result per page.')
-                ->defaultValue(30)
-                ->end()
             ->end()
         ;
 

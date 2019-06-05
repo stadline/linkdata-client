@@ -210,6 +210,33 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
             return $object;
         }
     }
+    public function getActivityTCX(string $activityId): string
+    {
+        try {
+            return $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/activities/%s.%s', $activityId, 'tcx')
+            )->getContent();
+        } catch (ClientHydraException $e) {
+            return '';
+        }
+    }
+
+    public function postActivityTCX($gpxString): Activity
+    {
+        $object = $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'POST',
+                \sprintf('/v2/activities'),
+                ['Content-Type' => 'application/tcx+xml'],
+                $gpxString
+            )
+        );
+
+        if ($object instanceof Activity) {
+            return $object;
+        }
+    }
 
     /**
      * @throws ClientHydraException
