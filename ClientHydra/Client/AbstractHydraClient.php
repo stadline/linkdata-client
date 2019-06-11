@@ -89,6 +89,11 @@ abstract class AbstractHydraClient
         return $proxyObject;
     }
 
+    protected function getIriFromObject(ProxyObject $proxyObject): ?string
+    {
+        return $this->iriConverter->getIriFromObject($proxyObject);
+    }
+
     /**
      * @return $className
      */

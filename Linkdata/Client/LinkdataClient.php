@@ -8,6 +8,7 @@ use Stadline\LinkdataClient\ClientHydra\Client\AbstractHydraClient;
 use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
+use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\Linkdata\Entity\Activity;
 use Stadline\LinkdataClient\Linkdata\Entity\Brand;
 use Stadline\LinkdataClient\Linkdata\Entity\Datatype;
@@ -55,7 +56,6 @@ use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
  * @method Job                 putJob(Job $job, array $options = [])
  * @method User                getUser(string $id, array $options = [])
  * @method ProxyCollection     getUsers(array $options = [])
- * @method ProxyCollection     getUserStat(string $id, array $options = [])
  * @method User                putUser(User $user, array $options = [])
  * @method User                postUser(User $user, array $options = [])
  * @method void                deleteUser(string $id, array $options = [])
@@ -210,6 +210,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
             return $object;
         }
     }
+
     public function getActivityTCX(string $activityId): string
     {
         try {
@@ -282,48 +283,48 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         // todo : waiting ld2 dev
         // die
 
-        return json_decode('{
-            "globalChallenge": {
-                "id": "eu29f59bcf725806c915",
-                "targetDatatype": "/v2/datatypes/5",
-                "translatedBeforeMessage": null,
-                "translatedCurrentMessage": null,
-                "translatedAfterMessage": null,
-                "publishDate": null,
-                "startedAt": "2019-05-28T08:00:00+00:00",
-                "endedAt": null,
-                "target": 10000,
-                "result": 2000,
-                "imageUrl": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/training-pace-calculator-1534874738.jpg",
-                "translatedNames": {
-                        "de": "Gleitschirmfliegen",
-                    "en": "Paragliding",
-                    "es": "Parapente",
-                    "fr": "Parapente",
-                    "hu": "Siklóernyős",
-                    "it": "Parapendio",
-                    "nl": "Paragliding",
-                    "pl": "Paralotniarstwo",
-                    "pt": "Parapente",
-                    "ru": "Параплан",
-                    "zh": "滑翔伞"
-                },
-                "active": true,
-                "createdAt": "2019-05-28T08:34:55+00:00",
-                "updatedAt": "2019-05-28T09:07:26+00:00",
-                "sport": null,
-                "country": "fr"
-            },
-            "userContribution": 0,
-            "averageContribution": 0
-        }', true);
+        #return json_decode('{
+        #    "globalChallenge": {
+        #        "id": "eu29f59bcf725806c915",
+        #        "targetDatatype": "/v2/datatypes/5",
+        #        "translatedBeforeMessage": null,
+        #        "translatedCurrentMessage": null,
+        #        "translatedAfterMessage": null,
+        #        "publishDate": null,
+        #        "startedAt": "2019-05-28T08:00:00+00:00",
+        #        "endedAt": null,
+        #        "target": 10000,
+        #        "result": 2000,
+        #        "imageUrl": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/training-pace-calculator-1534874738.jpg",
+        #        "translatedNames": {
+        #                "de": "Gleitschirmfliegen",
+        #            "en": "Paragliding",
+        #            "es": "Parapente",
+        #            "fr": "Parapente",
+        #            "hu": "Siklóernyős",
+        #            "it": "Parapendio",
+        #            "nl": "Paragliding",
+        #            "pl": "Paralotniarstwo",
+        #            "pt": "Parapente",
+        #            "ru": "Параплан",
+        #            "zh": "滑翔伞"
+        #        },
+        #        "active": true,
+        #        "createdAt": "2019-05-28T08:34:55+00:00",
+        #        "updatedAt": "2019-05-28T09:07:26+00:00",
+        #        "sport": null,
+        #        "country": "fr"
+        #    },
+        #    "userContribution": 0,
+        #    "averageContribution": 0
+        #}', true);
 
 
         $filters = [
             'ldid' => $ldid,
             'country' => $country,
             'order[startedAt]' => $orderStartedAt,
-            'active' => $active
+            'active' => $active,
         ];
 
         return $this->getAdapter()->makeRequest(
@@ -331,9 +332,40 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
             \sprintf('/v2/users/%s/global_challenge%s', $ldid, $this->getUrlFilters($filters))
         )->getContent();
     }
-    
+
+    public function getFriendActivities(string $friendLdid, ?array $filters)
+    {
+        return $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/friends/%s/activities%s', $friendLdid, $this->formatFiltersForUrl($filters))
+            ));
+    }
+
+    public function getFriendActivity(string $friendLdid, string $activityId)
+    {
+        return $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/friends/%s/activities/%s', $friendLdid, $activityId)
+            ));
+    }
+
+    public function getFriendStatistics(string $friendLdid)
+    {
+        return
+            $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/friends/%s/stats', $friendLdid)
+            )->getContent();
+    }
+
+
     /* ------ */
 
+    /**
+     * @deprecated replace by formatFiltersForUrl
+     */
     private function getUrlFilters(?array $filters)
     {
         $urlFilters = '';
@@ -345,5 +377,31 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         }
 
         return $urlFilters;
+    }
+
+    private function formatFiltersForUrl(?array $filters)
+    {
+        $response = '';
+        if (null !== $filters && !empty($filters)) {
+            $response = '?';
+            foreach ($filters as $key => $filter) {
+                if ($filter instanceof ProxyObject) {
+                    $filter = $this->getIriFromObject($filter);
+                    $response .= \sprintf('%s=%s&', $key, $filter);
+                } elseif (\is_array($filter)) {
+                    foreach ($filter as $arrayVal) {
+                        $response .= \sprintf('%s[]=%s&', $key, $arrayVal);
+                    }
+                } elseif (null === $filter) {
+                    $response .= \sprintf('%s&', $key);
+                } else {
+                    $response .= \sprintf('%s=%s&', $key, $filter);
+                }
+            }
+
+            $response = \substr($response, 0, -1);
+        }
+
+        return $response;
     }
 }
