@@ -93,6 +93,7 @@ class Sport extends ProxyObject
     public const COURSE_A_PIED_SUR_ROUTE = 123;
     public const COURSE_A_PIED_EN_NATURE = 124;
     public const CROSS = 125;
+    public const CROSS_TRAINING = 404;
     public const DIX_KM = 132;
     public const SEMI_MARATHON = 133;
     public const MARATHON = 134;
@@ -119,7 +120,6 @@ class Sport extends ProxyObject
     public const ZUMBA = 403;
 
     protected static $matchingIcons = [
-//        self::COURSE_D_ORIENTATION => self::COURSE_D_ORIENTATION,
         self::HOCKEY => self::HOCKEY_SUR_GLACE,
         self::SKI_ALPIN => self::SKI,
         self::ALPINISME => self::ESCALADE,
