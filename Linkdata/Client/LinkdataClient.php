@@ -144,7 +144,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/user_measures/%s/current', $userId)
+                \sprintf('/v2/users/%s/current_user_measures', $userId)
             )
         );
     }
@@ -258,7 +258,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/user_records/%s/current%s', $id, $this->getUrlFilters($filters))
+                \sprintf('/v2/users/%s/current_user_records%s', $id, $this->getUrlFilters($filters))
             ));
     }
 
