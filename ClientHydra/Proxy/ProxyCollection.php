@@ -65,7 +65,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
         $totalHydratedElements = 0;
         $lastHydratedElementsNumber = null;
-        while ($this->isHydratationRequired($neededPosition) && ($lastHydratedElementsNumber > 0 || null === $lastHydratedElementsNumber)) {
+        do {
             $requestResponse = $this->hydraClient->getAdapter()->makeRequest(
                 'GET',
                 $this->nextPageUri,
@@ -80,7 +80,10 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
             $lastHydratedElementsNumber = $this->_refresh($requestResponse->getContent());
             $totalHydratedElements += $lastHydratedElementsNumber;
-        }
+            if (!$this->isHydratationFinished() && $lastHydratedElementsNumber < 1) {
+                throw new \RuntimeException(\sprintf('Unknown error : received %d elements only but hydratation not finished', $lastHydratedElementsNumber));
+            }
+        } while ($this->isHydratationRequired($neededPosition));
 
         return $totalHydratedElements;
     }
