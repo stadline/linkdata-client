@@ -137,6 +137,10 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             return false;
         }
 
+        if ('[]' === substr($type, -2)) {
+            return false;
+        }
+
         return (new \ReflectionClass($type))->isSubclassOf(ProxyObject::class) && \is_array($data) && HydraParser::isHydraObjectResponse($data);
     }
 }

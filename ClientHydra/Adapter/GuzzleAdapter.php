@@ -32,7 +32,7 @@ class GuzzleAdapter implements AdapterInterface
     /**
      * @throws RequestException
      */
-    public function makeRequest(string $method, string $uri, array $headers = [], string $body = null, bool $cacheEnable = false): ResponseInterface
+    public function makeRequest(string $method, string $uri, array $headers = [], string $body = null, bool $cacheEnable = true): ResponseInterface
     {
         $headers = \array_merge($this->defaultHeaders, $headers);
 

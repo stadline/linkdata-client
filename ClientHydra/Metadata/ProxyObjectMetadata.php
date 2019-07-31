@@ -17,17 +17,36 @@ class ProxyObjectMetadata
 
     private $class;
     private $properties = [];
-    private $cache;
+    private $metadataCache;
+    private $cacheConfig = [
+        'enabled' => false,
+        'public' => false,
+        'ttl' => 3600
+    ];
 
     public function __construct($class)
     {
         $this->class = $class;
-        $this->resetCache();
+        $this->resetMetadataCache();
     }
 
     public function getClass()
     {
         return $this->class;
+    }
+
+    public function getCacheConfig(): array
+    {
+        return $this->cacheConfig;
+    }
+
+    public function setCacheConfig(bool $enabled = false, int $ttl = 3600, bool $public = false):void
+    {
+        $this->cacheConfig = [
+            'enabled' => $enabled,
+            'public' => $public,
+            'ttl' => $ttl
+        ];
     }
 
     public function getProperties(): array
@@ -49,32 +68,32 @@ class ProxyObjectMetadata
             $this->properties[$name]['isProxyObject'] = true;
         }
 
-        $this->resetCache();
+        $this->resetMetadataCache();
     }
 
     public function getPropertiesNameByTypes(string $type): array
     {
-        if (!isset($this->cache['getPropertiesNameByTypes'][$type])) {
-            $this->cache['getPropertiesNameByTypes'][$type] = \array_keys(\array_filter($this->properties, function ($elt) use ($type) {
+        if (!isset($this->metadataCache['getPropertiesNameByTypes'][$type])) {
+            $this->metadataCache['getPropertiesNameByTypes'][$type] = \array_keys(\array_filter($this->properties, function ($elt) use ($type) {
                 return $elt['type'] === $type || (ProxyObject::class === $type && true === ($elt['isProxyObject'] ?? false));
             }));
         }
 
-        return $this->cache['getPropertiesNameByTypes'][$type];
+        return $this->metadataCache['getPropertiesNameByTypes'][$type];
     }
 
     public function testPropertyType(string $property, string $type): bool
     {
-        if (!isset($this->cache['testPropertyType'][$property.':'.$type])) {
-            $this->cache['testPropertyType'][$property.':'.$type] = \in_array($property, $this->getPropertiesNameByTypes($type), true);
+        if (!isset($this->metadataCache['testPropertyType'][$property.':'.$type])) {
+            $this->metadataCache['testPropertyType'][$property.':'.$type] = \in_array($property, $this->getPropertiesNameByTypes($type), true);
         }
 
-        return $this->cache['testPropertyType'][$property.':'.$type];
+        return $this->metadataCache['testPropertyType'][$property.':'.$type];
     }
 
-    private function resetCache(): void
+    private function resetMetadataCache(): void
     {
-        $this->cache = [
+        $this->metadataCache = [
             'getPropertiesNameByTypes' => [],
             'testPropertyType' => [],
         ];

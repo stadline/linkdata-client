@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Metadata;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\CachedReader;
+use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
 use ReflectionMethod;
+use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Doctrine\Common\Cache\ApcuCache;
 
 class MetadataManager
 {
@@ -14,9 +19,17 @@ class MetadataManager
     private $entityNamespace;
     private $proxyObjectMetadata = [];
 
+    /** @var Reader */
+    private $reader;
+
     public function __construct(string $entityNamespace)
     {
         $this->entityNamespace = $entityNamespace;
+
+        $this->reader = new CachedReader(
+            new AnnotationReader(),
+            new ApcuCache()
+        );
     }
 
     public function getClassMetadatas(): array
@@ -36,8 +49,17 @@ class MetadataManager
     private function parseClassMetadata(string $class): void
     {
         $metadata = new ProxyObjectMetadata($class);
-
         $reflexionClass = new ReflectionClass($class);
+
+        // cache
+        if (null !== ($cacheAnnotation = $this->reader->getClassAnnotation($reflexionClass, Cache::class))) {
+            /** @var Cache $cacheAnnotation */
+            $metadata->setCacheConfig(
+                true,
+                $cacheAnnotation->ttl,
+                $cacheAnnotation->public
+            );
+        }
 
         // search in properties
         foreach ($reflexionClass->getProperties() as $property) {
