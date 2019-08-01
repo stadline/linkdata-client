@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
+use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @Cache(
+ *     public=true,
+ *     ttl=3600,
+ * )
+ *
  * @method int       getId()
  * @method void      setId(int $id)
  * @method array     getTranslatedNames()
@@ -119,11 +125,11 @@ class Sport extends ProxyObject
     public const VTT_ALL_MOUNTAIN = 394;
     public const ZUMBA = 403;
 
-    protected static $matchingIcons = [
+    protected const MATCHING_ICONS = [
         self::HOCKEY => self::HOCKEY_SUR_GLACE,
         self::SKI_ALPIN => self::SKI,
         self::ALPINISME => self::ESCALADE,
-        self::MARCHE => self::MARCHE_NORDIQUE
+        self::MARCHE => self::MARCHE_NORDIQUE,
     ];
 
     /**
@@ -174,10 +180,11 @@ class Sport extends ProxyObject
 
     public static function getIcon($id): string
     {
-        $id = (int)$id;
-        if (isset(self::$matchingIcons[$id])) {
-            return "sports" . self::$matchingIcons[$id];
+        $id = (int) $id;
+        if (isset(self::MATCHING_ICONS[$id])) {
+            return 'sports'.self::MATCHING_ICONS[$id];
         }
-        return "sports" . $id;
+
+        return 'sports'.$id;
     }
 }

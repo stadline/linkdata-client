@@ -56,7 +56,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void                 setAvailableDatatypes(array $availableDatatypes)
  * @method array                getLocations()
  * @method void                 setLocations(array $locations)
- * @method array                getDatastream()
  * @method void                 setDatastream(array $datastream)
  * @method \DateTime            getCreatedAt()
  * @method void                 setCreatedAt(\DateTime $createdAt)

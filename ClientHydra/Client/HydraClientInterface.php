@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
-use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
+use Stadline\LinkdataClient\ClientHydra\Adapter\HttpAdapterInterface;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 
@@ -22,5 +22,5 @@ interface HydraClientInterface
 
     public function postObject(ProxyObject $object): ProxyObject;
 
-    public function getAdapter(): AdapterInterface;
+    public function getAdapter(): HttpAdapterInterface;
 }

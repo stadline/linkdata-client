@@ -43,7 +43,7 @@ abstract class ProxyObject
     {
         $this->_isHydrating = true;
         foreach ($data as $k => $v) {
-            if (false === $overrideAlreadyHydratedFields && true === ($this->_hydratedProperties[$k] ?? false) && '@' !== substr($k, 0, 1)) {
+            if (false === $overrideAlreadyHydratedFields && true === ($this->_hydratedProperties[$k] ?? false) && '@' !== \substr($k, 0, 1)) {
                 unset($data[$k]);
             }
             $this->_hydratedProperties[$k] = true;

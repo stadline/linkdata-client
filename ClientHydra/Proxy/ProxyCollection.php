@@ -18,14 +18,17 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
     /* Internal metadata */
     private $currentIteratorPosition;
     private $nextPageUri;
-    private $cacheEnable;
+    private $cacheEnable = true;
+    private $autoHydrateEnable = true;
 
     public function __construct(
         HydraClientInterface $hydraClient,
         array $initialData,
-        bool $cacheEnable = true
+        bool $cacheEnable = true,
+        bool $autoHydrateEnable = true
     ) {
         $this->cacheEnable = $cacheEnable;
+        $this->autoHydrateEnable = $autoHydrateEnable;
         $this->hydraClient = $hydraClient;
         $this->objects = [];
         $this->currentIteratorPosition = self::INITAL_CURSOR_POSITION;
@@ -90,6 +93,13 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
     private function _refresh(array $data): int
     {
+        // Set next page uri
+        if (null !== ($data['hydra:view']['hydra:next'] ?? null)) {
+            $this->nextPageUri = $data['hydra:view']['hydra:next'];
+        } else {
+            $this->nextPageUri = null;
+        }
+
         // Members
         if (isset($data['hydra:member'])) {
             foreach ($data['hydra:member'] as $member) {
@@ -97,13 +107,17 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
                 $object->_refresh($member);
                 $this->objects[] = $object;
             }
-        }
 
-        // Update metadata
-        if (null !== ($data['hydra:view']['hydra:next'] ?? null)) {
-            $this->nextPageUri = $data['hydra:view']['hydra:next'];
-        } else {
-            $this->nextPageUri = null;
+            if (true === $this->autoHydrateEnable && null !== ($data['hydra:view']['hydra:next'] ?? null)) {
+                $this->nextPageUri = $data['hydra:view']['hydra:next'];
+            } else {
+                $this->nextPageUri = null;
+            }
+
+            // remove next page if autohydrate disable
+            if (false === $this->autoHydrateEnable) {
+                $this->nextPageUri = null;
+            }
         }
 
         // return number of added elements

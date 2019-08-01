@@ -206,7 +206,6 @@ class GlobalChallenge extends ProxyObject
     public function getStartedAtAsDateTimeObject()
     {
         return null !== $this->getStartedAt() ? new \DateTime($this->getStartedAt()) : null;
-
     }
 
     /**

@@ -10,19 +10,30 @@ use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\Linkdata\Entity\Activity;
+use Stadline\LinkdataClient\Linkdata\Entity\ActivityCalculation;
 use Stadline\LinkdataClient\Linkdata\Entity\Brand;
+use Stadline\LinkdataClient\Linkdata\Entity\Connector;
 use Stadline\LinkdataClient\Linkdata\Entity\Datatype;
 use Stadline\LinkdataClient\Linkdata\Entity\DeviceModel;
+use Stadline\LinkdataClient\Linkdata\Entity\DeviceNotification;
+use Stadline\LinkdataClient\Linkdata\Entity\Firmware;
 use Stadline\LinkdataClient\Linkdata\Entity\GlobalChallenge;
+use Stadline\LinkdataClient\Linkdata\Entity\PoiCategory;
+use Stadline\LinkdataClient\Linkdata\Entity\ShareActivity;
 use Stadline\LinkdataClient\Linkdata\Entity\ShareUser;
 use Stadline\LinkdataClient\Linkdata\Entity\Sport;
 use Stadline\LinkdataClient\Linkdata\Entity\StorageKey;
 use Stadline\LinkdataClient\Linkdata\Entity\Universe;
 use Stadline\LinkdataClient\Linkdata\Entity\User;
+use Stadline\LinkdataClient\Linkdata\Entity\UserAgreement;
 use Stadline\LinkdataClient\Linkdata\Entity\UserDevice;
 use Stadline\LinkdataClient\Linkdata\Entity\UserMeasure;
 use Stadline\LinkdataClient\Linkdata\Entity\UserMeasureGoal;
+use Stadline\LinkdataClient\Linkdata\Entity\UserPoi;
+use Stadline\LinkdataClient\Linkdata\Entity\UserProgram;
 use Stadline\LinkdataClient\Linkdata\Entity\UserRecord;
+use Stadline\LinkdataClient\Linkdata\Entity\UserRoute;
+use Stadline\LinkdataClient\Linkdata\Entity\UserSession;
 use Stadline\LinkdataClient\Linkdata\Entity\UserStorage;
 use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
 
@@ -315,7 +326,6 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
                 \sprintf('/v2/users/%s/global_challenges/%s/contributions', $userId, $globalChallengeId)
             )->getContent();
     }
-
 
     /* ------ */
 

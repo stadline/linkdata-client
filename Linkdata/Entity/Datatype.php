@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
+use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\Linkdata\Utils\RelatedValue;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @Cache(
+ *     public=true,
+ *     ttl=3600,
+ * )
+ *
  * @method int         getId()
  * @method void        setId(int $id)
  * @method null|string getUnit()

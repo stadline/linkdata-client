@@ -5,16 +5,20 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient" alias="linkdata_client.client" />
-        <service id="linkdata_client.adapter" alias="linkdata_client.adapter_guzzle" />
+        <service id="linkdata_client.client" alias="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient" />
+        <service id="linkdata_client.http_adapter" alias="linkdata_client.http_adapter.guzzle" />
+<!--        <service id="linkdata_client.cache_adapter" alias="linkdata_client.cache_adapter.array" />-->
 
-        <service id="linkdata_client.adapter_guzzle" class="Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter">
+        <service id="linkdata_client.cache_adapter.array" class="Symfony\Component\Cache\Adapter\ArrayAdapter" />
+
+        <service id="linkdata_client.http_adapter.guzzle" class="Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleHttpAdapter">
             <argument>%linkdata_client.base_url%</argument>
+            <argument type="service" id="linkdata_client.cache_adapter" />
             <argument>%kernel.debug%</argument>
         </service>
 
-        <service id="linkdata_client.client" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
-            <argument type="service" id="linkdata_client.adapter" />
+        <service id="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
+            <argument type="service" id="linkdata_client.http_adapter" />
             <argument type="service" id="linkdata_client.iri_converter" />
             <argument type="service" id="Symfony\Component\Serializer\SerializerInterface" />
             <argument type="service" id="linkdata_client.metadata_manager" />

@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\ClientHydra\Client;
 
 use Doctrine\Common\Inflector\Inflector;
-use Stadline\LinkdataClient\ClientHydra\Adapter\AdapterInterface;
+use Stadline\LinkdataClient\ClientHydra\Adapter\HttpAdapterInterface;
 use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
+use Stadline\LinkdataClient\ClientHydra\Adapter\Request;
 use Stadline\LinkdataClient\ClientHydra\Adapter\ResponseInterface;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Exception\FormatException;
@@ -19,23 +20,26 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractHydraClient
 {
+    private static $cache_initialized = false;
+
     private $adapter;
     private $iriConverter;
     private $serializer;
+    private $metadataManager;
 
     /** @var ProxyObject[] */
     private $objects = [];
 
     public function __construct(
-        AdapterInterface $adapter,
+        HttpAdapterInterface $adapter,
         IriConverter $iriConverter,
         SerializerInterface $serializer,
         MetadataManager $metadataManager
-    )
-    {
+    ) {
         $this->adapter = $adapter;
         $this->iriConverter = $iriConverter;
         $this->serializer = $serializer;
+        $this->metadataManager = $metadataManager;
 
         ProxyObject::_init(
             function (ProxyObject $proxyObject, $data): void {
@@ -45,10 +49,16 @@ abstract class AbstractHydraClient
                 ]);
             },
             function (ProxyObject $proxyObject): array {
-                $requestResponse = $this->getAdapter()->makeRequest(
+                $request = new Request(
                     'GET',
                     $this->iriConverter->getIriFromObject($proxyObject)
                 );
+                if (($metadata = $this->metadataManager->getClassMetadata(\get_class($proxyObject)))->isCacheEnable()) {
+                    $request->setCacheEnable(true);
+                    $request->setCacheScope($metadata->getCacheScope());
+                    $request->setCacheTTL($metadata->getCacheTTL());
+                }
+                $requestResponse = $this->getAdapter()->call($request);
 
                 if (!$requestResponse instanceof JsonResponse) {
                     throw new \RuntimeException('Cannot hydrate object with non json response');
@@ -61,6 +71,44 @@ abstract class AbstractHydraClient
             },
             $metadataManager
         );
+    }
+
+    public function cacheWarmUp(): void
+    {
+        if (self::$cache_initialized) {
+            return;
+        }
+        self::$cache_initialized = true;
+
+//        foreach ($this->) {
+//
+//        }
+
+//        // Check
+//        if ($this->cache->has('linkdataclient_public_sports')) {
+//            $collection = $this->serializer->deserialize(
+//                $this->cache->get('linkdataclient_public_sports'),
+//                'Stadline\LinkdataClient\Linkdata\Entity\Sport[]',
+//                'json'
+//            );
+//        } else {
+//            // Get sport collection from cache
+//            $collection = $this->getCollection(
+//                Sport::class,
+//                [],
+//                false,
+//                true
+//            );
+//            $data = $this->serializer->serialize($collection, 'json');
+//
+//            // save in cache
+//            var_dump($this->cache->set('linkdataclient_public_sports', $data));
+//
+//        }
+//
+//        foreach ($collection as $item) {
+//            $this->objects[$this->iriConverter->getIriFromObject($item)] = $item;
+//        }
     }
 
     public function contains($object): bool
@@ -138,8 +186,13 @@ abstract class AbstractHydraClient
         return $object;
     }
 
-    public function getCollection(string $classname, array $filters = [], bool $cacheEnable = true, bool $autoHydrate = false): ProxyCollection
-    {
+    public function getCollection(
+        string $classname,
+        array $filters = [],
+        bool $cacheEnable = true,
+        bool $loadAll = false,
+        bool $autoHydrateEnable = true
+    ): ProxyCollection {
         $collection = new ProxyCollection(
             $this,
             [
@@ -147,11 +200,13 @@ abstract class AbstractHydraClient
                     'hydra:next' => $this->iriConverter->generateCollectionUri($classname, $filters),
                 ],
             ],
-            $cacheEnable
+            $cacheEnable,
+            $autoHydrateEnable
         );
 
-        if ($autoHydrate) {
-            foreach($collection as $i) {}
+        if ($loadAll) {
+            foreach ($collection as $i) {
+            }
         }
 
         return $collection;
@@ -231,7 +286,7 @@ abstract class AbstractHydraClient
         return $object;
     }
 
-    public function getAdapter(): AdapterInterface
+    public function getAdapter(): HttpAdapterInterface
     {
         return $this->adapter;
     }
