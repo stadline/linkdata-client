@@ -23,4 +23,6 @@ interface HydraClientInterface
     public function postObject(ProxyObject $object): ProxyObject;
 
     public function getAdapter(): HttpAdapterInterface;
+
+    public function getProxyFromIri(string $iri, ?bool $autoHydrate = false): ?ProxyObject;
 }

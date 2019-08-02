@@ -6,6 +6,7 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 
 use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Utils\TranslatedPropertiesTrait;
 use Stadline\LinkdataClient\Linkdata\Utils\RelatedValue;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -36,6 +37,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Datatype extends ProxyObject
 {
+    use TranslatedPropertiesTrait;
+
     // commonly used datatype
     const HR_CURRENT = 1;
     const HR_MIN = 2;
@@ -258,24 +261,14 @@ class Datatype extends ProxyObject
      */
     public $updatedAt;
 
-    public function hasNameByLocale(string $locale): ?bool
-    {
-        return isset($this->getTranslatedNames()[$locale]) && !empty($this->getTranslatedNames()[$locale]);
-    }
-
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->getTranslatedNames()[$locale] : null;
-    }
-
-    public function hasDescriptionByLocale(string $locale): bool
-    {
-        return isset($this->getTranslatedDescriptions()[$locale]) && !empty($this->getTranslatedDescriptions()[$locale]);
+        return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
 
     public function getDescriptionByLocale(string $locale): ?string
     {
-        return $this->hasDescriptionByLocale($locale) ? $this->getTranslatedDescriptions()[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedDescriptions', $locale);
     }
 
     /**

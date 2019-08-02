@@ -6,6 +6,7 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 
 use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Utils\TranslatedPropertiesTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -29,6 +30,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Universe extends ProxyObject
 {
+    use TranslatedPropertiesTrait;
+
     /**
      * @var int
      * @Groups({"universe_norm"})
@@ -70,13 +73,8 @@ class Universe extends ProxyObject
         $this->sports = [];
     }
 
-    public function hasNameByLocale(string $locale): ?bool
-    {
-        return isset($this->getTranslatedNames()[$locale]) && !empty($this->getTranslatedNames()[$locale]);
-    }
-
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->getTranslatedNames()[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
 }

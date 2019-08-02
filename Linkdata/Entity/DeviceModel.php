@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Utils\TranslatedPropertiesTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -39,6 +40,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class DeviceModel extends ProxyObject
 {
+    use TranslatedPropertiesTrait;
+
     const ONCOACH = 1;
     const ONMOVE510710 = 7;
     const ONDAILY = 13;
@@ -150,13 +153,8 @@ class DeviceModel extends ProxyObject
      */
     public $updatedAt;
 
-    public function hasNameByLocale(string $locale): ?bool
-    {
-        return isset($this->getTranslatedNames()[$locale]) && !empty($this->getTranslatedNames()[$locale]);
-    }
-
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->getTranslatedNames()[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
 }

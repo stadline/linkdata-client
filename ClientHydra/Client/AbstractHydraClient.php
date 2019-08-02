@@ -18,14 +18,13 @@ use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
 
-abstract class AbstractHydraClient
+abstract class AbstractHydraClient implements HydraClientInterface
 {
     private static $cache_initialized = false;
 
     private $adapter;
     private $iriConverter;
     private $serializer;
-    private $metadataManager;
 
     /** @var ProxyObject[] */
     private $objects = [];
@@ -39,21 +38,22 @@ abstract class AbstractHydraClient
         $this->adapter = $adapter;
         $this->iriConverter = $iriConverter;
         $this->serializer = $serializer;
-        $this->metadataManager = $metadataManager;
 
         ProxyObject::_init(
+            // refresh
             function (ProxyObject $proxyObject, $data): void {
                 $this->serializer->deserialize(\json_encode($data), \get_class($proxyObject), 'json', [
                     'object_to_populate' => $proxyObject,
                     'groups' => [HydraParser::getDenormContext($data)],
                 ]);
             },
-            function (ProxyObject $proxyObject): array {
+            // getData
+            function (ProxyObject $proxyObject) use ($metadataManager): array {
                 $request = new Request(
                     'GET',
                     $this->iriConverter->getIriFromObject($proxyObject)
                 );
-                if (($metadata = $this->metadataManager->getClassMetadata(\get_class($proxyObject)))->isCacheEnable()) {
+                if (($metadata = $metadataManager->getClassMetadata(\get_class($proxyObject)))->isCacheEnable()) {
                     $request->setCacheEnable(true);
                     $request->setCacheScope($metadata->getCacheScope());
                     $request->setCacheTTL($metadata->getCacheTTL());
@@ -66,10 +66,38 @@ abstract class AbstractHydraClient
 
                 return $requestResponse->getContent();
             },
+            // getObject
             function ($className, $id) {
                 return $this->getObject($className, $id, false);
             },
+            // metadatamanager
             $metadataManager
+        );
+
+        ProxyCollection::_init(
+            // getData
+            function (?string $classname, string $uri) use ($metadataManager): array {
+                $request = new Request(
+                    'GET',
+                    $uri
+                );
+                if (null !== $classname && ($metadata = $metadataManager->getClassMetadata($classname))->isCacheEnable()) {
+                    $request->setCacheEnable(true);
+                    $request->setCacheScope($metadata->getCacheScope());
+                    $request->setCacheTTL($metadata->getCacheTTL());
+                }
+                $requestResponse = $this->getAdapter()->call($request);
+
+                if (!$requestResponse instanceof JsonResponse) {
+                    throw new \RuntimeException('Cannot hydrate object with non json response');
+                }
+
+                return $requestResponse->getContent();
+            },
+            // getProxyFromIri
+            function (string $iri): ?ProxyObject {
+                return $this->getProxyFromIri($iri);
+            }
         );
     }
 
@@ -79,36 +107,6 @@ abstract class AbstractHydraClient
             return;
         }
         self::$cache_initialized = true;
-
-//        foreach ($this->) {
-//
-//        }
-
-//        // Check
-//        if ($this->cache->has('linkdataclient_public_sports')) {
-//            $collection = $this->serializer->deserialize(
-//                $this->cache->get('linkdataclient_public_sports'),
-//                'Stadline\LinkdataClient\Linkdata\Entity\Sport[]',
-//                'json'
-//            );
-//        } else {
-//            // Get sport collection from cache
-//            $collection = $this->getCollection(
-//                Sport::class,
-//                [],
-//                false,
-//                true
-//            );
-//            $data = $this->serializer->serialize($collection, 'json');
-//
-//            // save in cache
-//            var_dump($this->cache->set('linkdataclient_public_sports', $data));
-//
-//        }
-//
-//        foreach ($collection as $item) {
-//            $this->objects[$this->iriConverter->getIriFromObject($item)] = $item;
-//        }
     }
 
     public function contains($object): bool
@@ -116,7 +114,7 @@ abstract class AbstractHydraClient
         return \in_array($object, $this->objects, true);
     }
 
-    protected function getProxyFromIri(string $iri, ?bool $autoHydrate = false): ?ProxyObject
+    public function getProxyFromIri(string $iri, ?bool $autoHydrate = false): ?ProxyObject
     {
         // check if object not already store
         if (!isset($this->objects[$iri])) {
@@ -165,10 +163,7 @@ abstract class AbstractHydraClient
 
         /* Collection case */
         if ('hydra:Collection' === $elt['@type']) {
-            return new ProxyCollection(
-                $this,
-                $elt
-            );
+            return new ProxyCollection(null, $elt);
         }
 
         /* Object case */
@@ -194,7 +189,7 @@ abstract class AbstractHydraClient
         bool $autoHydrateEnable = true
     ): ProxyCollection {
         $collection = new ProxyCollection(
-            $this,
+            $classname,
             [
                 'hydra:view' => [
                     'hydra:next' => $this->iriConverter->generateCollectionUri($classname, $filters),
@@ -303,7 +298,7 @@ abstract class AbstractHydraClient
         }
 
         $method = \strtolower($matches['method']);
-        $className = Inflector::singularize($matches['className']);
+        $className = $this->iriConverter->getEntityNamespace().'\\'.Inflector::singularize($matches['className']);
 
         switch ($method) {
             case 'get':

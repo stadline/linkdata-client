@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Utils\TranslatedPropertiesTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -21,6 +22,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class PoiCategory extends ProxyObject
 {
+    use TranslatedPropertiesTrait;
+
     /**
      * @var int
      * @Groups({"poi_category_norm"})
@@ -51,13 +54,8 @@ class PoiCategory extends ProxyObject
      */
     public $updatedAt;
 
-    public function hasNameByLocale(string $locale): ?bool
-    {
-        return isset($this->getTranslatedNames()[$locale]) && !empty($this->getTranslatedNames()[$locale]);
-    }
-
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->getTranslatedNames()[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
 }

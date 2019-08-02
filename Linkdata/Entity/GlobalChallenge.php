@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Utils\TranslatedPropertiesTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -41,6 +42,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class GlobalChallenge extends ProxyObject
 {
+    use TranslatedPropertiesTrait;
+
     const STATE_BEFORE = -1;
     const STATE_CURRENT = 0;
     const STATE_AFTER = 1;
@@ -135,44 +138,24 @@ class GlobalChallenge extends ProxyObject
      */
     public $updatedAt;
 
-    public function hasNameByLocale(string $locale): ?bool
-    {
-        return isset($this->getTranslatedNames()[$locale]) && !empty($this->getTranslatedNames()[$locale]);
-    }
-
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->getTranslatedNames()[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
 
-    public function hasBeforeMessageByLocale(string $locale): ?bool
+    public function getTranslatedBeforeMessageByLocale(string $locale): ?string
     {
-        return isset($this->getTranslatedBeforeMessage()[$locale]) && !empty($this->getTranslatedBeforeMessage()[$locale]);
+        return $this->getTranslatedPropertyByLocale('translatedBeforeMessage', $locale);
     }
 
-    public function getBeforeMessageByLocale(string $locale): ?string
+    public function getTranslatedCurrentMessageByLocale(string $locale): ?string
     {
-        return $this->hasBeforeMessageByLocale($locale) ? $this->getTranslatedBeforeMessage()[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedCurrentMessage', $locale);
     }
 
-    public function hasCurrentMessageByLocale(string $locale): ?bool
+    public function getTranslatedAfterMessageByLocale(string $locale): ?string
     {
-        return isset($this->getTranslatedCurrentMessage()[$locale]) && !empty($this->getTranslatedCurrentMessage()[$locale]);
-    }
-
-    public function getCurrentMessageByLocale(string $locale): ?string
-    {
-        return $this->hasCurrentMessageByLocale($locale) ? $this->getTranslatedCurrentMessage()[$locale] : null;
-    }
-
-    public function hasAfterMessageByLocale(string $locale): ?bool
-    {
-        return isset($this->getTranslatedAfterMessage()[$locale]) && !empty($this->getTranslatedAfterMessage()[$locale]);
-    }
-
-    public function getAfterMessageByLocale(string $locale): ?string
-    {
-        return $this->hasAfterMessageByLocale($locale) ? $this->getTranslatedAfterMessage()[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedAfterMessage', $locale);
     }
 
     /**

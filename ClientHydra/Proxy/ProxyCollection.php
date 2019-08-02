@@ -4,32 +4,43 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
-use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
-use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
-
 class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 {
+    public static function _init(
+        \Closure $getDataClosure,
+        \Closure $getProxyFromIri
+    ): void {
+        self::$_getData = $getDataClosure;
+        self::$_getProxyFromIri = $getProxyFromIri;
+    }
+
+    /** @var \Closure */
+    private static $_getData;
+    /** @var \Closure */
+    private static $_getProxyFromIri;
+
     private const INITAL_CURSOR_POSITION = 0;
 
     /** @var ProxyObject[] */
     private $objects;
-    private $hydraClient;
 
     /* Internal metadata */
     private $currentIteratorPosition;
     private $nextPageUri;
     private $cacheEnable = true;
     private $autoHydrateEnable = true;
+    private $classname;
 
     public function __construct(
-        HydraClientInterface $hydraClient,
+        ?string $classname,
         array $initialData,
         bool $cacheEnable = true,
         bool $autoHydrateEnable = true
     ) {
+        $this->classname = $classname;
         $this->cacheEnable = $cacheEnable;
         $this->autoHydrateEnable = $autoHydrateEnable;
-        $this->hydraClient = $hydraClient;
+
         $this->objects = [];
         $this->currentIteratorPosition = self::INITAL_CURSOR_POSITION;
 
@@ -68,20 +79,10 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
         $totalHydratedElements = 0;
         $lastHydratedElementsNumber = null;
+
         do {
-            $requestResponse = $this->hydraClient->getAdapter()->makeRequest(
-                'GET',
-                $this->nextPageUri,
-                [],
-                null,
-                $this->cacheEnable
-            );
-
-            if (!$requestResponse instanceof JsonResponse) {
-                throw new \RuntimeException('Cannot hydrate collection with non json response');
-            }
-
-            $lastHydratedElementsNumber = $this->_refresh($requestResponse->getContent());
+            $requestResponse = (self::$_getData)($this->classname, $this->nextPageUri);
+            $lastHydratedElementsNumber = $this->_refresh($requestResponse);
             $totalHydratedElements += $lastHydratedElementsNumber;
             if (!$this->isHydratationFinished() && $lastHydratedElementsNumber < 1) {
                 throw new \RuntimeException(\sprintf('Unknown error : received %d elements only but hydratation not finished', $lastHydratedElementsNumber));
@@ -103,7 +104,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
         // Members
         if (isset($data['hydra:member'])) {
             foreach ($data['hydra:member'] as $member) {
-                $object = $this->hydraClient->getProxyFromIri($member['@id']);
+                $object = (self::$_getProxyFromIri)($member['@id']);
                 $object->_refresh($member);
                 $this->objects[] = $object;
             }

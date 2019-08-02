@@ -6,6 +6,7 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 
 use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Utils\TranslatedPropertiesTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -29,6 +30,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Sport extends ProxyObject
 {
+    use TranslatedPropertiesTrait;
+
     public const ALPINISME = 153;
     public const AQUAGYM = 260;
     public const ARTS_MARTIAUX = 45;
@@ -168,14 +171,9 @@ class Sport extends ProxyObject
      */
     public $updatedAt;
 
-    public function hasNameByLocale(string $locale): ?bool
-    {
-        return isset($this->getTranslatedNames()[$locale]) && !empty($this->getTranslatedNames()[$locale]);
-    }
-
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->getTranslatedNames()[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
 
     public static function getIcon($id): string
