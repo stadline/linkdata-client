@@ -110,11 +110,13 @@ class IriConverter
                 $response .= \sprintf('%s=%s&', $key, $filter);
             } elseif (\is_array($filter)) {
                 foreach ($filter as $arrayVal) {
+                    $arrayVal = \is_string($arrayVal) ? \urlencode($arrayVal) : $arrayVal;
                     $response .= \sprintf('%s[]=%s&', $key, $arrayVal);
                 }
             } elseif (null === $filter) {
                 $response .= \sprintf('%s&', $key);
             } else {
+                $filter = \is_string($filter) ? \urlencode($filter) : $filter;
                 $response .= \sprintf('%s=%s&', $key, $filter);
             }
         }
