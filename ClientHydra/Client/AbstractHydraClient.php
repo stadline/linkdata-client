@@ -25,6 +25,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
     private $adapter;
     private $iriConverter;
     private $serializer;
+    private $metadataManager;
 
     /** @var ProxyObject[] */
     private $objects = [];
@@ -38,6 +39,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
         $this->adapter = $adapter;
         $this->iriConverter = $iriConverter;
         $this->serializer = $serializer;
+        $this->metadataManager = $metadataManager;
 
         ProxyObject::_init(
             // refresh
@@ -107,6 +109,23 @@ abstract class AbstractHydraClient implements HydraClientInterface
             return;
         }
         self::$cache_initialized = true;
+
+        $cacheData = [];
+        foreach ($this->metadataManager->getClassMetadatas() as $id => $classMetadata) {
+            if ($classMetadata->isCacheWarmup()) {
+                $cacheData[] = [
+                    'classname' => $classMetadata->getClass(),
+                    'ttl' => $classMetadata->getCacheTTL(),
+                    'fetchData' => function ($className) {
+                        $this->getCollection($className, [], false, true);
+                    }
+                ];
+            }
+        }
+
+        foreach ($this->getAdapter()->warmupCache($cacheData) as $data) {
+            $this->parseResponse($data);
+        }
     }
 
     public function contains($object): bool
@@ -116,6 +135,8 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
     public function getProxyFromIri(string $iri, ?bool $autoHydrate = false): ?ProxyObject
     {
+        $this->cacheWarmUp();
+
         // check if object not already store
         if (!isset($this->objects[$iri])) {
             $className = $this->iriConverter->getClassnameFromIri($iri);
@@ -188,6 +209,8 @@ abstract class AbstractHydraClient implements HydraClientInterface
         bool $loadAll = false,
         bool $autoHydrateEnable = true
     ): ProxyCollection {
+        $this->cacheWarmUp();
+
         $collection = new ProxyCollection(
             $classname,
             [
@@ -250,10 +273,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
             throw new \RuntimeException('Invalid input for deleteObject method');
         }
 
-        $this->adapter->makeRequest(
-            'DELETE',
-            $iri
-        );
+        $this->adapter->call(new Request('DELETE', $iri));
 
         unset($this->objects[$iri]);
     }

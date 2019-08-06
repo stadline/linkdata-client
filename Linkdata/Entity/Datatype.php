@@ -14,6 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @Cache(
  *     public=true,
  *     ttl=3600,
+ *     warmup=true,
  * )
  *
  * @method int         getId()

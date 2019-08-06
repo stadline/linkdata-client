@@ -25,4 +25,6 @@ interface HydraClientInterface
     public function getAdapter(): HttpAdapterInterface;
 
     public function getProxyFromIri(string $iri, ?bool $autoHydrate = false): ?ProxyObject;
+
+    public function cacheWarmUp(): void;
 }

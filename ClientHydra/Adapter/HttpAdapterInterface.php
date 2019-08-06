@@ -21,5 +21,7 @@ interface HttpAdapterInterface
 
     public function call(Request $request, bool $useCache = true): ResponseInterface;
 
+    public function warmupCache(array $cacheData): array;
+
     public function getDebugData(): array;
 }

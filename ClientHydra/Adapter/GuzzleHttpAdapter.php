@@ -9,11 +9,14 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use Psr\Cache\CacheItemPoolInterface;
 use Stadline\LinkdataClient\ClientHydra\Exception\RequestException;
+use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\CacheItem;
 
 class GuzzleHttpAdapter implements HttpAdapterInterface
 {
+    private const WARMUP_CACHE_TTL = 3600;
+
     private $client;
     private $baseUrl;
     private $defaultHeaders = [
@@ -32,6 +35,9 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     private $debugData;
     private $debugEnabled;
 
+    private $isRecordingCacheWarmup = false;
+    private $cacheWarmupData = [];
+
     public function __construct(string $baseUrl, CacheItemPoolInterface $persistantCache, $debugEnabled = false)
     {
         $this->baseUrl = $baseUrl;
@@ -43,6 +49,36 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         $this->persistantCache = $persistantCache;
     }
 
+    public function warmupCache(array $cacheData): array
+    {
+        try {
+
+            $cacheKey = 'hydraclient-cache-warmup';
+            if ($this->persistantCache->hasItem($cacheKey)) {
+                $this->isRecordingCacheWarmup = true;
+                $this->cacheWarmupData = $this->persistantCache->getItem($cacheKey)->get();
+                $this->isRecordingCacheWarmup = false;
+            } else {
+                $this->cacheWarmupData = [];
+                $this->isRecordingCacheWarmup = true;
+                // get all data
+                foreach ($cacheData as $i) {
+                    $i['fetchData']($i['classname']);
+                }
+                $this->isRecordingCacheWarmup = false;
+                $cacheItem = $this->persistantCache->getItem($cacheKey);
+                $cacheItem->expiresAfter(self::WARMUP_CACHE_TTL);
+                $cacheItem->set($this->cacheWarmupData);
+                if (!$this->persistantCache->save($cacheItem)) {
+                    throw new \RuntimeException('cannot save to persistantCache cache');
+                }
+            }
+            return $this->cacheWarmupData;
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
     /**
      * @deprecated
      */
@@ -52,7 +88,8 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         array $headers = [],
         string $body = null,
         bool $useCache = true
-    ): ResponseInterface {
+    ): ResponseInterface
+    {
         $request = new Request($method, $uri, $headers, $body);
 
         return $this->call($request, $useCache);
@@ -123,9 +160,9 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
                     new \GuzzleHttp\Psr7\Request($request->getMethod(), $request->getUri(), $request->getHeaders(), $request->getBody())
                 );
                 $arrayResponse = [
-                  'statusCode' => $response->getStatusCode(),
-                  'body' => (string) $response->getBody(),
-                  'contentType' => $response->getHeader('Content-Type')[0] ?? 'unknown',
+                    'statusCode' => $response->getStatusCode(),
+                    'body' => (string)$response->getBody(),
+                    'contentType' => $response->getHeader('Content-Type')[0] ?? 'unknown',
                 ];
 
                 if ($useCache) {
@@ -159,7 +196,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
 
         if (null !== $e) {
             // User not on available for now, create it
-            if (442 === $e->getCode()) {
+            if (442 === $e->getCode() && false === $this->isRecordingCacheWarmup) {
                 $this->call(new Request('GET', '/v2/me'));
 
                 return $this->call($request, $useCache);
@@ -176,9 +213,16 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         $contentType = \explode(';', $contentType)[0];
 
         if (\in_array($contentType, ['application/ld+json', 'application/json'], true)) {
-            return new JsonResponse($arrayResponse['statusCode'], (string) $arrayResponse['body']);
+            $response = new JsonResponse($arrayResponse['statusCode'], (string)$arrayResponse['body']);
+        } else {
+            $response = new RawResponse($arrayResponse['statusCode'], $contentType, (string)$arrayResponse['body']);
         }
 
-        return new RawResponse($arrayResponse['statusCode'], $contentType, (string) $arrayResponse['body']);
+        // cache warmup
+        if ($this->isRecordingCacheWarmup) {
+            $this->cacheWarmupData[] = $response;
+        }
+
+        return $response;
     }
 }

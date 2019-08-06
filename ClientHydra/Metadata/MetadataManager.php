@@ -13,6 +13,8 @@ use ReflectionMethod;
 use Stadline\LinkdataClient\ClientHydra\Adapter\Request;
 use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\Linkdata\Entity\Datatype;
+use Stadline\LinkdataClient\Linkdata\Entity\Sport;
 
 class MetadataManager
 {
@@ -31,8 +33,13 @@ class MetadataManager
             new AnnotationReader(),
             new ApcuCache()
         );
+
+        // @todo : replace by file parsing
+        $this->parseClassMetadata(Sport::class);
+        $this->parseClassMetadata(Datatype::class);
     }
 
+    /** @return array|ProxyObjectMetadata[] */
     public function getClassMetadatas(): array
     {
         return $this->proxyObjectMetadata;
@@ -58,6 +65,7 @@ class MetadataManager
             $metadata->setCacheEnable(true);
             $metadata->setCacheScope($cacheAnnotation->public ? Request::CACHE_SCOPE_PUBLIC : Request::CACHE_SCOPE_PRIVATE);
             $metadata->setCacheTTL($cacheAnnotation->ttl);
+            $metadata->setCacheWarmup($cacheAnnotation->warmup);
         }
 
         // search in properties

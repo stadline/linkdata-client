@@ -22,6 +22,7 @@ class ProxyObjectMetadata
     private $cacheEnable = false;
     private $cacheScope = Request::CACHE_SCOPE_PRIVATE;
     private $cacheTTL = 1;
+    private $cacheWarmup = false;
 
     public function __construct($class)
     {
@@ -62,6 +63,16 @@ class ProxyObjectMetadata
     public function setCacheTTL(int $cacheTTL): void
     {
         $this->cacheTTL = $cacheTTL;
+    }
+
+    public function isCacheWarmup(): bool
+    {
+        return $this->cacheEnable && $this->cacheWarmup;
+    }
+
+    public function setCacheWarmup(bool $cacheWarmup): void
+    {
+        $this->cacheWarmup = $cacheWarmup;
     }
 
     public function getProperties(): array
