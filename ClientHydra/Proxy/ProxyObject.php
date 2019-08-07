@@ -192,6 +192,11 @@ abstract class ProxyObject
             return $this->{$property};
         }
 
+        // search if property exists
+        if (null === $this->_getMetadata()->getProperty($property)) {
+            throw new \RuntimeException('Try to get undefined property %s::%s', \get_class($this), $property);
+        }
+
         // Object not hydrated : autohydrate
         if (true !== ($this->_hydratedProperties[$property] ?? null)) {
             $this->_hydrate();

@@ -22,10 +22,10 @@ abstract class AbstractHydraClient implements HydraClientInterface
 {
     private static $cache_initialized = false;
 
-    private $adapter;
-    private $iriConverter;
-    private $serializer;
-    private $metadataManager;
+    protected $adapter;
+    protected $iriConverter;
+    protected $serializer;
+    protected $metadataManager;
 
     /** @var ProxyObject[] */
     private $objects = [];
@@ -116,9 +116,9 @@ abstract class AbstractHydraClient implements HydraClientInterface
                 $cacheData[] = [
                     'classname' => $classMetadata->getClass(),
                     'ttl' => $classMetadata->getCacheTTL(),
-                    'fetchData' => function ($className) {
+                    'fetchData' => function ($className): void {
                         $this->getCollection($className, [], false, true);
-                    }
+                    },
                 ];
             }
         }

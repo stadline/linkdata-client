@@ -216,4 +216,9 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
         return \count($this->objects);
     }
+
+    public function setAutoHydrateEnable(bool $autoHydrateEnable): void
+    {
+        $this->autoHydrateEnable = $autoHydrateEnable;
+    }
 }

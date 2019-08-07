@@ -143,17 +143,17 @@ class GlobalChallenge extends ProxyObject
         return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
 
-    public function getTranslatedBeforeMessageByLocale(string $locale): ?string
+    public function getBeforeMessageByLocale(string $locale): ?string
     {
         return $this->getTranslatedPropertyByLocale('translatedBeforeMessage', $locale);
     }
 
-    public function getTranslatedCurrentMessageByLocale(string $locale): ?string
+    public function getCurrentMessageByLocale(string $locale): ?string
     {
         return $this->getTranslatedPropertyByLocale('translatedCurrentMessage', $locale);
     }
 
-    public function getTranslatedAfterMessageByLocale(string $locale): ?string
+    public function getAfterMessageByLocale(string $locale): ?string
     {
         return $this->getTranslatedPropertyByLocale('translatedAfterMessage', $locale);
     }

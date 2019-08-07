@@ -191,10 +191,10 @@ class Activity extends ProxyObject
     public $datastreamFlag = false;
 
     /**
-     * @var ?GlobalChallenge
-     * @Groups({"activity_norm", "activity_denorm"})
+     * @var GlobalChallenge[]
+     * @Groups({"activity_norm"})
      */
-    public $globalChallenge;
+    public $globalChallenges;
 
     /**
      * @var array

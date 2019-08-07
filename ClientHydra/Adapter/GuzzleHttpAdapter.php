@@ -9,7 +9,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use Psr\Cache\CacheItemPoolInterface;
 use Stadline\LinkdataClient\ClientHydra\Exception\RequestException;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\CacheItem;
 
@@ -52,7 +51,6 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     public function warmupCache(array $cacheData): array
     {
         try {
-
             $cacheKey = 'hydraclient-cache-warmup';
             if ($this->persistantCache->hasItem($cacheKey)) {
                 $this->isRecordingCacheWarmup = true;
@@ -73,6 +71,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
                     throw new \RuntimeException('cannot save to persistantCache cache');
                 }
             }
+
             return $this->cacheWarmupData;
         } catch (\Exception $e) {
             return [];
@@ -88,8 +87,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         array $headers = [],
         string $body = null,
         bool $useCache = true
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $request = new Request($method, $uri, $headers, $body);
 
         return $this->call($request, $useCache);
@@ -161,7 +159,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
                 );
                 $arrayResponse = [
                     'statusCode' => $response->getStatusCode(),
-                    'body' => (string)$response->getBody(),
+                    'body' => (string) $response->getBody(),
                     'contentType' => $response->getHeader('Content-Type')[0] ?? 'unknown',
                 ];
 
@@ -213,9 +211,9 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         $contentType = \explode(';', $contentType)[0];
 
         if (\in_array($contentType, ['application/ld+json', 'application/json'], true)) {
-            $response = new JsonResponse($arrayResponse['statusCode'], (string)$arrayResponse['body']);
+            $response = new JsonResponse($arrayResponse['statusCode'], (string) $arrayResponse['body']);
         } else {
-            $response = new RawResponse($arrayResponse['statusCode'], $contentType, (string)$arrayResponse['body']);
+            $response = new RawResponse($arrayResponse['statusCode'], $contentType, (string) $arrayResponse['body']);
         }
 
         // cache warmup

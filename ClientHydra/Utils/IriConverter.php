@@ -95,15 +95,15 @@ class IriConverter
     public function generateCollectionUri(string $className, array $filters = []): string
     {
         return \sprintf(
-            '%s%s',
+            '%s?%s',
             $this->getCollectionIriFromClassName($className),
             $this->formatFilters($filters)
         );
     }
 
-    private function formatFilters(array $filters = []): string
+    public function formatFilters(array $filters = []): string
     {
-        $response = '?';
+        $response = '';
         foreach ($filters as $key => $filter) {
             if ($filter instanceof ProxyObject) {
                 $filter = $this->getIriFromObject($filter);
@@ -114,14 +114,16 @@ class IriConverter
                     $response .= \sprintf('%s[]=%s&', $key, $arrayVal);
                 }
             } elseif (null === $filter) {
-                $response .= \sprintf('%s&', $key);
+                if ('order' === $key) {
+                    $response .= \sprintf('%s&', $key);
+                }
             } else {
                 $filter = \is_string($filter) ? \urlencode($filter) : $filter;
                 $response .= \sprintf('%s=%s&', $key, $filter);
             }
         }
 
-        return \substr($response, 0, -1);
+        return ($v = \substr($response, 0, -1)) ? $v : '';
     }
 
     private function getClassShortName($classNameOrObject): string

@@ -8,7 +8,6 @@ use Stadline\LinkdataClient\ClientHydra\Client\AbstractHydraClient;
 use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\Linkdata\Entity\Activity;
 use Stadline\LinkdataClient\Linkdata\Entity\ActivityCalculation;
 use Stadline\LinkdataClient\Linkdata\Entity\Brand;
@@ -269,7 +268,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/users/%s/current_user_records%s', $id, $this->getUrlFilters($filters))
+                \sprintf('/v2/users/%s/current_user_records?%s', $id, $this->iriConverter->formatFilters($filters))
             ));
     }
 
@@ -288,12 +287,12 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         }
     }
 
-    public function getFriendActivities(string $friendLdid, ?array $filters)
+    public function getFriendActivities(string $friendLdid, ?array $filters): ProxyCollection
     {
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/friends/%s/activities%s', $friendLdid, $this->formatFiltersForUrl($filters))
+                \sprintf('/v2/friends/%s/activities?%s', $friendLdid, $this->iriConverter->formatFilters($filters))
             ));
     }
 
@@ -343,31 +342,5 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         }
 
         return $urlFilters;
-    }
-
-    private function formatFiltersForUrl(?array $filters)
-    {
-        $response = '';
-        if (null !== $filters && !empty($filters)) {
-            $response = '?';
-            foreach ($filters as $key => $filter) {
-                if ($filter instanceof ProxyObject) {
-                    $filter = $this->getIriFromObject($filter);
-                    $response .= \sprintf('%s=%s&', $key, $filter);
-                } elseif (\is_array($filter)) {
-                    foreach ($filter as $arrayVal) {
-                        $response .= \sprintf('%s[]=%s&', $key, $arrayVal);
-                    }
-                } elseif (null === $filter) {
-                    $response .= \sprintf('%s&', $key);
-                } else {
-                    $response .= \sprintf('%s=%s&', $key, $filter);
-                }
-            }
-
-            $response = \substr($response, 0, -1);
-        }
-
-        return $response;
     }
 }
