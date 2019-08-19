@@ -81,7 +81,7 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
         $lastHydratedElementsNumber = null;
 
         do {
-            $requestResponse = (self::$_getData)($this->classname, $this->nextPageUri);
+            $requestResponse = (self::$_getData)($this->classname, $this->nextPageUri, $this->cacheEnable);
             $lastHydratedElementsNumber = $this->_refresh($requestResponse);
             $totalHydratedElements += $lastHydratedElementsNumber;
             if (!$this->isHydratationFinished() && $lastHydratedElementsNumber < 1) {

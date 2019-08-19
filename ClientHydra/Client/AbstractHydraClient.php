@@ -78,17 +78,20 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
         ProxyCollection::_init(
             // getData
-            function (?string $classname, string $uri) use ($metadataManager): array {
+            function (?string $classname, string $uri, bool $cacheEnable = true) use ($metadataManager): array {
                 $request = new Request(
                     'GET',
                     $uri
                 );
-                if (null !== $classname && ($metadata = $metadataManager->getClassMetadata($classname))->isCacheEnable()) {
+                if (false === $cacheEnable) {
+                    $request->setCacheEnable(false);
+                } else if (null !== $classname && ($metadata = $metadataManager->getClassMetadata($classname))->isCacheEnable()) {
                     $request->setCacheEnable(true);
                     $request->setCacheScope($metadata->getCacheScope());
                     $request->setCacheTTL($metadata->getCacheTTL());
                 }
-                $requestResponse = $this->getAdapter()->call($request);
+
+                $requestResponse = $this->getAdapter()->call($request, $cacheEnable);
 
                 if (!$requestResponse instanceof JsonResponse) {
                     throw new \RuntimeException('Cannot hydrate object with non json response');
