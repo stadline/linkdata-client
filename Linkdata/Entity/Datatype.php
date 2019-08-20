@@ -4,12 +4,42 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
+use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Utils\TranslatedPropertiesTrait;
 use Stadline\LinkdataClient\Linkdata\Utils\RelatedValue;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @Cache(
+ *     public=true,
+ *     ttl=3600,
+ *     warmup=true,
+ * )
+ *
+ * @method int         getId()
+ * @method void        setId(int $id)
+ * @method null|string getUnit()
+ * @method void        setUnit(?string $unit)
+ * @method array       getTranslatedNames()
+ * @method void        setTranslatedNames(array $translatedNames)
+ * @method array       getTranslatedDescriptions()
+ * @method void        setTranslatedDescriptions(array $translatedDescriptions)
+ * @method int         getRecordWay()
+ * @method void        setRecordWay(int $recordWay)
+ * @method bool        isCumulable()
+ * @method void        setCumulable(bool $cumulable)
+ * @method bool        isActive()
+ * @method void        setActive(bool $active)
+ * @method \DateTime   getCreatedAt()
+ * @method void        setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime   getUpdatedAt()
+ * @method void        setUpdatedAt(\DateTime $updatedAt)
+ */
 class Datatype extends ProxyObject
 {
+    use TranslatedPropertiesTrait;
+
     // commonly used datatype
     const HR_CURRENT = 1;
     const HR_MIN = 2;
@@ -144,6 +174,37 @@ class Datatype extends ProxyObject
         self::CURRENT_HOME_TRAINER_POWER => 'icon-geonaute-power',
     ];
 
+    public static $publicDatatypes = [
+        // Distance
+        self::DISTANCE,
+        // Speed
+        self::SPEED_AVG,
+        // Heart-rate
+        self::HR_CURRENT,
+        self::HR_AVG,
+        self::HR_PERCENTAGE_MIN,
+        self::HR_PERCENTAGE_MAX,
+        // Duration
+        self::DURATION,
+        self::ACTIVE_TIME,
+        // Calories
+        self::CALORIES_BURNT,
+        // Elevation
+        self::ELEVATION_CURRENT,
+        self::ELEVATION_MIN,
+        self::ELEVATION_MAX,
+        self::ASCENT,
+        self::DESCENT,
+        // Segments
+        self::LAP,
+        // Cadence
+        self::STEP_NUMBER,
+        self::RPM_CURRENT,
+        self::RPM_AVG,
+        // Points
+        self::POINTS_EARNED,
+    ];
+
     public static $userHrMax = 220;
     public static $userHrRest = 120;
 
@@ -151,166 +212,64 @@ class Datatype extends ProxyObject
      * @var int
      * @Groups({"datatype_norm"})
      */
-    private $id;
+    public $id;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"datatype_norm"})
      */
-    private $unit;
-
-    /**
-     * @var array
-     *
-     * @Groups({"datatype_norm"})
-     */
-    private $translatedNames;
+    public $unit;
 
     /**
      * @var array
-     *
      * @Groups({"datatype_norm"})
      */
-    private $translatedDescriptions;
+    public $translatedNames;
+
+    /**
+     * @var array
+     * @Groups({"datatype_norm"})
+     */
+    public $translatedDescriptions;
 
     /**
      * @var int
      * @Groups({"datatype_norm"})
      */
-    private $recordWay;
+    public $recordWay;
 
     /**
      * @var bool
      * @Groups({"datatype_norm"})
      */
-    private $cumulable;
+    public $cumulable;
 
     /**
      * @var bool
      * @Groups({"datatype_norm"})
      */
-    private $active = true;
+    public $active = true;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"datatype_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"datatype_norm"})
      */
-    private $updatedAt;
-
-    public function getUpdatedAt(): string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getUnit(): ?string
-    {
-        return $this->unit;
-    }
-
-    public function setUnit(?string $unit): void
-    {
-        $this->unit = $unit;
-    }
-
-    public function getTranslatedNames(): array
-    {
-        return $this->translatedNames;
-    }
-
-    public function setTranslatedNames(array $translatedNames): void
-    {
-        $this->translatedNames = $translatedNames;
-    }
-
-    public function getTranslatedDescriptions(): ?array
-    {
-        return $this->translatedDescriptions;
-    }
-
-    public function setTranslatedDescriptions(?array $translatedDescriptions): void
-    {
-        $this->translatedDescriptions = $translatedDescriptions;
-    }
-
-    public function getRecordWay(): int
-    {
-        return $this->recordWay;
-    }
-
-    public function setRecordWay(int $recordWay): void
-    {
-        $this->recordWay = $recordWay;
-    }
-
-    public function isCumulable(): bool
-    {
-        return $this->cumulable;
-    }
-
-    public function setCumulable(bool $cumulable): void
-    {
-        $this->cumulable = $cumulable;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): void
-    {
-        $this->active = $active;
-    }
-
-    public function hasNameByLocale(string $locale): bool
-    {
-        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
-    }
+    public $updatedAt;
 
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
-    }
-
-    public function hasDescriptionByLocale(string $locale): bool
-    {
-        return isset($this->translatedDescriptions[$locale]) && !empty($this->translatedDescriptions[$locale]);
+        return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
 
     public function getDescriptionByLocale(string $locale): ?string
     {
-        return $this->hasDescriptionByLocale($locale) ? $this->translatedDescriptions[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedDescriptions', $locale);
     }
 
     /**
@@ -367,5 +326,18 @@ class Datatype extends ProxyObject
         }
 
         return new RelatedValue((($hrValue - $userHrRest) / ($userHrMax - $userHrRest)) * 100, self::HR_PERCENTAGE_MAX);
+    }
+
+    public static function getPublicValuesByDatatype($values)
+    {
+        $publicValues = [];
+
+        foreach (self::$publicDatatypes as $datatypeId) {
+            if (isset($values[$datatypeId])) {
+                $publicValues[$datatypeId] = $values[$datatypeId];
+            }
+        }
+
+        return $publicValues;
     }
 }

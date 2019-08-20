@@ -4,104 +4,64 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
+use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @Cache(
+ *     public=true,
+ *     ttl=3600,
+ * )
+ *
+ * @method int         getId()
+ * @method void        setId(int $id)
+ * @method string      getSlug()
+ * @method void        setSlug(string $slug)
+ * @method null|string getComment()
+ * @method void        setComment(?string $comment)
+ * @method bool        isActive()
+ * @method void        setActive(bool $active)
+ * @method \DateTime   getCreatedAt()
+ * @method void        setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime   getUpdatedAt()
+ * @method void        setUpdatedAt(\DateTime $updatedAt)
+ */
 class StorageKey extends ProxyObject
 {
     /**
      * @var int
      * @Groups({"storage_key_norm"})
      */
-    protected $id;
+    public $id;
 
     /**
      * @var string
      * @Groups({"storage_key_norm"})
      */
-    protected $slug;
+    public $slug;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"storage_key_norm"})
      */
-    protected $comment;
-
-    /**
-     * @var string
-     * @Groups({"storage_key_norm"})
-     */
-    private $createdAt;
-
-    /**
-     * @var string
-     * @Groups({"storage_key_norm"})
-     */
-    private $updatedAt;
+    public $comment;
 
     /**
      * @var bool
      * @Groups({"storage_key_norm"})
      */
-    private $active = true;
+    public $active = true;
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
+    /**
+     * @var string
+     * @Groups({"storage_key_norm"})
+     */
+    public $createdAt;
 
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(?string $slug): void
-    {
-        $this->slug = $slug;
-    }
-
-    public function getComment(): ?string
-    {
-        return $this->comment;
-    }
-
-    public function setComment(?string $comment): void
-    {
-        $this->comment = $comment;
-    }
-
-    public function getUpdatedAt(): string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): void
-    {
-        $this->active = $active;
-    }
+    /**
+     * @var string
+     * @Groups({"storage_key_norm"})
+     */
+    public $updatedAt;
 }

@@ -4,11 +4,35 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
+use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Utils\TranslatedPropertiesTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @Cache(
+ *     public=true,
+ *     ttl=3600,
+ *     warmup=true,
+ * )
+ *
+ * @method int       getId()
+ * @method void      setId(int $id)
+ * @method array     getTranslatedNames()
+ * @method void      setTranslatedNames(array $translatedNames)
+ * @method Universe  getUniverse()
+ * @method void      setUniverse(Universe $universe)
+ * @method bool      isActive()
+ * @method void      setActive(bool $active)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
+ */
 class Sport extends ProxyObject
 {
+    use TranslatedPropertiesTrait;
+
     public const ALPINISME = 153;
     public const AQUAGYM = 260;
     public const ARTS_MARTIAUX = 45;
@@ -49,6 +73,7 @@ class Sport extends ProxyObject
     public const TENNIS = 357;
     public const TRAIL = 126;
     public const TRIATHLON = 77;
+    public const TROTINETTE = 380;
     public const VELO_ELLIPTIQUE = 397;
     public const VELO_EN_SALLE = 110;
     public const VELO_SUR_ROUTE = 385;
@@ -78,6 +103,7 @@ class Sport extends ProxyObject
     public const COURSE_A_PIED_SUR_ROUTE = 123;
     public const COURSE_A_PIED_EN_NATURE = 124;
     public const CROSS = 125;
+    public const CROSS_TRAINING = 404;
     public const DIX_KM = 132;
     public const SEMI_MARATHON = 133;
     public const MARATHON = 134;
@@ -101,202 +127,69 @@ class Sport extends ProxyObject
     public const VTT_TRIAL = 392;
     public const VTT_ENDURO = 393;
     public const VTT_ALL_MOUNTAIN = 394;
+    public const ZUMBA = 403;
 
-    public static $iconNames = [
-        self::ALPINISME => 'icon-alpinisme',
-        self::AQUAGYM => 'icon-aquagym',
-        self::ARTS_MARTIAUX => 'icon-arts-martiaux',
-        self::AVIRON => 'icon-aviron',
-        self::BADMINTON => 'icon-badminton',
-        self::BASKETBALL => 'icon-basketball',
-        self::BMX => 'icon-bmx',
-        self::BODYBOARD => 'icon-bodyboard',
-        self::BOXE => 'icon-boxe',
-        self::CANOE_KAYAK => 'icon-canoe-kayak',
-        self::COURSE_A_PIED => 'icon-course-a-pied',
-        self::DANSE => 'icon-danse',
-        self::ESCALADE => 'icon-escalade',
-        self::FITNESS => 'icon-fitness',
-        self::FOOTBALL => 'icon-football',
-        self::GOLF => 'icon-golf',
-        self::HANDBALL => 'icon-handball',
-        self::HOCKEY => 'icon-hockey',
-        self::KITESURF => 'icon-kitesurf',
-        self::MARCHE => 'icon-marche-rapide',
-        self::MUSCULATION_EN_SALLE => 'icon-musculation-en-salle',
-        self::NATATION => 'icon-natation',
-        self::PLANCHE_A_VOILE => 'icon-planche-a-voile',
-        self::PLONGEE => 'icon-plongee',
-        self::RAMEUR => 'icon-rameur',
-        self::RANDONNEE => 'icon-randonnee',
-        self::RANDONNEE_EQUESTRE => 'icon-randonne-equestre',
-        self::RAQUETTE_A_NEIGE => 'icon-raquette-a-neige',
-        self::ROLLER => 'icon-roller',
-        self::RUGBY => 'icon-rugby',
-        self::SKATEBOARD => 'icon-skateboard',
-        self::SKI => 'icon-ski',
-        self::SKI_ALPIN => 'icon-ski-alpin',
-        self::SNOWBOARD => 'icon-snowboard',
-        self::SURF => 'icon-surf',
-        self::TAPIS_DE_COURSE => 'icon-tapis-de-course',
-        self::TENNIS => 'icon-tennis',
-        self::TRAIL => 'icon-trail',
-        self::TRIATHLON => 'icon-triathlon',
-        self::VELO_RANDONNEE => 'icon-velo-de-randonnee',
-        self::VELO_ELLIPTIQUE => 'icon-velo-elliptique',
-        self::VELO_EN_SALLE => 'icon-velo-en-salle',
-        self::VELO_SUR_ROUTE => 'icon-velo-sur-route',
-        self::VOILE => 'icon-voile',
-        self::VOLLEYBALL => 'icon-volleyball',
-        self::VTT => 'icon-vtt',
-        self::MARCHE_NORDIQUE => 'icon-marchenordique',
-        self::RUN_AND_BIKE => 'icon-runandbike',
-        self::YOGA => 'icon-yoga',
-        self::SKI_DE_RANDONNEE => 'icon-skidefond-skating',
-        self::PARAPENTE => 'icon-parapente',
-        self::TIR_A_L_ARC => 'icon-tiralarc',
-        self::STAND_UP_PADDLE => 'icon-standuppaddle',
-        self::PADEL => 'icon-paddletennis',
-        self::SQUASH => 'icon-squash',
-        self::TENNIS_DE_TABLE => 'icon-tennisdetable',
-        self::HOME_TRAINER => 'icon-home-trainer',
-        self::SKI_DE_FOND_ALTERNATIF => 'icon-skiderandonnee',
-        self::SKI_DE_FOND_SKATING => 'icon-skidefond-alternatif',
-        self::CHAR_A_VOILE => 'icon-charavoile',
-        self::ACTIVITY_QUOTIDIENNE => 'icon-marche',
-        self::PILATES => 'icon-pilates',
-    ];
-
-    protected static $slug_table = [
-        self::ALPINISME => 'alpinisme',
-        self::AQUAGYM => 'aquagym',
-        self::ARTS_MARTIAUX => 'arts-martiaux',
-        self::AVIRON => 'aviron',
-        self::BADMINTON => 'badminton',
-        self::BASKETBALL => 'basketball',
-        self::BMX => 'bmx',
-        self::BODYBOARD => 'bodyboard',
-        self::BOXE => 'boxe',
-        self::CANOE_KAYAK => 'canoe-kayak',
-        self::COURSE_A_PIED => 'course-a-pied',
-        self::DANSE => 'danse',
-        self::ESCALADE => 'escalade',
-        self::FITNESS => 'fitness',
-        self::FOOTBALL => 'football',
-        self::GOLF => 'golf',
-        self::HANDBALL => 'handball',
-        self::HOCKEY => 'hockey',
-        self::KITESURF => 'kitesurf',
-        self::MARCHE => 'marche-rapide',
-        self::MUSCULATION_EN_SALLE => 'musculation-en-salle',
-        self::NATATION => 'natation',
-        self::PLANCHE_A_VOILE => 'planche-a-voile',
-        self::PLONGEE => 'plongee',
-        self::RAMEUR => 'rameur',
-        self::RANDONNEE => 'randonnee',
-        self::RANDONNEE_EQUESTRE => 'randonne-equestre',
-        self::RAQUETTE_A_NEIGE => 'raquette-a-neige',
-        self::ROLLER => 'roller',
-        self::RUGBY => 'rugby',
-        self::SKATEBOARD => 'skateboard',
-        self::SKI => 'ski',
-        self::SKI_ALPIN => 'ski-alpin',
-        self::SNOWBOARD => 'snowboard',
-        self::SURF => 'surf',
-        self::TAPIS_DE_COURSE => 'tapis-de-course',
-        self::TENNIS => 'tennis',
-        self::TRAIL => 'trail',
-        self::TRIATHLON => 'triathlon',
-        self::VELO_RANDONNEE => 'velo-de-randonnee',
-        self::VELO_ELLIPTIQUE => 'velo-elliptique',
-        self::VELO_EN_SALLE => 'velo-en-salle',
-        self::VELO_SUR_ROUTE => 'velo-sur-route',
-        self::VOILE => 'voile',
-        self::VOLLEYBALL => 'volleyball',
-        self::VTT => 'vtt',
-        self::MARCHE_NORDIQUE => 'marchenordique',
-        self::RUN_AND_BIKE => 'runandbike',
-        self::YOGA => 'yoga',
-        self::SKI_DE_RANDONNEE => 'skidefond-skating',
-        self::PARAPENTE => 'parapente',
-        self::TIR_A_L_ARC => 'tiralarc',
-        self::STAND_UP_PADDLE => 'standuppaddle',
-        self::PADEL => 'paddletennis',
-        self::SQUASH => 'squash',
-        self::TENNIS_DE_TABLE => 'tennisdetable',
-        self::HOME_TRAINER => 'home-trainer',
-        self::SKI_DE_FOND_ALTERNATIF => 'skiderandonnee',
-        self::SKI_DE_FOND_SKATING => 'skidefond-alternatif',
-        self::CHAR_A_VOILE => 'charavoile',
-        self::ACTIVITY_QUOTIDIENNE => 'marche',
-        self::PILATES => 'pilates',
+    protected const MATCHING_ICONS = [
+        self::HOCKEY => self::HOCKEY_SUR_GLACE,
+        self::SKI_ALPIN => self::SKI,
+        self::ALPINISME => self::ESCALADE,
+        self::MARCHE => self::MARCHE_NORDIQUE,
     ];
 
     /**
      * @var int
-     *
      * @Groups({"sport_norm"})
      */
     public $id;
 
     /**
      * @var array
-     *
      * @Groups({"sport_norm"})
      */
     public $translatedNames;
 
     /**
      * @var Universe
-     *
      * @Groups({"sport_norm"})
      */
     public $universe;
 
     /**
      * @var bool
-     *
      * @Groups({"sport_norm"})
      */
     public $active = true;
 
     /**
-     * @var string
-     *
+     * @var \DateTime
      * @Groups({"sport_norm"})
      */
     public $createdAt;
 
     /**
-     * @var string
-     *
+     * @var \DateTime
      * @Groups({"sport_norm"})
      */
     public $updatedAt;
 
     /**
      * @var array
-     *
      * @Groups({"sport_norm"})
      */
     public $userEquipments;
 
-    public function hasNameByLocale(string $locale): ?bool
-    {
-        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
-    }
-
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
 
     public static function getIcon($id): string
     {
-        if (isset(self::$slug_table[$id])) {
-            return self::$slug_table[$id];
+        $id = (int) $id;
+        if (isset(self::MATCHING_ICONS[$id])) {
+            return 'sports'.self::MATCHING_ICONS[$id];
         }
 
-        return '';
+        return 'sports'.$id;
     }
 }

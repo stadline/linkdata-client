@@ -7,9 +7,11 @@ namespace Stadline\LinkdataClient\ClientHydra\Adapter;
 class JsonResponse implements ResponseInterface
 {
     private $content;
+    private $status;
 
-    public function __construct(string $content)
+    public function __construct(int $status, string $content)
     {
+        $this->status = $status;
         $this->content = \json_decode($content, true);
     }
 
@@ -35,5 +37,10 @@ class JsonResponse implements ResponseInterface
     public function getType(): ?string
     {
         return $this->content['@type'] ?? null;
+    }
+
+    public function getStatus(): int
+    {
+        return $this->status;
     }
 }

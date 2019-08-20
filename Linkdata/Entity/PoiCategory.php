@@ -4,23 +4,15 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
-use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Utils\TranslatedPropertiesTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @Cache(
- *     public=true,
- *     ttl=3600,
- * )
- *
  * @method int       getId()
  * @method void      setId(int $id)
  * @method array     getTranslatedNames()
  * @method void      setTranslatedNames(array $translatedNames)
- * @method Sport[]   getSports()
- * @method void      setSports($sports)
  * @method bool      isActive()
  * @method void      setActive(bool $active)
  * @method \DateTime getCreatedAt()
@@ -28,50 +20,39 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method \DateTime getUpdatedAt()
  * @method void      setUpdatedAt(\DateTime $updatedAt)
  */
-class Universe extends ProxyObject
+class PoiCategory extends ProxyObject
 {
     use TranslatedPropertiesTrait;
 
     /**
      * @var int
-     * @Groups({"universe_norm"})
+     * @Groups({"poi_category_norm"})
      */
     public $id;
 
     /**
      * @var array
-     * @Groups({"universe_norm"})
+     * @Groups({"poi_category_norm"})
      */
     public $translatedNames;
 
     /**
-     * @var Sport[]
-     * @Groups({"universe_norm"})
-     */
-    public $sports = [];
-
-    /**
      * @var bool
-     * @Groups({"universe_norm"})
+     * @Groups({"poi_category_norm"})
      */
-    public $active = true;
+    public $active;
 
     /**
      * @var \DateTime
-     * @Groups({"universe_norm"})
+     * @Groups({"poi_category_norm"})
      */
     public $createdAt;
 
     /**
      * @var \DateTime
-     * @Groups({"universe_norm"})
+     * @Groups({"poi_category_norm"})
      */
     public $updatedAt;
-
-    public function __construct()
-    {
-        $this->sports = [];
-    }
 
     public function getNameByLocale(string $locale): ?string
     {

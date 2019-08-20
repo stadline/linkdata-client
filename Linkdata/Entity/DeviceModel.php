@@ -4,13 +4,44 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Utils\TranslatedPropertiesTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method int         getId()
+ * @method void        setId(int $id)
+ * @method array       getTranslatedNames()
+ * @method void        setTranslatedNames(array $translatedNames)
+ * @method Brand       getBrand()
+ * @method void        setBrand(Brand $brand)
+ * @method null|string getSerialRange()
+ * @method void        setSerialRange(?string $serialRange)
+ * @method null|int    getCoder3()
+ * @method void        setCoder3(?int $coder3)
+ * @method null|string getNotice()
+ * @method void        setNotice(?string $notice)
+ * @method bool        isHasNotificationChallenge()
+ * @method void        setHasNotificationChallenge(bool $hasNotificationChallenge)
+ * @method bool        isHasNotificationRoute()
+ * @method void        setHasNotificationRoute(bool $hasNotificationRoute)
+ * @method bool        isHasNotificationPoi()
+ * @method void        setHasNotificationPoi(bool $hasNotificationPoi)
+ * @method bool        isHasCoaching()
+ * @method void        setHasCoaching(bool $hasCoaching)
+ * @method bool        isUsedForGlobalChallenge()
+ * @method void        setUsedForGlobalChallenge(bool $usedForGlobalChallenge)
+ * @method bool        isActive()
+ * @method void        setActive(bool $active)
+ * @method \DateTime   getCreatedAt()
+ * @method void        setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime   getUpdatedAt()
+ * @method void        setUpdatedAt(\DateTime $updatedAt)
+ */
 class DeviceModel extends ProxyObject
 {
+    use TranslatedPropertiesTrait;
+
     const ONCOACH = 1;
     const ONMOVE510710 = 7;
     const ONDAILY = 13;
@@ -42,248 +73,88 @@ class DeviceModel extends ProxyObject
      * @var int
      * @Groups({"device_model_norm"})
      */
-    private $id;
+    public $id;
 
     /**
      * @var array
-     *
      * @Groups({"device_model_norm"})
      */
-    private $translatedNames;
+    public $translatedNames;
 
     /**
      * @var Brand
      * @Groups({"device_model_norm"})
      */
-    private $brand;
+    public $brand;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"device_model_norm"})
      */
-    private $serialRange;
+    public $serialRange;
 
     /**
-     * @var int
+     * @var ?int
      * @Groups({"device_model_norm"})
      */
-    private $coder3;
+    public $coder3;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"device_model_norm"})
      */
-    private $notice;
+    public $notice;
 
     /**
      * @var bool
      * @Groups({"device_model_norm"})
      */
-    private $hasNotificationChallenge = false;
+    public $hasNotificationChallenge = false;
 
     /**
      * @var bool
      * @Groups({"device_model_norm"})
      */
-    private $hasNotificationRoute = false;
+    public $hasNotificationRoute = false;
 
     /**
      * @var bool
      * @Groups({"device_model_norm"})
      */
-    private $hasNotificationPoi = false;
+    public $hasNotificationPoi = false;
 
     /**
      * @var bool
      * @Groups({"device_model_norm"})
      */
-    private $hasCoaching = false;
+    public $hasCoaching = false;
 
     /**
      * @var bool
      * @Groups({"device_model_norm"})
      */
-    private $usedForGlobalChallenge = true;
+    public $usedForGlobalChallenge = true;
 
     /**
      * @var bool
      * @Groups({"device_model_norm"})
      */
-    private $active = true;
+    public $active = true;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"device_model_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"device_model_norm"})
      */
-    private $updatedAt;
-
-    /**
-     * @var ArrayCollection
-     */
-    private $firmwares;
-
-    public function getFirmwares(): Collection
-    {
-        return $this->firmwares;
-    }
-
-    public function getUpdatedAt(): string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getTranslatedNames(): array
-    {
-        return $this->translatedNames;
-    }
-
-    public function setTranslatedNames(array $translatedNames): void
-    {
-        $this->translatedNames = $translatedNames;
-    }
-
-    public function getBrand()
-    {
-        if (null !== $this->brand) {
-            $this->brand->_hydrate();
-        }
-
-        return $this->brand;
-    }
-
-    public function setBrand(?Brand $brand): void
-    {
-        $this->brand = $brand;
-    }
-
-    public function getSerialRange(): ?string
-    {
-        return $this->serialRange;
-    }
-
-    public function setSerialRange(?string $serialRange): void
-    {
-        $this->serialRange = $serialRange;
-    }
-
-    public function getCoder3(): ?int
-    {
-        return $this->coder3;
-    }
-
-    public function setCoder3(?int $coder3): void
-    {
-        $this->coder3 = $coder3;
-    }
-
-    public function getNotice(): ?string
-    {
-        return $this->notice;
-    }
-
-    public function setNotice(?string $notice): void
-    {
-        $this->notice = $notice;
-    }
-
-    public function isHasNotificationChallenge(): bool
-    {
-        return $this->hasNotificationChallenge;
-    }
-
-    public function setHasNotificationChallenge(bool $hasNotificationChallenge): void
-    {
-        $this->hasNotificationChallenge = $hasNotificationChallenge;
-    }
-
-    public function isHasNotificationRoute(): bool
-    {
-        return $this->hasNotificationRoute;
-    }
-
-    public function setHasNotificationRoute(bool $hasNotificationRoute): void
-    {
-        $this->hasNotificationRoute = $hasNotificationRoute;
-    }
-
-    public function isHasNotificationPoi(): bool
-    {
-        return $this->hasNotificationPoi;
-    }
-
-    public function setHasNotificationPoi(bool $hasNotificationPoi): void
-    {
-        $this->hasNotificationPoi = $hasNotificationPoi;
-    }
-
-    public function isHasCoaching(): bool
-    {
-        return $this->hasCoaching;
-    }
-
-    public function setHasCoaching(bool $hasCoaching): void
-    {
-        $this->hasCoaching = $hasCoaching;
-    }
-
-    public function getUsedForGlobalChallenge(): bool
-    {
-        return $this->usedForGlobalChallenge;
-    }
-
-    public function setUsedForGlobalChallenge(bool $usedForGlobalChallenge): void
-    {
-        $this->usedForGlobalChallenge = $usedForGlobalChallenge;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): void
-    {
-        $this->active = $active;
-    }
-
-    public function hasNameByLocale(string $locale): bool
-    {
-        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
-    }
+    public $updatedAt;
 
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
 }

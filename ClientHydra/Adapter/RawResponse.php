@@ -8,11 +8,13 @@ class RawResponse implements ResponseInterface
 {
     private $format;
     private $content;
+    private $status;
 
-    public function __construct(string $format, string $content)
+    public function __construct(int $status, string $format, string $content)
     {
         $this->format = $format;
         $this->content = $content;
+        $this->status = $status;
     }
 
     public function getFormat(): string
@@ -20,18 +22,13 @@ class RawResponse implements ResponseInterface
         return $this->format;
     }
 
-    public function setFormat($format): void
-    {
-        $this->format = $format;
-    }
-
     public function getContent(): string
     {
         return $this->content;
     }
 
-    public function setContent($content): void
+    public function getStatus(): int
     {
-        $this->content = $content;
+        return $this->status;
     }
 }

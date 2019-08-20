@@ -4,32 +4,47 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Proxy;
 
-use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
-use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
-
 class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 {
+    public static function _init(
+        \Closure $getDataClosure,
+        \Closure $getProxyFromIri
+    ): void {
+        self::$_getData = $getDataClosure;
+        self::$_getProxyFromIri = $getProxyFromIri;
+    }
+
+    /** @var \Closure */
+    private static $_getData;
+    /** @var \Closure */
+    private static $_getProxyFromIri;
+
     private const INITAL_CURSOR_POSITION = 0;
 
     /** @var ProxyObject[] */
     private $objects;
-    /** @var ProxyManager */
-    private $proxyManager;
 
     /* Internal metadata */
     private $currentIteratorPosition;
     private $nextPageUri;
+    private $cacheEnable = true;
+    private $autoHydrateEnable = true;
+    private $classname;
 
     public function __construct(
-        ProxyManager $proxyManager,
-        IriConverter $iriConverter,
-        string $classname,
-        array $filters = []
+        ?string $classname,
+        array $initialData,
+        bool $cacheEnable = true,
+        bool $autoHydrateEnable = true
     ) {
-        $this->proxyManager = $proxyManager;
+        $this->classname = $classname;
+        $this->cacheEnable = $cacheEnable;
+        $this->autoHydrateEnable = $autoHydrateEnable;
+
         $this->objects = [];
         $this->currentIteratorPosition = self::INITAL_CURSOR_POSITION;
-        $this->nextPageUri = $iriConverter->generateCollectionUri($classname, $filters);
+
+        $this->_refresh($initialData);
     }
 
     public function hasNext(): bool
@@ -64,37 +79,50 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 
         $totalHydratedElements = 0;
         $lastHydratedElementsNumber = null;
-        while ($this->isHydratationRequired($neededPosition) && ($lastHydratedElementsNumber > 0 || null === $lastHydratedElementsNumber)) {
-            $requestResponse = $this->proxyManager->getAdapter()->makeRequestWithCache(
-                'GET',
-                $this->nextPageUri
-            );
 
-            if (!$requestResponse instanceof JsonResponse) {
-                throw new \RuntimeException('Cannot hydrate collection with non json response');
+        do {
+            $requestResponse = (self::$_getData)($this->classname, $this->nextPageUri, $this->cacheEnable);
+            $lastHydratedElementsNumber = $this->_refresh($requestResponse);
+            $totalHydratedElements += $lastHydratedElementsNumber;
+            if (!$this->isHydratationFinished() && $lastHydratedElementsNumber < 1) {
+                throw new \RuntimeException(\sprintf('Unknown error : received %d elements only but hydratation not finished', $lastHydratedElementsNumber));
             }
+        } while ($this->isHydratationRequired($neededPosition));
 
-            $data = $requestResponse->getContent();
+        return $totalHydratedElements;
+    }
 
-            // Members
+    private function _refresh(array $data): int
+    {
+        // Set next page uri
+        if (null !== ($data['hydra:view']['hydra:next'] ?? null)) {
+            $this->nextPageUri = $data['hydra:view']['hydra:next'];
+        } else {
+            $this->nextPageUri = null;
+        }
+
+        // Members
+        if (isset($data['hydra:member'])) {
             foreach ($data['hydra:member'] as $member) {
-                $object = $this->proxyManager->getProxyFromIri($member['@id']);
-                $object->_hydrate($member);
+                $object = (self::$_getProxyFromIri)($member['@id']);
+                $object->_refresh($member);
                 $this->objects[] = $object;
             }
 
-            // Update metadata
-            if (null !== ($data['hydra:view']['hydra:next'] ?? null)) {
+            if (true === $this->autoHydrateEnable && null !== ($data['hydra:view']['hydra:next'] ?? null)) {
                 $this->nextPageUri = $data['hydra:view']['hydra:next'];
             } else {
                 $this->nextPageUri = null;
             }
 
-            $lastHydratedElementsNumber = \count($data['hydra:member']);
-            $totalHydratedElements += $lastHydratedElementsNumber;
+            // remove next page if autohydrate disable
+            if (false === $this->autoHydrateEnable) {
+                $this->nextPageUri = null;
+            }
         }
 
-        return $totalHydratedElements;
+        // return number of added elements
+        return \count($data['hydra:member'] ?? []);
     }
 
     public function current()
@@ -187,5 +215,10 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
         }
 
         return \count($this->objects);
+    }
+
+    public function setAutoHydrateEnable(bool $autoHydrateEnable): void
+    {
+        $this->autoHydrateEnable = $autoHydrateEnable;
     }
 }

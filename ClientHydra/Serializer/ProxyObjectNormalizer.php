@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Serializer;
 
-use ReflectionMethod;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager;
+use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
+use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
+use Stadline\LinkdataClient\ClientHydra\Metadata\ProxyObjectMetadata;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
 use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
@@ -15,22 +16,21 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ProxyObjectNormalizer extends ObjectNormalizer
 {
-    /** @var ProxyManager */
-    private $proxyManager;
-    /** @var string */
-    private $entityNamespace;
+    /** @var HydraClientInterface */
+    private $hydraClient;
     /** @var IriConverter */
     private $iriConverter;
-    private $proxyObjectMetadata = [];
+    /** @var MetadataManager */
+    private $metadataManager;
 
-    public function setProxyManager(ProxyManager $proxyManager): void
+    public function setMetadataManager(MetadataManager $metadataManager): void
     {
-        $this->proxyManager = $proxyManager;
+        $this->metadataManager = $metadataManager;
     }
 
-    public function setEntityNamespace(string $entityNamespace): void
+    public function setHydraClient(HydraClientInterface $hydraClient): void
     {
-        $this->entityNamespace = $entityNamespace;
+        $this->hydraClient = $hydraClient;
     }
 
     public function setIriConverter(IriConverter $iriConverter): void
@@ -40,8 +40,33 @@ class ProxyObjectNormalizer extends ObjectNormalizer
 
     public function normalize($object, $format = null, array $context = [])
     {
-        if (($context['classContext'] ?? null) === \get_class($object)) {
-            return parent::normalize($object, $format, $context);
+        $classContext = $context['classContext'] ?? null;
+        if (\is_string($classContext)) {
+            $context['classContext'] = [$classContext];
+        } elseif (null === $classContext) {
+            $context['classContext'] = [\get_class($object)];
+        }
+
+        if ($object instanceof \DateTime) {
+            return $object->format(DATE_ATOM);
+        }
+
+        if (!$object instanceof ProxyObject || \in_array(\get_class($object), $context['classContext'], true)) {
+            // save current class context
+            $context['currentClassContext'] = \get_class($object);
+            $data = parent::normalize($object, $format, $context);
+
+            // In put case, only add field if value is modified
+            if (true === ($context['putContext'] ?? null)) {
+                $editedProperties = $object->_getEditedProperties($data);
+                foreach ($data as $fieldName => $useless) {
+                    if (!\in_array($fieldName, $editedProperties, true)) {
+                        unset($data[$fieldName]);
+                    }
+                }
+            }
+
+            return $data;
         }
 
         return $this->iriConverter->getIriFromObject($object);
@@ -57,60 +82,39 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             throw new InvalidArgumentException('ProxyObjectDenormalizer::denormalize requires an array in parameter');
         }
 
-        // generate metadata cache
-        if (!isset($this->proxyObjectMetadata[$class])) {
-            $metadata = [];
-
-            $reflexionClass = new \ReflectionClass($context[AbstractNormalizer::OBJECT_TO_POPULATE]);
-            foreach ($reflexionClass->getProperties() as $property) {
-                if (false !== $property->getDocComment() && \preg_match('/@var\s+([a-zA-Z0-9_]+)(\[\])?/', $property->getDocComment(), $matches)) {
-                    list(, $type) = $matches;
-                    if (!\class_exists($type)) {
-                        $type = $this->entityNamespace.'\\'.$type;
-                    }
-                    if (!\class_exists($type)) {
-                        continue;
-                    }
-                    if ((new \ReflectionClass($type))->isSubclassOf(ProxyObject::class)) {
-                        $metadata[] = $property->getName();
-                    }
-                }
-            }
-            foreach ($reflexionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-                if (0 === \strpos($method->getName(), 'set')) {
-                    $propertyName = \lcfirst(\substr($method->getName(), 3));
-                    if (\in_array($propertyName, $metadata, true)) {
-                        continue;
-                    }
-                    // If parameter is proxy object
-                    if (null !== ($param = $method->getParameters()[0] ?? null) && $param->getType() && \class_exists($param->getType()->getName()) && (new \ReflectionClass($param->getType()->getName()))->isSubclassOf(ProxyObject::class)) {
-                        $metadata[] = $propertyName;
-                    }
-                }
-            }
-            $this->proxyObjectMetadata[$class] = $metadata;
-        }
-
-        if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject && null !== ($metadata = $this->proxyObjectMetadata[\get_class($context[AbstractNormalizer::OBJECT_TO_POPULATE])])) {
-            foreach ($metadata as $propName) {
+        if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject && null !== ($metadata = $this->metadataManager->getClassMetadata(\get_class($context[AbstractNormalizer::OBJECT_TO_POPULATE])))) {
+            foreach ($metadata->getPropertiesNameByTypes(ProxyObject::class) as $propName) {
                 if (isset($data[$propName])) {
                     if (\is_array($data[$propName])) {
-                        $properties = [];
-                        foreach ($data[$propName] as $elt) {
-                            if (\is_array($elt) && isset($elt['@id'])) {
-                                $subObject = $this->proxyManager->getProxyFromIri($elt['@id']);
-                                $subObject->_refreshPartial($elt);
-                                $properties[] = $subObject;
-                            } else if (\is_string($elt) && $this->iriConverter->isIri($elt)) {
-                                $properties[] = $this->proxyManager->getProxyFromIri($elt);
-                            } else {
-                                $properties[] = $elt;
+                        if (isset($data[$propName]['@id'])) {
+                            $subObject = $this->hydraClient->getProxyFromIri($data[$propName]['@id']);
+                            $subObject->_refresh($data[$propName]);
+                            $data[$propName] = $subObject;
+                        } else {
+                            $properties = [];
+                            foreach ($data[$propName] as $elt) {
+                                if (\is_array($elt) && isset($elt['@id'])) {
+                                    $subObject = $this->hydraClient->getProxyFromIri($elt['@id']);
+                                    $subObject->_refresh($elt);
+                                    $properties[] = $subObject;
+                                    break;
+                                }
+                                if (\is_string($elt) && $this->iriConverter->isIri($elt)) {
+                                    $properties[] = $this->hydraClient->getProxyFromIri($elt);
+                                } else {
+                                    $properties[] = $elt;
+                                }
                             }
+                            $data[$propName] = $properties;
                         }
-                        $data[$propName] = $properties;
                     } else {
-                        $data[$propName] = $this->proxyManager->getProxyFromIri($data[$propName]);
+                        $data[$propName] = $this->hydraClient->getProxyFromIri($data[$propName]);
                     }
+                }
+            }
+            foreach ($metadata->getPropertiesNameByTypes(ProxyObjectMetadata::TYPE_DATETIME) as $propName) {
+                if (\is_string($data[$propName] ?? null)) {
+                    $data[$propName] = new \DateTime($data[$propName]);
                 }
             }
         }
@@ -133,8 +137,10 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             return false;
         }
 
-        $reflectionClass = new \ReflectionClass($type);
+        if ('[]' === \substr($type, -2)) {
+            return false;
+        }
 
-        return $reflectionClass->isSubclassOf(ProxyObject::class) && \is_array($data) && HydraParser::isHydraObjectResponse($data);
+        return (new \ReflectionClass($type))->isSubclassOf(ProxyObject::class) && \is_array($data) && HydraParser::isHydraObjectResponse($data);
     }
 }

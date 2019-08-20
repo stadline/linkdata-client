@@ -5,23 +5,26 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient" alias="linkdata_client.client" />
-        <service id="linkdata_client.adapter" alias="linkdata_client.adapter_guzzle" />
+        <service id="linkdata_client.client" alias="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient" />
+        <service id="linkdata_client.http_adapter" alias="linkdata_client.http_adapter.guzzle" />
 
-        <service id="linkdata_client.client" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
-            <argument type="service" id="linkdata_client.proxy_manager" />
-            <argument type="service" id="linkdata_client.adapter_guzzle" />
-        </service>
+        <service id="linkdata_client.cache_adapter.array" class="Symfony\Component\Cache\Adapter\ArrayAdapter" />
 
-        <service id="linkdata_client.adapter_guzzle" class="Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleAdapter">
+        <service id="linkdata_client.http_adapter.guzzle" class="Stadline\LinkdataClient\ClientHydra\Adapter\GuzzleHttpAdapter">
             <argument>%linkdata_client.base_url%</argument>
+            <argument type="service" id="linkdata_client.cache_adapter" />
             <argument>%kernel.debug%</argument>
         </service>
 
-        <service id="linkdata_client.proxy_manager" class="Stadline\LinkdataClient\ClientHydra\Proxy\ProxyManager">
-            <argument type="service" id="linkdata_client.adapter" />
+        <service id="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient" class="Stadline\LinkdataClient\Linkdata\Client\LinkdataClient">
+            <argument type="service" id="linkdata_client.http_adapter" />
             <argument type="service" id="linkdata_client.iri_converter" />
             <argument type="service" id="Symfony\Component\Serializer\SerializerInterface" />
+            <argument type="service" id="linkdata_client.metadata_manager" />
+        </service>
+
+        <service id="linkdata_client.metadata_manager" class="Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager">
+            <argument>%linkdata_client.entity_namespace%</argument>
         </service>
 
         <service id="linkdata_client.iri_converter" class="Stadline\LinkdataClient\ClientHydra\Utils\IriConverter">
@@ -30,20 +33,21 @@
         </service>
 
         <service id="linkdata_client.proxy_object_normalizer" class="Stadline\LinkdataClient\ClientHydra\Serializer\ProxyObjectNormalizer">
-            <call method="setEntityNamespace">
-                <argument>%linkdata_client.entity_namespace%</argument>
-            </call>
-            <call method="setProxyManager">
-                <argument type="service" id="linkdata_client.proxy_manager" />
+            <call method="setHydraClient">
+                <argument type="service" id="linkdata_client.client" />
             </call>
             <call method="setIriConverter">
                 <argument type="service" id="linkdata_client.iri_converter" />
             </call>
-            <tag name="serializer.normalizer" />
+            <call method="setMetadataManager">
+                <argument type="service" id="linkdata_client.metadata_manager" />
+            </call>
+            <tag name="serializer.normalizer" priority="-980" />
         </service>
 
         <service id="linkdata_client.data_collector" class="Stadline\LinkdataClient\Linkdata\Bridge\Symfony\Bundle\DataCollector\LinkDataCollector">
             <argument type="service" id="linkdata_client.client" />
+            <argument type="service" id="linkdata_client.metadata_manager" />
             <tag name="data_collector" template="LinkdataClientBundle::toolbar.html.twig" id="linkdata_client.linkdata_collector" />
         </service>
     </services>

@@ -5,22 +5,35 @@ declare(strict_types=1);
 namespace Stadline\LinkdataClient\Linkdata\Client;
 
 use Stadline\LinkdataClient\ClientHydra\Client\AbstractHydraClient;
+use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
 use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
 use Stadline\LinkdataClient\Linkdata\Entity\Activity;
+use Stadline\LinkdataClient\Linkdata\Entity\ActivityCalculation;
 use Stadline\LinkdataClient\Linkdata\Entity\Brand;
+use Stadline\LinkdataClient\Linkdata\Entity\Connector;
 use Stadline\LinkdataClient\Linkdata\Entity\Datatype;
 use Stadline\LinkdataClient\Linkdata\Entity\DeviceModel;
+use Stadline\LinkdataClient\Linkdata\Entity\DeviceNotification;
+use Stadline\LinkdataClient\Linkdata\Entity\Firmware;
 use Stadline\LinkdataClient\Linkdata\Entity\GlobalChallenge;
+use Stadline\LinkdataClient\Linkdata\Entity\PoiCategory;
+use Stadline\LinkdataClient\Linkdata\Entity\ShareActivity;
 use Stadline\LinkdataClient\Linkdata\Entity\ShareUser;
 use Stadline\LinkdataClient\Linkdata\Entity\Sport;
 use Stadline\LinkdataClient\Linkdata\Entity\StorageKey;
 use Stadline\LinkdataClient\Linkdata\Entity\Universe;
 use Stadline\LinkdataClient\Linkdata\Entity\User;
+use Stadline\LinkdataClient\Linkdata\Entity\UserAgreement;
 use Stadline\LinkdataClient\Linkdata\Entity\UserDevice;
+use Stadline\LinkdataClient\Linkdata\Entity\UserEquipment;
 use Stadline\LinkdataClient\Linkdata\Entity\UserMeasure;
 use Stadline\LinkdataClient\Linkdata\Entity\UserMeasureGoal;
+use Stadline\LinkdataClient\Linkdata\Entity\UserPoi;
+use Stadline\LinkdataClient\Linkdata\Entity\UserProgram;
 use Stadline\LinkdataClient\Linkdata\Entity\UserRecord;
+use Stadline\LinkdataClient\Linkdata\Entity\UserRoute;
+use Stadline\LinkdataClient\Linkdata\Entity\UserSession;
 use Stadline\LinkdataClient\Linkdata\Entity\UserStorage;
 use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
 
@@ -54,7 +67,6 @@ use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
  * @method Job                 putJob(Job $job, array $options = [])
  * @method User                getUser(string $id, array $options = [])
  * @method ProxyCollection     getUsers(array $options = [])
- * @method ProxyCollection     getUserStat(string $id, array $options = [])
  * @method User                putUser(User $user, array $options = [])
  * @method User                postUser(User $user, array $options = [])
  * @method void                deleteUser(string $id, array $options = [])
@@ -124,17 +136,17 @@ use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
  * @method UserSumup           getUserSumup(string $id, array $options = [])
  * @method ProxyCollection     getUserSumups(array $options = [])
  * @method UserEquipment       getUserEquipment(string $id, array $options = [])
- * @method Paginator           getUserEquipments(array $options = [])
+ * @method ProxyCollection     getUserEquipments(array $options = [])
  * @method UserEquipment       putUserEquipment(UserEquipment $userEquipment, array $options = [])
  * @method UserEquipment       postUserEquipment(UserEquipment $userEquipment, array $options = [])
  * @method void                deleteUserEquipment(string $id, array $options = [])
  */
-class LinkdataClient extends AbstractHydraClient
+class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
 {
     public function getActivityDatastream(string $activityId): array
     {
         try {
-            return $this->customCall(
+            return $this->getAdapter()->makeRequest(
                 'GET',
                 \sprintf('/v2/activities/%s/datastream', $activityId)
             )->getContent();
@@ -143,21 +155,31 @@ class LinkdataClient extends AbstractHydraClient
         }
     }
 
+    public function getCurrentUserMeasure(string $userId): ProxyCollection
+    {
+        return $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/users/%s/current_user_measures', $userId)
+            )
+        );
+    }
+
     /**
      * @throws ClientHydraException
      */
-    public function getSimilarActivities(string $activityId, $datatypeId): array
+    public function getSimilarActivities(string $activityId, $datatypeId, int $limit = 3): array
     {
-        return $this->customCall(
+        return $this->getAdapter()->makeRequest(
             'GET',
-            \sprintf('/v2/activities/%s/similar/%s?limit=3', $activityId, $datatypeId)
+            \sprintf('/v2/activities/%s/similar/%s?limit=%d', $activityId, $datatypeId, $limit)
         )->getContent();
     }
 
     public function getActivityLocations(string $activityId): array
     {
         try {
-            return $this->customCall(
+            return $this->getAdapter()->makeRequest(
                 'GET',
                 \sprintf('/v2/activities/%s/locations', $activityId)
             )->getContent();
@@ -169,7 +191,7 @@ class LinkdataClient extends AbstractHydraClient
     public function getActivityGpx(string $activityId): string
     {
         try {
-            return $this->customCall(
+            return $this->getAdapter()->makeRequest(
                 'GET',
                 \sprintf('/v2/activities/%s.%s', $activityId, 'gpx')
             )->getContent();
@@ -183,19 +205,157 @@ class LinkdataClient extends AbstractHydraClient
      */
     public function getShareStatistics(string $id): array
     {
-        return $this->customCall(
+        return $this->getAdapter()->makeRequest(
             'GET',
             \sprintf('/v2/share_users_stats/%s', $id)
         )->getContent();
     }
 
+    public function postActivityGPX($gpxString): Activity
+    {
+        $object = $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'POST',
+                \sprintf('/v2/activities'),
+                ['Content-Type' => 'application/gpx+xml'],
+                $gpxString
+            )
+        );
+
+        if ($object instanceof Activity) {
+            return $object;
+        }
+    }
+
+    public function getActivityTCX(string $activityId): string
+    {
+        try {
+            return $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/activities/%s.%s', $activityId, 'tcx')
+            )->getContent();
+        } catch (ClientHydraException $e) {
+            return '';
+        }
+    }
+
+    public function postActivityTCX($gpxString): Activity
+    {
+        $object = $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'POST',
+                \sprintf('/v2/activities'),
+                ['Content-Type' => 'application/tcx+xml'],
+                $gpxString
+            )
+        );
+
+        if ($object instanceof Activity) {
+            return $object;
+        }
+    }
+
+    /**
+     * @throws ClientHydraException
+     */
+    public function getUserStatistics(string $id, $filters = []): array
+    {
+        return $this->getAdapter()->makeRequest(
+            'GET',
+            \sprintf('/v2/users/%s/stats%s', $id, $this->getUrlFilters($filters))
+        )->getContent();
+    }
+
+    /**
+     * @throws ClientHydraException
+     */
+    public function getCurrentUserRecords(string $id, $filters = []): ProxyCollection
+    {
+        return $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/users/%s/current_user_records?%s', $id, $this->iriConverter->formatFilters($filters))
+            ));
+    }
+
+    /**
+     * @throws ClientHydraException
+     */
+    public function getUserTags(string $userId): array
+    {
+        try {
+            return $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/users/%s/tags', $userId)
+            )->getContent();
+        } catch (ClientHydraException $e) {
+            return [];
+        }
+    }
+
+    public function getFriendActivities(string $friendLdid, ?array $filters): ProxyCollection
+    {
+        return $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/friends/%s/activities?%s', $friendLdid, $this->iriConverter->formatFilters($filters))
+            ));
+    }
+
+    public function getFriendActivity(string $friendLdid, string $activityId)
+    {
+        return $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/friends/%s/activities/%s', $friendLdid, $activityId)
+            ));
+    }
+
+    public function getFriendStatistics(string $friendLdid)
+    {
+        return
+            $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/friends/%s/stats', $friendLdid)
+            )->getContent();
+    }
+
+    /**
+     * @return array{user_contribution:int, average_contribution:int}
+     */
+    public function getUserGlobalChallengeContribution(string $userId, string $globalChallengeId): array
+    {
+        return
+            $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/users/%s/global_challenges/%s/contributions', $userId, $globalChallengeId)
+            )->getContent();
+    }
+
+    /* ------ */
+
+    /**
+     * @deprecated replace by formatFiltersForUrl
+     */
+    private function getUrlFilters(?array $filters)
+    {
+        $urlFilters = '';
+        if (null !== $filters && !empty($filters)) {
+            foreach ($filters['filters'] as $key => $filter) {
+                $urlFilters .= \sprintf('&%s=%s', $key, $filter);
+            }
+            $urlFilters = \sprintf('?%s', \ltrim($urlFilters, '&'));
+        }
+
+        return $urlFilters;
+    }
 
     /**
      * @throws ClientHydraException
      */
     public function getAutocompleteEquipement(string $parameter, string $query): array
     {
-        return $this->customCall(
+        return $this->getAdapter()->makeRequest(
             'GET',
             \sprintf('/v2/user_equipments/autocomplete/%s/%s', $parameter, $query)
         )->getContent();

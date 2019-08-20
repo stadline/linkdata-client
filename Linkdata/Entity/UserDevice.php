@@ -7,160 +7,79 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string         getId()
+ * @method void           setId(string $id)
+ * @method null|string    getSerial()
+ * @method void           setSerial(?string $serial)
+ * @method DeviceModel    getModel()
+ * @method void           setModel(DeviceModel $model)
+ * @method Firmware       getFirmware()
+ * @method void           setFirmware(Firmware $firmware)
+ * @method User           getUser()
+ * @method void           setUserUser (User $user)
+ * @method null|int       getOwnership()
+ * @method void           setOwnership(?int $ownership)
+ * @method null|\DateTime getLastConnectedAt()
+ * @method void           setLastConnectedAt(?\DateTime $lastConnectedAt)
+ * @method \DateTime      getCreatedAt()
+ * @method void           setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime      getUpdatedAt()
+ * @method void           setUpdatedAt(\DateTime $updatedAt)
+ */
 class UserDevice extends ProxyObject
 {
     /**
      * @var string
      * @Groups({"user_device_norm"})
      */
-    protected $id;
+    public $id;
 
     /**
-     * @var string
+     * @var ?string
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
-    protected $serial;
+    public $serial;
 
     /**
+     * @var DeviceModel
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
-    protected $model;
+    public $model;
 
     /**
+     * @var Firmware
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
-    protected $firmware;
+    public $firmware;
 
     /**
      * @var User
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
-    protected $user;
+    public $user;
 
     /**
-     * @var int
+     * @var ?int
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
-    protected $ownership;
+    public $ownership;
 
     /**
-     * @var string
+     * @var ?\DateTime
      * @Groups({"user_device_norm", "user_device_denorm"})
      */
-    protected $lastConnectedAt;
+    public $lastConnectedAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_device_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_device_norm"})
      */
-    private $updatedAt;
-
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
-
-    public function setId(string $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getSerial(): ?string
-    {
-        return $this->serial;
-    }
-
-    public function setSerial(?string $serial): void
-    {
-        $this->serial = $serial;
-    }
-
-    public function getModel()
-    {
-        if (null !== $this->model) {
-            $this->model->_hydrate();
-        }
-
-        return $this->model;
-    }
-
-    public function setModel(?DeviceModel $model): void
-    {
-        $this->model = $model;
-    }
-
-//    public function getFirmware(): ?Firmware
-//    {
-//        return $this->firmware;
-//    }
-
-    public function setFirmware($firmware): void
-    {
-        $this->firmware = $firmware;
-    }
-
-    public function getUser(): ?User
-    {
-        if (null !== $this->user) {
-            $this->user->_hydrate();
-        }
-
-        return $this->user;
-    }
-
-    public function setUser(?User $user): void
-    {
-        $this->user = $user;
-    }
-
-    public function getOwnership(): ?int
-    {
-        return $this->ownership;
-    }
-
-    public function setOwnership(?int $ownership): void
-    {
-        $this->ownership = $ownership;
-    }
-
-    public function getLastConnectedAt(): ?string
-    {
-        return $this->lastConnectedAt;
-    }
-
-    public function setLastConnectedAt(?string $lastConnectedAt): void
-    {
-        $this->lastConnectedAt = $lastConnectedAt;
-    }
-
-    public function getUpdatedAt(): ?string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): ?string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getAssociatedUser(): ?User
-    {
-        return $this->getUser();
-    }
+    public $updatedAt;
 }
