@@ -7,6 +7,26 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string         getId()
+ * @method void           setId(string $id)
+ * @method User           getUser()
+ * @method void           setUser(User $user)
+ * @method string         getCategory()
+ * @method void           setCategory(string $category)
+ * @method string         getBrand()
+ * @method void           setBrand(string $brand)
+ * @method string         getName()
+ * @method void           setName(string $name)
+ * @method array          getSumups()
+ * @method void           setSumups(array $sumups)
+ * @method array          getSportsAutoAssigned()
+ * @method void           setSportsAutoAssigned(array $sports)
+ * @method \DateTime      getCreatedAt()
+ * @method void           setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime      getUpdatedAt()
+ * @method void           setUpdatedAt(\DateTime $updatedAt)
+ */
 class UserEquipment extends ProxyObject
 {
     /**
@@ -56,7 +76,7 @@ class UserEquipment extends ProxyObject
      *
      * @Groups({"equipment_norm", "equipment_denorm"})
      */
-    public $sports;
+    public $sportsAutoAssigned;
 
     /**
      * @var \DateTime
