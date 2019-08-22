@@ -207,8 +207,12 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             throw new RequestException(\sprintf('Error while requesting %s with %s method', $request->getUri(), $request->getMethod()), $request->getBody(), $e);
         }
 
-        $contentType = $arrayResponse['contentType'];
-        $contentType = \explode(';', $contentType)[0];
+        if (null !== $arrayResponse['contentType']) {
+            $contentType = $arrayResponse['contentType'];
+            $contentType = \explode(';', $contentType)[0];
+        } else {
+            $contentType = "text/plain";
+        }
 
         if (\in_array($contentType, ['application/ld+json', 'application/json'], true)) {
             $response = new JsonResponse($arrayResponse['statusCode'], (string) $arrayResponse['body']);
