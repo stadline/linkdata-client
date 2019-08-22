@@ -38,6 +38,7 @@ abstract class ProxyObject
     private $_hydratedProperties = [];
     private $_currentDistantValues = [];
     private $_isHydrating = false;
+    private $_autoHydrateEnable = true;
 
     public function _refresh(array $data, bool $overrideAlreadyHydratedFields = true): void
     {
@@ -198,11 +199,16 @@ abstract class ProxyObject
         }
 
         // Object not hydrated : autohydrate
-        if (true !== ($this->_hydratedProperties[$property] ?? null)) {
+        if ($this->_autoHydrateEnable && true !== ($this->_hydratedProperties[$property] ?? null)) {
             $this->_hydrate();
         }
 
         // Return property
         return $this->{$property};
+    }
+
+    public function _setAutoHydrateEnable(bool $autoHydrateEnable): void
+    {
+        $this->_autoHydrateEnable = $autoHydrateEnable;
     }
 }

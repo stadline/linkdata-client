@@ -127,7 +127,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             $requestData['time'] = null;
             $requestData['response'] = '?';
             $requestData['isError'] = false;
-            $requestData['backtrace'] = \json_encode(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10));
+            $requestData['backtrace'] = \json_encode(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 20));
 
             $this->debugData[] = &$requestData;
         }
