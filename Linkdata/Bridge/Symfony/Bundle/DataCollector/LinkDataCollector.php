@@ -41,7 +41,7 @@ class LinkDataCollector extends DataCollector
     {
         $c = 0;
         foreach ($this->getCalls() as $request) {
-            if (false === $request['cache']) {
+            if (false === $request['cacheOrigin']) {
                 ++$c;
             }
         }

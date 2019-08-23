@@ -55,10 +55,10 @@ abstract class AbstractHydraClient implements HydraClientInterface
                     'GET',
                     $this->iriConverter->getIriFromObject($proxyObject)
                 );
-                if (($metadata = $metadataManager->getClassMetadata(\get_class($proxyObject)))->isCacheEnable()) {
-                    $request->setCacheEnable(true);
-                    $request->setCacheScope($metadata->getCacheScope());
-                    $request->setCacheTTL($metadata->getCacheTTL());
+                if (($metadata = $metadataManager->getClassMetadata(\get_class($proxyObject)))->isPersistantCacheEnable()) {
+                    $request->setPersistantCacheEnable(true);
+                    $request->setPersistantCacheScope($metadata->getPersistantCacheScope());
+                    $request->setPersistantCacheTTL($metadata->getPersistantCacheTTL());
                 }
                 $requestResponse = $this->getAdapter()->call($request);
 
@@ -78,20 +78,17 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
         ProxyCollection::_init(
             // getData
-            function (?string $classname, string $uri, bool $cacheEnable = true) use ($metadataManager): array {
+            function (?string $classname, string $uri, bool $executionCacheEnable = true) use ($metadataManager): array {
                 $request = new Request(
                     'GET',
                     $uri
                 );
-                if (false === $cacheEnable) {
-                    $request->setCacheEnable(false);
-                } else if (null !== $classname && ($metadata = $metadataManager->getClassMetadata($classname))->isCacheEnable()) {
-                    $request->setCacheEnable(true);
-                    $request->setCacheScope($metadata->getCacheScope());
-                    $request->setCacheTTL($metadata->getCacheTTL());
+                if (null !== $classname && ($metadata = $metadataManager->getClassMetadata($classname))->isPersistantCacheEnable()) {
+                    $request->setPersistantCacheEnable(true);
+                    $request->setPersistantCacheScope($metadata->getPersistantCacheScope());
+                    $request->setPersistantCacheTTL($metadata->getPersistantCacheTTL());
                 }
-
-                $requestResponse = $this->getAdapter()->call($request, $cacheEnable);
+                $requestResponse = $this->getAdapter()->call($request, $executionCacheEnable);
 
                 if (!$requestResponse instanceof JsonResponse) {
                     throw new \RuntimeException('Cannot hydrate object with non json response');
@@ -115,10 +112,10 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
         $cacheData = [];
         foreach ($this->metadataManager->getClassMetadatas() as $id => $classMetadata) {
-            if ($classMetadata->isCacheWarmup()) {
+            if ($classMetadata->isPersistantCacheWarmup()) {
                 $cacheData[] = [
                     'classname' => $classMetadata->getClass(),
-                    'ttl' => $classMetadata->getCacheTTL(),
+                    'ttl' => $classMetadata->getPersistantCacheTTL(),
                     'fetchData' => function ($className): void {
                         $this->getCollection($className, [], false, true);
                     },

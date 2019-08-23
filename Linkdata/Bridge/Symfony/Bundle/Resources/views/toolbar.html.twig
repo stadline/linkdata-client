@@ -70,7 +70,8 @@
           var time = $(this).data('time');
           var statuscode = $(this).data('statuscode');
           var error = $(this).data('error');
-          var cache = $(this).data('cache');
+          var cacheOrigin = $(this).data('cacheorigin');
+          var cacheSavedIn = $(this).data('cachesavedin');
 
           var str = "";
 
@@ -80,7 +81,8 @@
           str += "<div><b>Time :</b> " + time + "ms</div>";
           str += "<div><b>Status code :</b> " + statuscode + "</div>";
           str += "<div><b>Error :</b> " + (error ? 'true' : 'false') + "</div>";
-          str += "<div><b>From cache :</b> " + (cache ? cache : 'no') + "</div>";
+          str += "<div><b>From cache :</b> " + (cacheOrigin ? cacheOrigin : 'no') + "</div>";
+          str += "<div><b>Save to cache :</b> " + JSON.stringify(cacheSavedIn) + "</div>";
           str += "<h1>Headers</h1>";
           str += "<pre class=\"prettyprint\">";
           str += JSON.stringify(headers, null, 2);
@@ -137,10 +139,10 @@
             <u>{{ meta.class }} </u>
             <div>Cache :</div>
             <ul>
-                <li><b>Enabled : </b>{{ (meta.cacheEnable ? 'true': 'false') }}</li>
-                {% if meta.cacheEnable %}
-                <li><b>TTL : </b>{{ meta.cacheTTL }}</li>
-                <li><b>Scope : </b>{{ meta.cacheScope }}</li>
+                <li><b>Peristant : </b>{{ (meta.persistantCacheEnable ? 'true': 'false') }}</li>
+                {% if meta.persistantCacheEnable %}
+                <li><b>TTL : </b>{{ meta.persistantCacheTTL }}</li>
+                <li><b>Scope : </b>{{ meta.persistantCacheScope }}</li>
                 {% endif %}
             </ul>
             <div>Properties :</div>
@@ -167,14 +169,14 @@
             <th></th>
         </tr>
         {% for index, call in collector.calls %}
-            <tr style="{% if call.isError %}color:red; {% elseif call.cache %}color:gray;font-weight:normal;{% endif %}">
+            <tr style="{% if call.isError %}color:red; {% elseif call.cacheOrigin %}color:gray;font-weight:normal;{% endif %}">
                 <td>{{ index + 1 }}</td>
                 <td>[{{ call.method }}] {{ call.uri }}</td>
                 <td>{{ (call.time * 1000)|round(2) }}</td>
-                <td {% if not call.isError and not call.cache %}style="color:darkgreen;"{% endif %}>{% if call.cache %}Cache ({{ call.cache }}){% elseif call.isError %}Error{% else %}Success{% endif %} {% if call.status %}({{ call.status }}){% endif %}</td>
+                <td {% if not call.isError and not call.cacheOrigin %}style="color:darkgreen;"{% endif %}>{% if call.cacheOrigin %}Cache ({{ call.cacheOrigin }}){% elseif call.isError %}Error{% else %}Success{% endif %} {% if call.status %}({{ call.status }}){% endif %}</td>
                 <td style="font-size: 0.8em;">
                     <a style="cursor: pointer;" class="json-dialog" data-error="{{ call.isError }}"
-                       data-cache="{{ call.cache }}" data-uri="{{ call.uri }}" data-method="{{ call.method }}"
+                       data-cacheorigin="{{ call.cacheOrigin }}" data-cachesavedin="{{ call.cacheSavedIn }}" data-uri="{{ call.uri }}" data-method="{{ call.method }}"
                        data-statuscode="{{ call.status }}" data-time="{{ (call.time * 1000)|round(2) }}"
                        data-headers="{{ call.headers|json_encode }}" data-body="{{ call.body }}"
                        data-response="{{ call.response }}" data-backtrace="{{ call.backtrace }}"
