@@ -6,6 +6,7 @@ namespace Stadline\LinkdataClient\ClientHydra\Adapter;
 
 class Request
 {
+    public const PERSISTANTCACHE_PREFIX = 'ldclient';
     public const PERSISTANTCACHE_SCOPE_PUBLIC = 'public';
     public const PERSISTANTCACHE_SCOPE_PRIVATE = 'private';
 
@@ -134,11 +135,11 @@ class Request
 
     public function getCacheHash(): string
     {
-        $baseStr = \json_encode($this->getMethod().'.'.$this->getUri().'.'.$this->getBody());
+        $baseStr = $this->getMethod().'.'.\bin2hex($this->getUri());
         if (self::PERSISTANTCACHE_SCOPE_PRIVATE === $this->persistantCacheScope) {
             $baseStr .= '.'.$this->persistantCacheScopeId;
         }
 
-        return \sha1($baseStr);
+        return self::PERSISTANTCACHE_PREFIX.'.'.$baseStr;
     }
 }

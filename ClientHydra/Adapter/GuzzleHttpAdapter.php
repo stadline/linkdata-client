@@ -14,7 +14,8 @@ use Symfony\Component\Cache\CacheItem;
 
 class GuzzleHttpAdapter implements HttpAdapterInterface
 {
-    private const WARMUP_CACHE_TTL = 3600;
+    private const CACHE_PREFIX = 'ldclient';
+    private const CACHE_WARMUP_TTL = 3600;
 
     private $client;
     private $baseUrl;
@@ -51,7 +52,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     public function warmupCache(array $cacheData): array
     {
         try {
-            $cacheKey = 'hydraclient-cache-warmup';
+            $cacheKey = Request::PERSISTANTCACHE_PREFIX.'.cache-warmup';
             if ($this->persistantCache->hasItem($cacheKey)) {
                 $this->isRecordingCacheWarmup = true;
                 $this->cacheWarmupData = $this->persistantCache->getItem($cacheKey)->get();
@@ -65,10 +66,19 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
                 }
                 $this->isRecordingCacheWarmup = false;
                 $cacheItem = $this->persistantCache->getItem($cacheKey);
-                $cacheItem->expiresAfter(self::WARMUP_CACHE_TTL);
+                $cacheItem->expiresAfter(self::CACHE_WARMUP_TTL);
                 $cacheItem->set($this->cacheWarmupData);
                 if (!$this->persistantCache->save($cacheItem)) {
                     throw new \RuntimeException('cannot save to persistantCache cache');
+                }
+            }
+
+            // Add to execution cache
+            foreach ($this->cacheWarmupData as $data) {
+                $cacheItem = $this->executionCache->getItem($data['cachehash']);
+                $cacheItem->set($data['rawresponse']);
+                if (!$this->executionCache->save($cacheItem)) {
+                    throw new \RuntimeException('cannot save to execution cache');
                 }
             }
 
@@ -227,7 +237,11 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
 
         // cache warmup
         if ($this->isRecordingCacheWarmup) {
-            $this->cacheWarmupData[] = $response;
+            $this->cacheWarmupData[] = [
+                'cachehash' => $request->getCacheHash(),
+                'rawresponse' => $arrayResponse,
+                'response' => $response,
+            ];
         }
 
         return $response;

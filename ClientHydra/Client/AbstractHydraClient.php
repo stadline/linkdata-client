@@ -124,7 +124,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
         }
 
         foreach ($this->getAdapter()->warmupCache($cacheData) as $data) {
-            $this->parseResponse($data);
+            $this->parseResponse($data['response']);
         }
     }
 
