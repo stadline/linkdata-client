@@ -63,6 +63,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void                 setUpdatedAt(\DateTime $updatedAt)
  * @method array                getEquipments()
  * @method void                 setEquipments(array $equipments)
+ * @method void                 addEquipment(UserEquipment $equipment)
+ * @method void                 removeEquipment(UserEquipment $equipment)
  */
 class Activity extends ProxyObject
 {
