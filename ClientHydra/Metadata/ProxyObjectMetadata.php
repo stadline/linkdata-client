@@ -19,10 +19,10 @@ class ProxyObjectMetadata
     private $class;
     private $properties = [];
     private $metadataCache;
-    private $cacheEnable = false;
-    private $cacheScope = Request::CACHE_SCOPE_PRIVATE;
-    private $cacheTTL = 1;
-    private $cacheWarmup = false;
+    private $persistantCacheEnable = false;
+    private $persistantCacheScope = Request::PERSISTANTCACHE_SCOPE_PRIVATE;
+    private $persistantCacheTTL = 1;
+    private $persistantCacheWarmup = false;
 
     public function __construct($class)
     {
@@ -35,44 +35,44 @@ class ProxyObjectMetadata
         return $this->class;
     }
 
-    public function isCacheEnable(): bool
+    public function isPersistantCacheEnable(): bool
     {
-        return $this->cacheEnable;
+        return $this->persistantCacheEnable;
     }
 
-    public function setCacheEnable(bool $cacheEnable): void
+    public function setPersistantCacheEnable(bool $persistantCacheEnable): void
     {
-        $this->cacheEnable = $cacheEnable;
+        $this->persistantCacheEnable = $persistantCacheEnable;
     }
 
-    public function getCacheScope(): string
+    public function getPersistantCacheScope(): string
     {
-        return $this->cacheScope;
+        return $this->persistantCacheScope;
     }
 
-    public function setCacheScope(string $cacheScope): void
+    public function setPersistantCacheScope(string $persistantCacheScope): void
     {
-        $this->cacheScope = $cacheScope;
+        $this->persistantCacheScope = $persistantCacheScope;
     }
 
-    public function getCacheTTL(): int
+    public function getPersistantCacheTTL(): int
     {
-        return $this->cacheTTL;
+        return $this->persistantCacheTTL;
     }
 
-    public function setCacheTTL(int $cacheTTL): void
+    public function setPersistantCacheTTL(int $persistantCacheTTL): void
     {
-        $this->cacheTTL = $cacheTTL;
+        $this->persistantCacheTTL = $persistantCacheTTL;
     }
 
-    public function isCacheWarmup(): bool
+    public function isPersistantCacheWarmup(): bool
     {
-        return $this->cacheEnable && $this->cacheWarmup;
+        return $this->persistantCacheEnable && $this->persistantCacheWarmup;
     }
 
-    public function setCacheWarmup(bool $cacheWarmup): void
+    public function setPersistantCacheWarmup(bool $persistantCacheWarmup): void
     {
-        $this->cacheWarmup = $cacheWarmup;
+        $this->persistantCacheWarmup = $persistantCacheWarmup;
     }
 
     public function getProperties(): array

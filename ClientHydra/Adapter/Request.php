@@ -6,18 +6,19 @@ namespace Stadline\LinkdataClient\ClientHydra\Adapter;
 
 class Request
 {
-    public const CACHE_SCOPE_PUBLIC = 'public';
-    public const CACHE_SCOPE_PRIVATE = 'private';
+    public const PERSISTANTCACHE_PREFIX = 'ldclient';
+    public const PERSISTANTCACHE_SCOPE_PUBLIC = 'public';
+    public const PERSISTANTCACHE_SCOPE_PRIVATE = 'private';
 
     private $method;
     private $uri;
     private $headers;
     private $body;
 
-    private $cacheEnable = true;
-    private $cacheScope = self::CACHE_SCOPE_PRIVATE;
-    private $cacheScopeId = null;
-    private $cacheTTL = 1;
+    private $persistantCacheEnable = false;
+    private $persistantCacheScope = self::PERSISTANTCACHE_SCOPE_PRIVATE;
+    private $persistantCacheScopeId = null;
+    private $persistantCacheTTL = -1;
 
     public function __construct(
         string $method,
@@ -71,57 +72,74 @@ class Request
         $this->body = $body;
     }
 
-    public function isCacheEnable(): bool
+    public function isPersistantCacheEnable(): bool
     {
+        if (false === $this->persistantCacheEnable) {
+            return false;
+        }
+
+        if (null === $this->persistantCacheScope) {
+            return false;
+        }
+
+        if ($this->persistantCacheTTL <= 0) {
+            return false;
+        }
+
+        // @todo : remove when private scope is implemented
+        if (self::PERSISTANTCACHE_SCOPE_PUBLIC !== $this->persistantCacheScope) {
+            return false;
+        }
+
         if (\in_array(\strtoupper($this->getMethod()), ['PUT', 'POST', 'DELETE'], true)) {
             return false;
         }
 
-        return $this->cacheEnable;
+        return $this->persistantCacheEnable;
     }
 
-    public function setCacheEnable(bool $cacheEnable): void
+    public function setPersistantCacheEnable(bool $persistantCacheEnable): void
     {
-        $this->cacheEnable = $cacheEnable;
+        $this->persistantCacheEnable = $persistantCacheEnable;
     }
 
-    public function getCacheScope(): string
+    public function getPersistantCacheScope(): string
     {
-        return $this->cacheScope;
+        return $this->persistantCacheScope;
     }
 
-    public function setCacheScope(string $cacheScope): void
+    public function setPersistantCacheScope(string $persistantCacheScope): void
     {
-        $this->cacheScope = $cacheScope;
+        $this->persistantCacheScope = $persistantCacheScope;
     }
 
-    public function getCacheScopeId(): ?string
+    public function getPersistantCacheScopeId(): ?string
     {
-        return $this->cacheScopeId;
+        return $this->persistantCacheScopeId;
     }
 
-    public function setCacheScopeId(?string $cacheScopeId): void
+    public function setPersistantCacheScopeId(?string $persistantCacheScopeId): void
     {
-        $this->cacheScopeId = $cacheScopeId;
+        $this->persistantCacheScopeId = $persistantCacheScopeId;
     }
 
-    public function getCacheTTL(): int
+    public function getPersistantCacheTTL(): int
     {
-        return $this->cacheTTL;
+        return $this->persistantCacheTTL;
     }
 
-    public function setCacheTTL(int $cacheTTL): void
+    public function setPersistantCacheTTL(int $persistantCacheTTL): void
     {
-        $this->cacheTTL = $cacheTTL;
+        $this->persistantCacheTTL = $persistantCacheTTL;
     }
 
     public function getCacheHash(): string
     {
-        $baseStr = \json_encode($this->getMethod().'.'.$this->getUri().'.'.$this->getBody());
-        if ($this->cacheScope = self::CACHE_SCOPE_PRIVATE) {
-            $baseStr .= '.'.$this->cacheScopeId;
+        $baseStr = $this->getMethod().'.'.\bin2hex($this->getUri());
+        if (self::PERSISTANTCACHE_SCOPE_PRIVATE === $this->persistantCacheScope) {
+            $baseStr .= '.'.$this->persistantCacheScopeId;
         }
 
-        return \sha1($baseStr);
+        return self::PERSISTANTCACHE_PREFIX.'.'.$baseStr;
     }
 }

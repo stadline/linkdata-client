@@ -62,10 +62,10 @@ class MetadataManager
         // cache
         if (null !== ($cacheAnnotation = $this->reader->getClassAnnotation($reflexionClass, Cache::class))) {
             /* @var Cache $cacheAnnotation */
-            $metadata->setCacheEnable(true);
-            $metadata->setCacheScope($cacheAnnotation->public ? Request::CACHE_SCOPE_PUBLIC : Request::CACHE_SCOPE_PRIVATE);
-            $metadata->setCacheTTL($cacheAnnotation->ttl);
-            $metadata->setCacheWarmup($cacheAnnotation->warmup);
+            $metadata->setPersistantCacheEnable(true);
+            $metadata->setPersistantCacheScope($cacheAnnotation->public ? Request::PERSISTANTCACHE_SCOPE_PUBLIC : Request::PERSISTANTCACHE_SCOPE_PRIVATE);
+            $metadata->setPersistantCacheTTL($cacheAnnotation->ttl);
+            $metadata->setPersistantCacheWarmup($cacheAnnotation->warmup);
         }
 
         // search in properties

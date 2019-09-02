@@ -19,7 +19,7 @@ interface HttpAdapterInterface
         bool $useCache = true
     ): ResponseInterface;
 
-    public function call(Request $request, bool $useCache = true): ResponseInterface;
+    public function call(Request $request, bool $usePersistantCache = true): ResponseInterface;
 
     public function warmupCache(array $cacheData): array;
 

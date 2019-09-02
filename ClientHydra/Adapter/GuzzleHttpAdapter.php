@@ -14,7 +14,8 @@ use Symfony\Component\Cache\CacheItem;
 
 class GuzzleHttpAdapter implements HttpAdapterInterface
 {
-    private const WARMUP_CACHE_TTL = 3600;
+    private const CACHE_PREFIX = 'ldclient';
+    private const CACHE_WARMUP_TTL = 3600;
 
     private $client;
     private $baseUrl;
@@ -26,7 +27,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     private $persistantCache;
 
     /**
-     * Local cache for current instance only.
+     * Local cache for current execution only.
      *
      * @var CacheItemPoolInterface
      */
@@ -51,7 +52,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     public function warmupCache(array $cacheData): array
     {
         try {
-            $cacheKey = 'hydraclient-cache-warmup';
+            $cacheKey = Request::PERSISTANTCACHE_PREFIX.'.cache-warmup';
             if ($this->persistantCache->hasItem($cacheKey)) {
                 $this->isRecordingCacheWarmup = true;
                 $this->cacheWarmupData = $this->persistantCache->getItem($cacheKey)->get();
@@ -65,10 +66,19 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
                 }
                 $this->isRecordingCacheWarmup = false;
                 $cacheItem = $this->persistantCache->getItem($cacheKey);
-                $cacheItem->expiresAfter(self::WARMUP_CACHE_TTL);
+                $cacheItem->expiresAfter(self::CACHE_WARMUP_TTL);
                 $cacheItem->set($this->cacheWarmupData);
                 if (!$this->persistantCache->save($cacheItem)) {
                     throw new \RuntimeException('cannot save to persistantCache cache');
+                }
+            }
+
+            // Add to execution cache
+            foreach ($this->cacheWarmupData as $data) {
+                $cacheItem = $this->executionCache->getItem($data['cachehash']);
+                $cacheItem->set($data['rawresponse']);
+                if (!$this->executionCache->save($cacheItem)) {
+                    throw new \RuntimeException('cannot save to execution cache');
                 }
             }
 
@@ -86,11 +96,11 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         string $uri,
         array $headers = [],
         string $body = null,
-        bool $useCache = true
+        bool $useExecutionCache = true
     ): ResponseInterface {
         $request = new Request($method, $uri, $headers, $body);
 
-        return $this->call($request, $useCache);
+        return $this->call($request, $useExecutionCache);
     }
 
     public function setDefaultHeader(string $key, string $value): void
@@ -109,11 +119,11 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         ];
     }
 
-    public function call(Request $request, bool $useCache = true): ResponseInterface
+    public function call(Request $request, bool $useExecutionCache = true): ResponseInterface
     {
         $request->setHeaders(\array_merge($this->defaultHeaders, $request->getHeaders()));
         if (\in_array(\strtoupper($request->getMethod()), ['PUT', 'POST', 'DELETE'], true)) {
-            $useCache = false;
+            $useExecutionCache = false;
         }
 
         if ($this->debugEnabled) {
@@ -123,11 +133,12 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             $requestData['body'] = $request->getBody();
             $requestData['method'] = $request->getMethod();
             $requestData['uri'] = $request->getUri();
-            $requestData['cache'] = false;
+            $requestData['cacheOrigin'] = false;
+            $requestData['cacheSavedIn'] = [];
             $requestData['time'] = null;
             $requestData['response'] = '?';
             $requestData['isError'] = false;
-            $requestData['backtrace'] = \json_encode(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10));
+            $requestData['backtrace'] = \json_encode(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 20));
 
             $this->debugData[] = &$requestData;
         }
@@ -136,14 +147,14 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         $e = null;
 
         $requestHash = $request->getCacheHash();
-        if ($useCache && $this->executionCache->hasItem($requestHash)) {
+        if ($useExecutionCache && $this->executionCache->hasItem($requestHash)) {
             if ($this->debugEnabled) {
-                $requestData['cache'] = 'execution';
+                $requestData['cacheOrigin'] = 'execution';
             }
             $arrayResponse = $this->executionCache->getItem($requestHash)->get();
-        } elseif ($useCache && $this->persistantCache->hasItem($requestHash)) {
+        } elseif ($useExecutionCache && $this->persistantCache->hasItem($requestHash)) {
             if ($this->debugEnabled) {
-                $requestData['cache'] = 'persistant';
+                $requestData['cacheOrigin'] = 'persistant';
             }
             $arrayResponse = $this->persistantCache->getItem($requestHash)->get();
 
@@ -151,6 +162,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             $cacheItem = new CacheItem();
             $cacheItem->set($this->persistantCache->getItem($requestHash)->get());
             $this->executionCache->save($cacheItem);
+            $requestData['cache']['savedIn'][] = 'execution';
         } else {
             try {
                 /** @var Response $response */
@@ -163,20 +175,22 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
                     'contentType' => $response->getHeader('Content-Type')[0] ?? 'unknown',
                 ];
 
-                if ($useCache) {
+                if ($useExecutionCache) {
                     $cacheItem = $this->executionCache->getItem($requestHash);
                     $cacheItem->set($arrayResponse);
                     if (!$this->executionCache->save($cacheItem)) {
                         throw new \RuntimeException('cannot save to execution cache');
                     }
+                    $requestData['cacheSavedIn'][] = 'execution';
 
-                    if ($request->isCacheEnable()) {
+                    if ($request->isPersistantCacheEnable()) {
                         $cacheItem = $this->persistantCache->getItem($requestHash);
                         $cacheItem->set($arrayResponse);
-                        $cacheItem->expiresAfter($request->getCacheTTL());
+                        $cacheItem->expiresAfter($request->getPersistantCacheTTL());
                         if (!$this->persistantCache->save($cacheItem)) {
                             throw new \RuntimeException('cannot save to persistantCache cache');
                         }
+                        $requestData['cacheSavedIn'][] = 'persistant';
                     }
                 }
             } catch (GuzzleException $exception) {
@@ -190,6 +204,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             $requestData['status'] = $e ? $e->getResponse()->getStatusCode() : $arrayResponse['statusCode'];
             $requestData['response'] = $e ? $e->getResponse()->getBody()->getContents() : $arrayResponse['body'];
             $requestData['isError'] = null !== $e;
+            $requestData['cacheSavedIn'] = \json_encode($requestData['cacheSavedIn']);
         }
 
         if (null !== $e) {
@@ -197,7 +212,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             if (442 === $e->getCode() && false === $this->isRecordingCacheWarmup) {
                 $this->call(new Request('GET', '/v2/me'));
 
-                return $this->call($request, $useCache);
+                return $this->call($request, $useExecutionCache);
             }
 
             if ($this->debugEnabled) {
@@ -207,8 +222,12 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             throw new RequestException(\sprintf('Error while requesting %s with %s method', $request->getUri(), $request->getMethod()), $request->getBody(), $e);
         }
 
-        $contentType = $arrayResponse['contentType'];
-        $contentType = \explode(';', $contentType)[0];
+        if (null !== $arrayResponse['contentType']) {
+            $contentType = $arrayResponse['contentType'];
+            $contentType = \explode(';', $contentType)[0];
+        } else {
+            $contentType = 'text/plain';
+        }
 
         if (\in_array($contentType, ['application/ld+json', 'application/json'], true)) {
             $response = new JsonResponse($arrayResponse['statusCode'], (string) $arrayResponse['body']);
@@ -218,7 +237,11 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
 
         // cache warmup
         if ($this->isRecordingCacheWarmup) {
-            $this->cacheWarmupData[] = $response;
+            $this->cacheWarmupData[] = [
+                'cachehash' => $request->getCacheHash(),
+                'rawresponse' => $arrayResponse,
+                'response' => $response,
+            ];
         }
 
         return $response;
