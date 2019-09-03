@@ -97,7 +97,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                                     $subObject = $this->hydraClient->getProxyFromIri($elt['@id']);
                                     $subObject->_refresh($elt);
                                     $properties[] = $subObject;
-                                    break;
+                                    continue;
                                 }
                                 if (\is_string($elt) && $this->iriConverter->isIri($elt)) {
                                     $properties[] = $this->hydraClient->getProxyFromIri($elt);
