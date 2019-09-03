@@ -162,27 +162,47 @@ abstract class ProxyObject
                 return null;
             }
 
+            $resolver = function ($prop, $value) {
+                // Basic types
+                switch ($prop['type']) {
+                    case ProxyObjectMetadata::TYPE_INTEGER:
+                        return (int) $value;
+                    case ProxyObjectMetadata::TYPE_BOOLEAN:
+                        return (bool) $value;
+                    case ProxyObjectMetadata::TYPE_FLOAT:
+                        return (float) $value;
+                    case ProxyObjectMetadata::TYPE_STRING:
+                        return (string) $value;
+                    case ProxyObjectMetadata::TYPE_DATETIME:
+                        return $value instanceof \DateTime ? $value : new \DateTime($value);
+                }
+
+                // ProxyObject
+                if (!$value instanceof self && ($prop['isProxyObject'] ?? false)) {
+                    return (self::$_getObject)($prop['type'], $value, false);
+                }
+
+                return $value;
+            };
+
             $prop = $this->_getMetadata()->getProperty($property);
-            // Basic types
-            switch ($prop['type']) {
-                case ProxyObjectMetadata::TYPE_INTEGER:
-                    return (int) $value;
-                case ProxyObjectMetadata::TYPE_BOOLEAN:
-                    return (bool) $value;
-                case ProxyObjectMetadata::TYPE_FLOAT:
-                    return (float) $value;
-                case ProxyObjectMetadata::TYPE_STRING:
-                    return (string) $value;
-                case ProxyObjectMetadata::TYPE_DATETIME:
-                    return $value instanceof \DateTime ? $value : new \DateTime($value);
+
+            // array case
+            if (true === ($prop['isArray'] ?? false)) {
+                if (!\is_array($value) && null !== $value) {
+                    throw new \RuntimeException(\sprintf('Cannot set non-array value in %s::%s', $this->_getMetadata()->getClass(), $property));
+                }
+
+                // cast all values to real values
+                $finalValue = [];
+                foreach ($value as $key => $valueItem) {
+                    $finalValue[$key] = $resolver($prop, $valueItem);
+                }
+
+                return $finalValue;
             }
 
-            // ProxyObject
-            if (!$value instanceof self && ($prop['isProxyObject'] ?? false)) {
-                return (self::$_getObject)($prop['type'], $value, false);
-            }
-
-            return $value;
+            return $resolver($prop, $value);
         })();
     }
 
