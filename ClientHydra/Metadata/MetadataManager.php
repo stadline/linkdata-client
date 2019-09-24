@@ -70,7 +70,7 @@ class MetadataManager
 
         // search in properties
         foreach ($reflexionClass->getProperties() as $property) {
-            if (false !== $property->getDocComment() && \preg_match('/@var\s+\\\\?\??([\\\\a-zA-Z0-9_]+)(\[\])?/', $property->getDocComment(), $matches)) {
+            if (false !== $property->getDocComment() && \preg_match('/@var\s+\\\\?\??([\\\\a-zA-Z0-9_\[\]]+)/', $property->getDocComment(), $matches)) {
                 list(, $type) = $matches;
 
                 $type = $this->parseType($type);
@@ -80,6 +80,7 @@ class MetadataManager
                     $type['type'],
                     [
                         'isProxyObject' => $type['isProxyObject'] ?? false,
+                        'isArray' => $type['isArray'] ?? false,
                     ]
                 );
             }
@@ -125,7 +126,15 @@ class MetadataManager
         $return = [
             'type' => null,
             'isProxyObject' => false,
+            'isArray' => false,
         ];
+
+        // check if type finished by "[]"
+        \preg_match("/([\\\\a-zA-Z0-9_]+)(\[\])?$/", $type, $matches);
+        list(, $type) = $matches;
+        if (null !== ($matches[2] ?? null)) {
+            $return['isArray'] = true;
+        }
 
         // basic type case
         if ($normalizedType = (static function (string $type): ?string {

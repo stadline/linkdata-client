@@ -149,7 +149,7 @@
             <ul>
                 {% for k,v in meta.properties %}
                     <li>
-                        <b>{{ k }} : </b>{{ v.type }} {% if v.isProxyObject is defined %}(ProxyObject){% endif %}
+                        <b>{{ k }} : </b>{{ v.type }}{% if v.isArray is defined %}[]{% endif %} {% if v.isProxyObject is defined %}(ProxyObject){% endif %}
                     </li>
                 {% endfor %}
             </ul>

@@ -172,6 +172,12 @@ class Sport extends ProxyObject
      */
     public $updatedAt;
 
+    /**
+     * @var array
+     * @Groups({"sport_norm"})
+     */
+    public $userEquipments;
+
     public function getNameByLocale(string $locale): ?string
     {
         return $this->getTranslatedPropertyByLocale('translatedNames', $locale);

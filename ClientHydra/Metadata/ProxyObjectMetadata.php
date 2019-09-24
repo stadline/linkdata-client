@@ -93,6 +93,9 @@ class ProxyObjectMetadata
         if (true === $options['isProxyObject']) {
             $this->properties[$name]['isProxyObject'] = true;
         }
+        if (true === $options['isArray']) {
+            $this->properties[$name]['isArray'] = true;
+        }
 
         $this->resetMetadataCache();
     }

@@ -61,6 +61,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void                 setCreatedAt(\DateTime $createdAt)
  * @method \DateTime            getUpdatedAt()
  * @method void                 setUpdatedAt(\DateTime $updatedAt)
+ * @method array                getEquipments()
+ * @method void                 setEquipments(array $equipments)
+ * @method void                 addEquipment(UserEquipment $equipment)
+ * @method void                 removeEquipment(UserEquipment $equipment)
  */
 class Activity extends ProxyObject
 {
@@ -213,6 +217,12 @@ class Activity extends ProxyObject
      * @Groups({"activity_norm"})
      */
     public $datastream = [];
+
+    /**
+     * @var array
+     * @Groups({"activity_norm"})
+     */
+    public $equipments;
 
     /**
      * @var \DateTime

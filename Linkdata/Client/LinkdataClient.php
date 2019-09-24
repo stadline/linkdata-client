@@ -26,6 +26,7 @@ use Stadline\LinkdataClient\Linkdata\Entity\Universe;
 use Stadline\LinkdataClient\Linkdata\Entity\User;
 use Stadline\LinkdataClient\Linkdata\Entity\UserAgreement;
 use Stadline\LinkdataClient\Linkdata\Entity\UserDevice;
+use Stadline\LinkdataClient\Linkdata\Entity\UserEquipment;
 use Stadline\LinkdataClient\Linkdata\Entity\UserMeasure;
 use Stadline\LinkdataClient\Linkdata\Entity\UserMeasureGoal;
 use Stadline\LinkdataClient\Linkdata\Entity\UserPoi;
@@ -134,6 +135,11 @@ use Stadline\LinkdataClient\Linkdata\Entity\UserSumup;
  * @method void                deleteUserStorage(string $id, array $options = [])
  * @method UserSumup           getUserSumup(string $id, array $options = [])
  * @method ProxyCollection     getUserSumups(array $options = [])
+ * @method UserEquipment       getUserEquipment(string $id, array $options = [])
+ * @method ProxyCollection     getUserEquipments(array $options = [])
+ * @method UserEquipment       putUserEquipment(UserEquipment $userEquipment, array $options = [])
+ * @method UserEquipment       postUserEquipment(UserEquipment $userEquipment, array $options = [])
+ * @method void                deleteUserEquipment(string $id, array $options = [])
  */
 class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
 {
@@ -342,5 +348,16 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         }
 
         return $urlFilters;
+    }
+
+    /**
+     * @throws ClientHydraException
+     */
+    public function getAutocompleteEquipement(string $parameter, string $query): array
+    {
+        return $this->getAdapter()->makeRequest(
+            'GET',
+            \sprintf('/v2/user_equipments/autocomplete/%s/%s', $parameter, $query)
+        )->getContent();
     }
 }
