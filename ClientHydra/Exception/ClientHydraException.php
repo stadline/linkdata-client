@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\ClientHydra\Exception;
 
-class ClientHydraException extends \Exception
+abstract class ClientHydraException extends \Exception
 {
 }

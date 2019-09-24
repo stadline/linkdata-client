@@ -7,101 +7,55 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string      getId()
+ * @method void        setId(string $id)
+ * @method User        getUser()
+ * @method void        setUser(User $user)
+ * @method null|string getValue()
+ * @method void        setValue(?string $value)
+ * @method StorageKey  getStorageKey()
+ * @method void        setStorageKey(StorageKey $storageKey)
+ * @method \DateTime   getCreatedAt()
+ * @method void        setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime   getUpdatedAt()
+ * @method void        setUpdatedAt(\DateTime $updatedAt)
+ */
 class UserStorage extends ProxyObject
 {
     /**
      * @var string
-     * @Groups({"user_storage_norm"})
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
-    protected $id;
+    public $id;
 
     /**
      * @var User
-     * @Groups({"user_storage_norm"})
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
-    protected $user;
+    public $user;
 
     /**
-     * @var string
-     * @Groups({"user_storage_norm"})
+     * @var ?string
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
-    protected $value;
+    public $value;
 
     /**
      * @var StorageKey
-     * @Groups({"user_storage_norm"})
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
-    protected $storageKey;
+    public $storageKey;
 
     /**
-     * @var string
-     * @Groups({"user_storage_norm"})
+     * @var \DateTime
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
-     * @var string
-     * @Groups({"user_storage_norm"})
+     * @var \DateTime
+     * @Groups({"userstorage_norm", ""userstorage_denorm})
      */
-    private $updatedAt;
-
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
-
-    public function setId(?string $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getUser()
-    {
-        return $this->hydrate($this->user);
-    }
-
-    public function getValue(): ?string
-    {
-        return $this->value;
-    }
-
-    public function setValue(?string $value): void
-    {
-        $this->value = $value;
-    }
-
-    public function setUser($user): void
-    {
-        $this->user = $user;
-    }
-
-    public function getStorageKey()
-    {
-        return $this->hydrate($this->storageKey);
-    }
-
-    public function setStorageKey($storageKey): void
-    {
-        $this->storageKey = $storageKey;
-    }
-
-    public function getUpdatedAt(): string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
+    public $updatedAt;
 }

@@ -4,125 +4,69 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use Stadline\LinkdataClient\ClientHydra\Utils\TranslatedPropertiesTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @Cache(
+ *     public=true,
+ *     ttl=3600,
+ * )
+ *
+ * @method int       getId()
+ * @method void      setId(int $id)
+ * @method array     getTranslatedNames()
+ * @method void      setTranslatedNames(array $translatedNames)
+ * @method bool      isActive()
+ * @method void      setActive(bool $active)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
+ */
 class Brand extends ProxyObject
 {
+    use TranslatedPropertiesTrait;
+
     /**
      * @var int
      * @Groups({"brand_norm"})
      */
-    private $id;
-
-    /**
-     * @var ArrayCollection
-     */
-    private $deviceModels;
+    public $id;
 
     /**
      * @var array
      * @Groups({"brand_norm"})
      */
-    private $translatedNames;
+    public $translatedNames;
 
     /**
      * @var bool
      * @Groups({"brand_norm"})
      */
-    private $active = true;
+    public $active = true;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"brand_norm"})
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"brand_norm"})
      */
-    private $updatedAt;
-
-    public function addDeviceModel(DeviceModel $deviceModel): void
-    {
-        $this->deviceModels[] = $deviceModel;
-    }
-
-    public function removeDeviceModel(DeviceModel $deviceModel): void
-    {
-        $this->deviceModels->removeElement($deviceModel);
-    }
-
-    public function getDeviceModels(): Collection
-    {
-        return $this->deviceModels;
-    }
-
-    public function getUpdatedAt(): string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getTranslatedNames(): array
-    {
-        return $this->translatedNames;
-    }
-
-    public function setTranslatedNames(array $translatedNames): void
-    {
-        $this->translatedNames = $translatedNames;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): void
-    {
-        $this->active = $active;
-    }
-
-    public function hasNameByLocale(string $locale): bool
-    {
-        return isset($this->translatedNames[$locale]) && !empty($this->translatedNames[$locale]);
-    }
+    public $updatedAt;
 
     public function getNameByLocale(string $locale): ?string
     {
-        return $this->hasNameByLocale($locale) ? $this->translatedNames[$locale] : null;
+        return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
 
     public function __toString(): string
     {
-        return $this->translatedNames['en'];
+        return (string) $this->getTranslatedNames()['en'];
     }
 }

@@ -1,6 +1,6 @@
 ## Synopsis
 
-Linkdata Bundle is the bundle to use in Geonaute project to link the project to Linkdata. 
+Linkdata Client is the bundle to use in Geonaute project to link the project to Linkdata. 
 
 ## Installation
 

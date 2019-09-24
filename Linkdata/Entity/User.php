@@ -7,290 +7,130 @@ namespace Stadline\LinkdataClient\Linkdata\Entity;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string         getId()
+ * @method void           setId(string $id)
+ * @method null|string    getOneId()
+ * @method void           setOneId(?string $oneId)
+ * @method int            getGender()
+ * @method void           setGender(int $gender)
+ * @method array          getRoles()
+ * @method void           setRoles(array $roles)
+ * @method null|string    getLanguage()
+ * @method void           setLanguage(?string $language)
+ * @method null|string    getCountry()
+ * @method void           setCountry(?string $country)
+ * @method null|string    getImageUrl()
+ * @method void           setImageUrl(?string $imageUrl)
+ * @method \DateTime      getBirthDate()
+ * @method void           setBirthDate(\DateTime $birthDate)
+ * @method null|\DateTime getScheduleDelete()
+ * @method void           setScheduleDelete(?\DateTime $scheduleDelete)
+ * @method null|array     getUserMeasures()
+ * @method null|array     getUserMeasureGoals()
+ * @method null|array     getUserStorages()
+ * @method null|array     getActivities()
+ * @method null|array     getUserAgreements()
+ * @method \DateTime      getCreatedAt()
+ * @method void           setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime      getUpdatedAt()
+ * @method void           setUpdatedAt(\DateTime $updatedAt)
+ */
 class User extends ProxyObject
 {
     /**
      * @var string
-     *
      * @Groups({"user_norm"})
      */
-    protected $id;
+    public $id;
 
     /**
-     * @var string
-     *
+     * @var ?string
      * @Groups({"user_norm"})
      */
-    protected $oneId;
+    public $oneId;
 
     /**
      * @var int
-     *
      * @Groups({"user_norm", "user_denorm"})
      */
-    protected $gender;
+    public $gender;
 
     /**
      * @var array
-     *
      * @Groups({"user_norm"})
      */
-    protected $roles;
+    public $roles;
 
     /**
-     * @var string
-     *
+     * @var ?string
      * @Groups({"user_norm", "user_denorm"})
      */
-    protected $language;
+    public $language;
 
     /**
-     * @var string
-     *
+     * @var ?string
      * @Groups({"user_norm", "user_denorm"})
      */
-    protected $country;
+    public $country;
 
     /**
-     * @var string
-     *
+     * @var ?string
      * @Groups({"user_norm", "user_denorm"})
      */
-    protected $imageUrl;
+    public $imageUrl;
 
     /**
-     * @var string
-     *
+     * @var \DateTime
      * @Groups({"user_denorm"})
      */
-    protected $birthDate;
+    public $birthDate;
 
     /**
-     * @var string
-     *
-     * @Groups({"user_norm"})
-     */
-    private $createdAt;
-
-    /**
-     * @var string
-     *
-     * @Groups({"user_norm"})
-     */
-    private $updatedAt;
-
-//    /**
-//     * @var ArrayCollection
-//     */
-//    private $userMeasures;
-//
-//    /**
-//     * @var ArrayCollection
-//     */
-//    private $userMeasureGoals;
-//
-//    /**
-//     * @var ArrayCollection
-//     */
-//    private $userStorages;
-//
-//    /**
-//     * @var ArrayCollection
-//     */
-//    private $activities;
-//
-//    private $userRecords;
-//
-//    /**
-//     * @var ArrayCollection
-//     */
-//    private $userRoutes;
-//
-//    /**
-//     * @var ArrayCollection
-//     */
-//    private $userAgreements;
-
-    /**
-     * @var string
-     *
+     * @var ?\DateTime
      * @Groups({"user_norm", "user_denorm"})
      */
-    private $scheduleDelete;
+    public $scheduleDelete;
 
     /**
-     * @return string
+     * @var ?array
+     * @Groups({"user_denorm"})
      */
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
+    public $userMeasures;
 
     /**
-     * @param string $id
+     * @var ?array
+     * @Groups({"user_denorm"})
      */
-    public function setId(?string $id): void
-    {
-        $this->id = $id;
-    }
+    public $userMeasureGoals;
 
     /**
-     * @return string
+     * @var ?array
+     * @Groups({"user_denorm"})
      */
-    public function getOneId(): ?string
-    {
-        return $this->oneId;
-    }
+    public $userStorages;
 
     /**
-     * @param string $oneId
+     * @var ?array
+     * @Groups({"user_denorm"})
      */
-    public function setOneId(?string $oneId): void
-    {
-        $this->oneId = $oneId;
-    }
+    public $activities;
 
     /**
-     * @return int
+     * @var ?array
+     * @Groups({"user_denorm"})
      */
-    public function getGender(): ?int
-    {
-        return $this->gender;
-    }
+    public $userAgreements;
 
     /**
-     * @param int $gender
+     * @var \DateTime
+     * @Groups({"user_norm"})
      */
-    public function setGender(?int $gender): void
-    {
-        $this->gender = $gender;
-    }
+    public $createdAt;
 
     /**
-     * @return array
+     * @var \DateTime
+     * @Groups({"user_norm"})
      */
-    public function getRoles(): ?array
-    {
-        return $this->roles;
-    }
-
-    /**
-     * @param array $roles
-     */
-    public function setRoles(?array $roles): void
-    {
-        $this->roles = $roles;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLanguage(): ?string
-    {
-        return $this->language;
-    }
-
-    /**
-     * @param string $language
-     */
-    public function setLanguage(?string $language): void
-    {
-        $this->language = $language;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCountry(): ?string
-    {
-        return $this->country;
-    }
-
-    /**
-     * @param string $country
-     */
-    public function setCountry(?string $country): void
-    {
-        $this->country = $country;
-    }
-
-    /**
-     * @return string
-     */
-    public function getImageUrl(): ?string
-    {
-        return $this->imageUrl;
-    }
-
-    /**
-     * @param string $imageUrl
-     */
-    public function setImageUrl(?string $imageUrl): void
-    {
-        $this->imageUrl = $imageUrl;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBirthDate(): ?string
-    {
-        return $this->birthDate;
-    }
-
-    /**
-     * @param string $birthDate
-     */
-    public function setBirthDate(?string $birthDate): void
-    {
-        $this->birthDate = $birthDate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCreatedAt(): ?string
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param string $createdAt
-     */
-    public function setCreatedAt(?string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUpdatedAt(): ?string
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param string $updatedAt
-     */
-    public function setUpdatedAt(?string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getScheduleDelete(): ?string
-    {
-        return $this->scheduleDelete;
-    }
-
-    /**
-     * @param string $scheduleDelete
-     */
-    public function setScheduleDelete(?string $scheduleDelete): void
-    {
-        $this->scheduleDelete = $scheduleDelete;
-    }
+    public $updatedAt;
 }

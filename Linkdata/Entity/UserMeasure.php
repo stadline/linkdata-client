@@ -4,10 +4,25 @@ declare(strict_types=1);
 
 namespace Stadline\LinkdataClient\Linkdata\Entity;
 
-use DateTime;
 use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @method string    getId()
+ * @method void      setId(string $id)
+ * @method User      getUser()
+ * @method void      setUser(User $user)
+ * @method Datatype  getDatatype()
+ * @method void      setDatatype(Datatype $datatype)
+ * @method float     getValue()
+ * @method void      setValue(float $value)
+ * @method \DateTime getDate()
+ * @method void      setDate(\DateTime $date)
+ * @method \DateTime getCreatedAt()
+ * @method void      setCreatedAt(\DateTime $createdAt)
+ * @method \DateTime getUpdatedAt()
+ * @method void      setUpdatedAt(\DateTime $updatedAt)
+ */
 class UserMeasure extends ProxyObject
 {
     public const USER_DEFAULT_HEARTRATE_REST = 70;
@@ -17,149 +32,41 @@ class UserMeasure extends ProxyObject
      * @var string
      * @Groups({"user_measure_norm"})
      */
-    private $id;
+    public $id;
 
     /**
      * @var User
      * @Groups({"user_measure_norm", "user_measure_denorm"})
      */
-    private $user;
+    public $user;
 
     /**
      * @var Datatype
      * @Groups({"user_measure_norm", "user_measure_denorm"})
      */
-    private $datatype;
+    public $datatype;
 
     /**
      * @var float
      * @Groups({"user_measure_norm", "user_measure_denorm"})
      */
-    private $value;
+    public $value;
 
     /**
-     * @var DateTime
-     */
-    private $date;
-
-    /**
-     * @var string
-     */
-    private $dateTimezone;
-
-    /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_measure_norm", "user_measure_denorm"})
      */
-    private $createdAt;
+    public $date;
 
     /**
-     * @var string
+     * @var \DateTime
      * @Groups({"user_measure_norm", "user_measure_denorm"})
      */
-    private $updatedAt;
-
-    private $datatypeIri;
-
-    public function __construct()
-    {
-        $this->dateTimezone = '+00.00';
-    }
-
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
-
-    public function setId(?string $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getUser()
-    {
-        return $this->hydrate($this->user);
-    }
-
-    public function setUser($user): void
-    {
-        $this->user = $user;
-    }
-
-    public function getDatatype()
-    {
-        $this->datatypeIri = $this->datatype;
-
-        return $this->hydrate($this->datatype);
-    }
-
-    public function getDatatypeId(): string
-    {
-        if (!$this->datatypeIri) {
-            $this->datatypeIri = $this->datatype;
-        }
-
-        // Parse iri to get id.
-        return \explode('/', $this->datatypeIri)[3];
-    }
-
-    public function setDatatype($datatype): void
-    {
-        $this->datatype = $datatype;
-    }
-
-    public function getValue(): ?float
-    {
-        return $this->value;
-    }
-
-    public function setValue(float $value): void
-    {
-        $this->value = $value;
-    }
+    public $createdAt;
 
     /**
+     * @var \DateTime
      * @Groups({"user_measure_norm", "user_measure_denorm"})
      */
-    public function getDate()
-    {
-        $date = new \DateTime($this->date);
-
-        return $date->format('Y-m-d H:i:s');
-    }
-
-    public function setDate($date): void
-    {
-        $this->date = $date;
-    }
-
-    public function getDateTimezone(): string
-    {
-        return $this->dateTimezone;
-    }
-
-    public function setDateTimezone(string $dateTimezone): void
-    {
-        $this->dateTimezone = $dateTimezone;
-    }
-
-    public function getUpdatedAt(): ?string
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function getCreatedAt(): ?string
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
+    public $updatedAt;
 }
