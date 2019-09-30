@@ -210,7 +210,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         if (null !== $e) {
             // User not on available for now, create it
             if (442 === $e->getCode() && false === $this->isRecordingCacheWarmup) {
-                $this->call(new Request('GET', '/v2/me'));
+                $this->call(new Request('GET', 'v2/me'));
 
                 return $this->call($request, $useExecutionCache);
             }
