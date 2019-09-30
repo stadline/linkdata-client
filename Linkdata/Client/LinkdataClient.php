@@ -148,7 +148,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         try {
             return $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/activities/%s/datastream', $activityId)
+                \sprintf('v2/activities/%s/datastream', $activityId)
             )->getContent();
         } catch (ClientHydraException $e) {
             return [];
@@ -160,7 +160,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/users/%s/current_user_measures', $userId)
+                \sprintf('v2/users/%s/current_user_measures', $userId)
             )
         );
     }
@@ -172,7 +172,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
     {
         return $this->getAdapter()->makeRequest(
             'GET',
-            \sprintf('/v2/activities/%s/similar/%s?limit=%d', $activityId, $datatypeId, $limit)
+            \sprintf('v2/activities/%s/similar/%s?limit=%d', $activityId, $datatypeId, $limit)
         )->getContent();
     }
 
@@ -181,7 +181,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         try {
             return $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/activities/%s/locations', $activityId)
+                \sprintf('v2/activities/%s/locations', $activityId)
             )->getContent();
         } catch (ClientHydraException $e) {
             return [];
@@ -193,7 +193,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         try {
             return $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/activities/%s.%s', $activityId, 'gpx')
+                \sprintf('v2/activities/%s.%s', $activityId, 'gpx')
             )->getContent();
         } catch (ClientHydraException $e) {
             return '';
@@ -207,7 +207,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
     {
         return $this->getAdapter()->makeRequest(
             'GET',
-            \sprintf('/v2/share_users_stats/%s', $id)
+            \sprintf('v2/share_users_stats/%s', $id)
         )->getContent();
     }
 
@@ -216,7 +216,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         $object = $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'POST',
-                \sprintf('/v2/activities'),
+                \sprintf('v2/activities'),
                 ['Content-Type' => 'application/gpx+xml'],
                 $gpxString
             )
@@ -232,7 +232,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         try {
             return $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/activities/%s.%s', $activityId, 'tcx')
+                \sprintf('v2/activities/%s.%s', $activityId, 'tcx')
             )->getContent();
         } catch (ClientHydraException $e) {
             return '';
@@ -244,7 +244,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         $object = $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'POST',
-                \sprintf('/v2/activities'),
+                \sprintf('v2/activities'),
                 ['Content-Type' => 'application/tcx+xml'],
                 $gpxString
             )
@@ -262,7 +262,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
     {
         return $this->getAdapter()->makeRequest(
             'GET',
-            \sprintf('/v2/users/%s/stats%s', $id, $this->getUrlFilters($filters))
+            \sprintf('v2/users/%s/stats%s', $id, $this->getUrlFilters($filters))
         )->getContent();
     }
 
@@ -274,7 +274,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/users/%s/current_user_records?%s', $id, $this->iriConverter->formatFilters($filters))
+                \sprintf('v2/users/%s/current_user_records?%s', $id, $this->iriConverter->formatFilters($filters))
             ));
     }
 
@@ -286,7 +286,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         try {
             return $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/users/%s/tags', $userId)
+                \sprintf('v2/users/%s/tags', $userId)
             )->getContent();
         } catch (ClientHydraException $e) {
             return [];
@@ -298,7 +298,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/friends/%s/activities?%s', $friendLdid, $this->iriConverter->formatFilters($filters))
+                \sprintf('v2/friends/%s/activities?%s', $friendLdid, $this->iriConverter->formatFilters($filters))
             ));
     }
 
@@ -307,7 +307,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/friends/%s/activities/%s', $friendLdid, $activityId)
+                \sprintf('v2/friends/%s/activities/%s', $friendLdid, $activityId)
             ));
     }
 
@@ -316,7 +316,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         return
             $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/friends/%s/stats', $friendLdid)
+                \sprintf('v2/friends/%s/stats', $friendLdid)
             )->getContent();
     }
 
@@ -328,7 +328,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
         return
             $this->getAdapter()->makeRequest(
                 'GET',
-                \sprintf('/v2/users/%s/global_challenges/%s/contributions', $userId, $globalChallengeId)
+                \sprintf('v2/users/%s/global_challenges/%s/contributions', $userId, $globalChallengeId)
             )->getContent();
     }
 
@@ -357,7 +357,7 @@ class LinkdataClient extends AbstractHydraClient implements HydraClientInterface
     {
         return $this->getAdapter()->makeRequest(
             'GET',
-            \sprintf('/v2/user_equipments/autocomplete/%s/%s', $parameter, $query)
+            \sprintf('v2/user_equipments/autocomplete/%s/%s', $parameter, $query)
         )->getContent();
     }
 }

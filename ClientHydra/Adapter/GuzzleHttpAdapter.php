@@ -165,10 +165,9 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             $requestData['cache']['savedIn'][] = 'execution';
         } else {
             try {
-                $rUri = substr($request->getUri(), 0, 1) === '/' ? substr($request->getUri(), 1) : $request->getUri();
                 /** @var Response $response */
                 $response = $this->client->send(
-                    new \GuzzleHttp\Psr7\Request($request->getMethod(), $rUri, $request->getHeaders(), $request->getBody())
+                    new \GuzzleHttp\Psr7\Request($request->getMethod(), $request->getUri(), $request->getHeaders(), $request->getBody())
                 );
                 $arrayResponse = [
                     'statusCode' => $response->getStatusCode(),
@@ -211,7 +210,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         if (null !== $e) {
             // User not on available for now, create it
             if (442 === $e->getCode() && false === $this->isRecordingCacheWarmup) {
-                $this->call(new Request('GET', '/v2/me'));
+                $this->call(new Request('GET', 'v2/me'));
 
                 return $this->call($request, $useExecutionCache);
             }
