@@ -138,6 +138,12 @@ class GlobalChallenge extends ProxyObject
      */
     public $updatedAt;
 
+    /**
+     * @var ?string
+     * @Groups({"global_challenge_norm"})
+     */
+    public $country;
+
     public function getNameByLocale(string $locale): ?string
     {
         return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
