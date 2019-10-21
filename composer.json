@@ -1,6 +1,6 @@
 {
   "name": "stadline/linkdata-client",
-  "description": "Linkdata API library",
+  "description": "Sport tracking data sdk library",
   "type": "library",
   "license": "proprietary",
   "authors": [
