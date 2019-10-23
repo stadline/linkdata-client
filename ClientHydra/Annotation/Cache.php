@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Annotation;
+namespace SportTrackingDataSdk\ClientHydra\Annotation;
 
 use Doctrine\Common\Annotations\Annotation\Attribute;
 

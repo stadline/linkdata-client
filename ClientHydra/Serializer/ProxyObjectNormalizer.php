@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Serializer;
+namespace SportTrackingDataSdk\ClientHydra\Serializer;
 
-use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
-use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
-use Stadline\LinkdataClient\ClientHydra\Metadata\ProxyObjectMetadata;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
-use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
-use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
+use SportTrackingDataSdk\ClientHydra\Client\HydraClientInterface;
+use SportTrackingDataSdk\ClientHydra\Metadata\MetadataManager;
+use SportTrackingDataSdk\ClientHydra\Metadata\ProxyObjectMetadata;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Utils\HydraParser;
+use SportTrackingDataSdk\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;

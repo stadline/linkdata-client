@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Metadata;
+namespace SportTrackingDataSdk\ClientHydra\Metadata;
 
-use Stadline\LinkdataClient\ClientHydra\Adapter\Request;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Adapter\Request;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
 
 class ProxyObjectMetadata
 {

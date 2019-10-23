@@ -1,6 +1,10 @@
 <?php
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
+    ->exclude('var')
+    ->exclude('public')
+    ->exclude('src/Migrations')
+    ->exclude('features/bootstrap')
 ;
 return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)

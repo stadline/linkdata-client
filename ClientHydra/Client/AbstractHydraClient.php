@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Client;
+namespace SportTrackingDataSdk\ClientHydra\Client;
 
 use Doctrine\Common\Inflector\Inflector;
-use Stadline\LinkdataClient\ClientHydra\Adapter\HttpAdapterInterface;
-use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
-use Stadline\LinkdataClient\ClientHydra\Adapter\Request;
-use Stadline\LinkdataClient\ClientHydra\Adapter\ResponseInterface;
-use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
-use Stadline\LinkdataClient\ClientHydra\Exception\FormatException;
-use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
-use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
-use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
+use SportTrackingDataSdk\ClientHydra\Adapter\HttpAdapterInterface;
+use SportTrackingDataSdk\ClientHydra\Adapter\JsonResponse;
+use SportTrackingDataSdk\ClientHydra\Adapter\Request;
+use SportTrackingDataSdk\ClientHydra\Adapter\ResponseInterface;
+use SportTrackingDataSdk\ClientHydra\Exception\ClientHydraException;
+use SportTrackingDataSdk\ClientHydra\Exception\FormatException;
+use SportTrackingDataSdk\ClientHydra\Metadata\MetadataManager;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyCollection;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Utils\HydraParser;
+use SportTrackingDataSdk\ClientHydra\Utils\IriConverter;
 use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractHydraClient implements HydraClientInterface

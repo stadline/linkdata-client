@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Adapter;
+namespace SportTrackingDataSdk\ClientHydra\Adapter;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use Psr\Cache\CacheItemPoolInterface;
-use Stadline\LinkdataClient\ClientHydra\Exception\RequestException;
+use SportTrackingDataSdk\ClientHydra\Exception\RequestException;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\CacheItem;
 

@@ -141,9 +141,9 @@ function processEntity(string $entityContent): array
         
 declare(strict_types=1);
         
-namespace Stadline\LinkdataClient\Linkdata\Entity;
+namespace SportTrackingDataSdk\SportTrackingData\Entity;
 
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;

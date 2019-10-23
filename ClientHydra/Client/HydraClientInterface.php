@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Client;
+namespace SportTrackingDataSdk\ClientHydra\Client;
 
-use Stadline\LinkdataClient\ClientHydra\Adapter\HttpAdapterInterface;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Adapter\HttpAdapterInterface;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyCollection;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
 
 interface HydraClientInterface
 {

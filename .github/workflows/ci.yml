@@ -1,0 +1,33 @@
+name: Run CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      -   uses: actions/checkout@v1
+
+      # Use PHP
+      -   uses: shivammathur/setup-php@master
+          with:
+            php-version: '7.1'
+            extension-csv: yaml, json
+      -   name: Check PHP Version
+          run: php -v
+      -   name: Check Composer Version
+          run: composer -V
+      -   name: Check PHP Extensions
+          run: php -m
+
+      # Validate composer
+      -   name: Validate composer.json and composer.lock
+          run: composer validate
+
+      # Install dependencies
+      -   name: Install dependencies
+          run: composer install
+
+      # Run tests
+      -   name: Run tests
+          run: make test

@@ -1,6 +1,7 @@
 {
   "name": "stadline/linkdata-client",
-  "description": "Sport tracking data sdk library",
+  "description": "Sport tracking data SDK",
+  "license": "Apache-2.0",
   "type": "library",
   "authors": [
     {
@@ -34,13 +35,13 @@
   },
   "autoload": {
     "psr-4": {
-      "Stadline\\LinkdataClient\\ClientHydra\\": "ClientHydra",
-      "Stadline\\LinkdataClient\\Linkdata\\": "Linkdata"
+      "SportTrackingDataSdk\\ClientHydra\\": "ClientHydra",
+      "SportTrackingDataSdk\\SportTrackingData\\": "SportTrackingData"
     }
   },
   "extra": {
     "branch-alias": {
-      "dev-develop": "1.0.x-dev"
+      "dev-develop": "2.0.x-dev"
     }
   }
 }
