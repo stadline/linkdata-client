@@ -37,7 +37,7 @@ parameters:
     sporttrackingdata.entity_namespace: 'Stadline\LinkdataClient\Linkdata\Entity'
     sporttrackingdata.iri_prefix: '/v2'
 
-linkdata_client:
+sport_tracking_data_sdk:
     base_url: '%sporttrackingdata.base_url%'
     entity_namespace: '%sporttrackingdata.entity_namespace%'
     iri_prefix: '%sporttrackingdata.iri_prefix%'
