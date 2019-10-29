@@ -33,14 +33,14 @@ This project is published with a symfony bundle for a quick integration in your 
 Add this configuration : 
 ```yaml
 parameters: 
-    sporttrackingdata.base_url: 'http://35.159.15.229/'
-    sporttrackingdata.entity_namespace: 'Stadline\LinkdataClient\Linkdata\Entity'
-    sporttrackingdata.iri_prefix: '/v2'
+    sporttrackingdata_sdk.base_url: 'http://35.159.15.229/'
+    sporttrackingdata_sdk.entity_namespace: 'Stadline\LinkdataClient\Linkdata\Entity'
+    sporttrackingdata_sdk.iri_prefix: '/v2'
 
 sport_tracking_data_sdk:
-    base_url: '%sporttrackingdata.base_url%'
-    entity_namespace: '%sporttrackingdata.entity_namespace%'
-    iri_prefix: '%sporttrackingdata.iri_prefix%'
+    base_url: '%sporttrackingdata_sdk.base_url%'
+    entity_namespace: '%sporttrackingdata_sdk.entity_namespace%'
+    iri_prefix: '%sporttrackingdata_sdk.iri_prefix%'
 ```
 
 Add this to your Kernel declaration : 
