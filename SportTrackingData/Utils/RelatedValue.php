@@ -6,6 +6,7 @@ namespace SportTrackingDataSdk\SportTrackingData\Utils;
 
 /**
  * @deprecated
+ *
  * @todo : remove this class
  */
 class RelatedValue
