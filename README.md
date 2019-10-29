@@ -12,12 +12,12 @@ On your composer.json add the following :
     "require": {
         "stadline/linkdata-client": "2.0.x-dev"
     },
-    "repositories": {
+    "repositories": [
         {
             "type": "vcs",
             "url": "https://github.com/stadline/linkdata-client.git"
         }
-    }
+    ]
 }
 ```
 
