@@ -12,12 +12,12 @@ On your composer.json add the following :
     "require": {
         "stadline/linkdata-client": "2.0.x-dev"
     },
-    "repositories": {
+    "repositories": [
         {
             "type": "vcs",
             "url": "https://github.com/stadline/linkdata-client.git"
         }
-    }
+    ]
 }
 ```
 
@@ -33,8 +33,8 @@ This project is published with a symfony bundle for a quick integration in your 
 Add this configuration : 
 ```yaml
 parameters: 
-    sporttrackingdata_sdk.base_url: 'http://35.159.15.229/'
-    sporttrackingdata_sdk.entity_namespace: 'Stadline\LinkdataClient\Linkdata\Entity'
+    sporttrackingdata_sdk.base_url: 'https://linkdata.geonaute.com/'
+    sporttrackingdata_sdk.entity_namespace: 'SportTrackingDataSdk\SportTrackingData\Entity'
     sporttrackingdata_sdk.iri_prefix: '/v2'
 
 sport_tracking_data_sdk:
