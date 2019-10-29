@@ -14,7 +14,7 @@ use Symfony\Component\Cache\CacheItem;
 
 class GuzzleHttpAdapter implements HttpAdapterInterface
 {
-    private const CACHE_PREFIX = 'ldclient';
+    private const CACHE_PREFIX = 'stdclient';
     private const CACHE_WARMUP_TTL = 3600;
 
     private $client;

@@ -6,7 +6,7 @@ namespace SportTrackingDataSdk\ClientHydra\Adapter;
 
 class Request
 {
-    public const PERSISTANTCACHE_PREFIX = 'ldclient';
+    public const PERSISTANTCACHE_PREFIX = 'stdclient';
     public const PERSISTANTCACHE_SCOPE_PUBLIC = 'public';
     public const PERSISTANTCACHE_SCOPE_PRIVATE = 'private';
 
