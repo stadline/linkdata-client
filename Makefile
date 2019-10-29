@@ -29,7 +29,7 @@ test-lost-dev-code: ; $(info $(M) Test lost dev code…) @ ## Launches lost dev 
 ## Phpstan
 .PHONY: phpstan
 phpstan: ; $(info $(M) Test phpstan…) @ ## Launches phpstan test
-	$Q php -d memory_limit=256M vendor/bin/phpstan analyse -c phpstan.neon -l5 --ansi src tests
+	$Q php -d memory_limit=256M vendor/bin/phpstan analyse -c phpstan.neon -l5 --ansi ClientHydra SportTrackingData
 
 ##
 ## CS-fixer
