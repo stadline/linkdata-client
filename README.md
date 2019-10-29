@@ -7,22 +7,22 @@ This library provide a PHP SDK for SportTracking API.
 ## Installation
 
 On your composer.json add the following : 
-```
-    {
-        "require": {
-            "stadline/linkdata-client": "2.0.x-dev"
-        },
-        "repositories": {
-            {
-                "type": "vcs",
-                "url": "https://github.com/stadline/linkdata-client.git"
-            }
+```json
+{
+    "require": {
+        "stadline/linkdata-client": "2.0.x-dev"
+    },
+    "repositories": {
+        {
+            "type": "vcs",
+            "url": "https://github.com/stadline/linkdata-client.git"
         }
     }
+}
 ```
 
 And run : 
-```
+```bash
 composer require stadline/sporttrackindatasdk
 ```
 
@@ -31,7 +31,7 @@ composer require stadline/sporttrackindatasdk
 This project is published with a symfony bundle for a quick integration in your own symfony application.
 
 Add this configuration : 
-```
+```yaml
 parameters: 
     sporttrackingdata.base_url: 'http://35.159.15.229/'
     sporttrackingdata.entity_namespace: 'Stadline\LinkdataClient\Linkdata\Entity'
@@ -74,7 +74,7 @@ If you want to disable auto hydratation, you can use : `setAutoHydrateEnable(fal
 
 To get an entity you must call :
 
-```
+```php
     $object = $client->getObject(Sport::class, 121);
 ```
 
@@ -84,7 +84,7 @@ It returns a `ProxyObject` : an iterable object which dynamically related object
 
 To add an entity you must call :
 
-```
+```php
     $object = new Sport();
     $object->setName("My awesome name");
     
@@ -94,7 +94,7 @@ To add an entity you must call :
 For the entity relations, you can set the entity object, id or iri. 
 
 Example : 
-```
+```php
     $object = new Activity();
     $object->setUser("/v2/users/1234");
     // or 
@@ -107,7 +107,7 @@ Example :
 
 To edit an entity you must call :
 
-```
+```php
     $object = $client->getObject(Sport::class, 121);
     
     $object->setName("My awesome name");
@@ -119,7 +119,7 @@ To edit an entity you must call :
 
 To delete an entity you must call :
 
-```
+```php
     $object = $client->getObject(Sport::class, 121);
     
     $client->deletedObject($object);
@@ -131,6 +131,6 @@ The API contains a few custom methods, which not correspond to any Entity. For t
 
 Example : 
 
-```
+```php
     $statsArray = $client->getUserStatistics(12345); 
 ```
