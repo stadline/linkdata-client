@@ -34,7 +34,7 @@ Add this configuration :
 ```yaml
 parameters: 
     sporttrackingdata.base_url: 'http://35.159.15.229/'
-    sporttrackingdata.entity_namespace: 'Stadline\LinkdataClient\Linkdata\Entity'
+    sporttrackingdata.entity_namespace: 'SportTrackingDataSdk\SportTrackingData\Entity'
     sporttrackingdata.iri_prefix: '/v2'
 
 sport_tracking_data_sdk:
