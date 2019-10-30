@@ -45,7 +45,7 @@
             <tag name="serializer.normalizer" priority="-980" />
         </service>
 
-        <service id="sporttrackingdata_sdk.data_collector" class="SportTrackingDataSdk\SportTrackingData\Bridge\Symfony\Bundle\DataCollector\SportTrackingDataCollector ">
+        <service id="sporttrackingdata_sdk.data_collector" class="SportTrackingDataSdk\SportTrackingData\Bridge\Symfony\Bundle\DataCollector\SportTrackingDataCollector">
             <argument type="service" id="sporttrackingdata_sdk.client" />
             <argument type="service" id="sporttrackingdata_sdk.metadata_manager" />
             <tag name="data_collector" template="SportTrackingDataSdkBundle::toolbar.html.twig" id="sporttrackingdata_sdk.sporttrackingdata_collector" />
