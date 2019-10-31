@@ -7,6 +7,7 @@ namespace SportTrackingDataSdk\SportTrackingData\Client;
 use SportTrackingDataSdk\ClientHydra\Client\AbstractHydraClient;
 use SportTrackingDataSdk\ClientHydra\Exception\ClientHydraException;
 use SportTrackingDataSdk\ClientHydra\Proxy\ProxyCollection;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
 use SportTrackingDataSdk\SportTrackingData\Entity\Activity;
 
 class SportTrackingDataClient extends AbstractHydraClient
@@ -23,7 +24,11 @@ class SportTrackingDataClient extends AbstractHydraClient
         }
     }
 
-    public function getCurrentUserMeasure(string $userId): ProxyCollection
+    /**
+     * @return ProxyCollection|ProxyObject|null
+     * @throws ClientHydraException
+     */
+    public function getCurrentUserMeasure(string $userId)
     {
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(
@@ -135,9 +140,10 @@ class SportTrackingDataClient extends AbstractHydraClient
     }
 
     /**
+     * @return ProxyCollection|ProxyObject|null
      * @throws ClientHydraException
      */
-    public function getCurrentUserRecords(string $id, $filters = []): ProxyCollection
+    public function getCurrentUserRecords(string $id, $filters = [])
     {
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(
@@ -161,7 +167,11 @@ class SportTrackingDataClient extends AbstractHydraClient
         }
     }
 
-    public function getFriendActivities(string $friendLdid, ?array $filters): ProxyCollection
+    /**
+     * @return ProxyCollection|ProxyObject|null
+     * @throws ClientHydraException
+     */
+    public function getFriendActivities(string $friendLdid, ?array $filters)
     {
         return $this->parseResponse(
             $this->getAdapter()->makeRequest(

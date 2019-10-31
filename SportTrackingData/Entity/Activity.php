@@ -242,7 +242,7 @@ class Activity extends ProxyObject
             return [];
         }
 
-        $datastream = parent::getDatastream();
+        $datastream = $this->datastream;
 
         // Add measure at elapsed_time = 0 if not set (legacy linkdata-bundle)
         if (0 < \count($datastream) && !isset($datastream[0]) && !isset($datastream[1])) {
