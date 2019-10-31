@@ -162,7 +162,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
     }
 
     /**
-     * @return ProxyObject|null
+     * @return null|ProxyObject
      */
     public function getObject(string $className, $id, ?bool $autoHydrate = false): ?ProxyObject
     {

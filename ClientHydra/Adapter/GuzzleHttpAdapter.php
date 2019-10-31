@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SportTrackingDataSdk\ClientHydra\Adapter;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use Psr\Cache\CacheItemPoolInterface;
 use SportTrackingDataSdk\ClientHydra\Exception\RequestException;
@@ -143,7 +142,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             $this->debugData[] = &$requestData;
         }
 
-        /** @var \GuzzleHttp\Exception\RequestException|null $e */
+        /** @var null|\GuzzleHttp\Exception\RequestException $e */
         $e = null;
 
         $requestHash = $request->getCacheHash();
@@ -198,7 +197,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             }
         }
 
-        if ($this->debugEnabled && isset($requestStartTime) && isset($arrayResponse)) {
+        if ($this->debugEnabled && isset($requestStartTime, $arrayResponse)) {
             $requestEndTime = \microtime(true);
             $requestData['time'] = $requestEndTime - $requestStartTime;
             $requestData['status'] = $e ? $e->getResponse()->getStatusCode() : $arrayResponse['statusCode'];

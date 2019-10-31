@@ -25,8 +25,9 @@ class SportTrackingDataClient extends AbstractHydraClient
     }
 
     /**
-     * @return ProxyCollection|ProxyObject|null
      * @throws ClientHydraException
+     *
+     * @return null|ProxyCollection|ProxyObject
      */
     public function getCurrentUserMeasure(string $userId)
     {
@@ -140,8 +141,9 @@ class SportTrackingDataClient extends AbstractHydraClient
     }
 
     /**
-     * @return ProxyCollection|ProxyObject|null
      * @throws ClientHydraException
+     *
+     * @return null|ProxyCollection|ProxyObject
      */
     public function getCurrentUserRecords(string $id, $filters = [])
     {
@@ -168,8 +170,9 @@ class SportTrackingDataClient extends AbstractHydraClient
     }
 
     /**
-     * @return ProxyCollection|ProxyObject|null
      * @throws ClientHydraException
+     *
+     * @return null|ProxyCollection|ProxyObject
      */
     public function getFriendActivities(string $friendLdid, ?array $filters)
     {

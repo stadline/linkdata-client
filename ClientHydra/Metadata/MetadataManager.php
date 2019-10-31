@@ -59,7 +59,7 @@ class MetadataManager
         $metadata = new ProxyObjectMetadata($class);
         $reflexionClass = new ReflectionClass($class);
 
-        /** @var Cache|null $cacheAnnotation */
+        /** @var null|Cache $cacheAnnotation */
         $cacheAnnotation = $this->reader->getClassAnnotation($reflexionClass, Cache::class);
         // cache
         if (null !== $cacheAnnotation) {
