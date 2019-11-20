@@ -7,6 +7,7 @@
     <services>
         <service id="sporttrackingdata_sdk.client" alias="SportTrackingDataSdk\SportTrackingData\Client\SportTrackingDataClient" />
         <service id="sporttrackingdata_sdk.http_adapter" alias="sporttrackingdata_sdk.http_adapter.guzzle" />
+        <service id="sporttrackingdata_sdk.cache_adapter" alias="sporttrackingdata_sdk.cache_adapter.array" />
 
         <service id="sporttrackingdata_sdk.cache_adapter.array" class="Symfony\Component\Cache\Adapter\ArrayAdapter" />
 
