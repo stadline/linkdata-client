@@ -59,8 +59,10 @@ class MetadataManager
         $metadata = new ProxyObjectMetadata($class);
         $reflexionClass = new ReflectionClass($class);
 
+        /** @var null|Cache $cacheAnnotation */
+        $cacheAnnotation = $this->reader->getClassAnnotation($reflexionClass, Cache::class);
         // cache
-        if (null !== ($cacheAnnotation = $this->reader->getClassAnnotation($reflexionClass, Cache::class))) {
+        if (null !== $cacheAnnotation) {
             /* @var Cache $cacheAnnotation */
             $metadata->setPersistantCacheEnable(true);
             $metadata->setPersistantCacheScope($cacheAnnotation->public ? Request::PERSISTANTCACHE_SCOPE_PUBLIC : Request::PERSISTANTCACHE_SCOPE_PRIVATE);

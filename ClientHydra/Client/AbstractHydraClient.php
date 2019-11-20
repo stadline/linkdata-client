@@ -162,7 +162,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
     }
 
     /**
-     * @return $className
+     * @return null|ProxyObject
      */
     public function getObject(string $className, $id, ?bool $autoHydrate = false): ?ProxyObject
     {
@@ -178,7 +178,9 @@ abstract class AbstractHydraClient implements HydraClientInterface
      */
     protected function parseResponse(ResponseInterface $response)
     {
-        if (!$response instanceof JsonResponse || !isset(($elt = $response->getContent())['@type'])) {
+        $elt = $response->getContent();
+
+        if (!$response instanceof JsonResponse || !isset($elt['@type'])) {
             return null;
         }
 
@@ -340,7 +342,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
                 return $this->putObject($args[0]);
             case 'delete':
-                if (!\is_string($args[0]) || !\is_int($args[0])) {
+                if (!\is_string($args[0]) && !\is_int($args[0])) {
                     throw new \RuntimeException('Delete require a string or an int in parameter');
                 }
 

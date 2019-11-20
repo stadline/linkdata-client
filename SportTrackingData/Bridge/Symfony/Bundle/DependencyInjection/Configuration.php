@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SportTrackingDataSdk\SportTrackingData\Bridge\Symfony\Bundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\ArrayNode;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -20,6 +22,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
+        /** @var ArrayNode|NodeDefinition $rootNode */
         $rootNode = $treeBuilder->root('sporttrackingdata');
         $rootNode
             ->children()

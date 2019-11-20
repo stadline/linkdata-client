@@ -82,7 +82,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             throw new InvalidArgumentException('ProxyObjectDenormalizer::denormalize requires an array in parameter');
         }
 
-        if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject && null !== ($metadata = $this->metadataManager->getClassMetadata(\get_class($context[AbstractNormalizer::OBJECT_TO_POPULATE])))) {
+        $metadata = $this->metadataManager->getClassMetadata(\get_class($context[AbstractNormalizer::OBJECT_TO_POPULATE]));
+        if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject) {
             foreach ($metadata->getPropertiesNameByTypes(ProxyObject::class) as $propName) {
                 if (isset($data[$propName])) {
                     if (\is_array($data[$propName])) {
