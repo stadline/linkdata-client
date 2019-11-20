@@ -242,14 +242,15 @@ class Activity extends ProxyObject
             return [];
         }
 
-        $datastream = $this->datastream;
+        // this line is required to use magic methods to get data
+        $datastreamVar = $this->__call('getDatastream', []);
 
         // Add measure at elapsed_time = 0 if not set (legacy linkdata-bundle)
-        if (0 < \count($datastream) && !isset($datastream[0]) && !isset($datastream[1])) {
-            $datastream[0] = [Datatype::DISTANCE => 0];
+        if (0 < \count($datastreamVar) && !isset($datastreamVar[0]) && !isset($datastreamVar[1])) {
+            $datastreamVar[0] = [Datatype::DISTANCE => 0];
         }
-        \ksort($datastream);
+        \ksort($datastreamVar);
 
-        return $datastream;
+        return $datastreamVar;
     }
 }

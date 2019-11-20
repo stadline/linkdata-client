@@ -7,7 +7,6 @@ namespace SportTrackingDataSdk\SportTrackingData\Client;
 use SportTrackingDataSdk\ClientHydra\Client\AbstractHydraClient;
 use SportTrackingDataSdk\ClientHydra\Exception\ClientHydraException;
 use SportTrackingDataSdk\ClientHydra\Proxy\ProxyCollection;
-use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
 use SportTrackingDataSdk\SportTrackingData\Entity\Activity;
 
 class SportTrackingDataClient extends AbstractHydraClient
@@ -26,17 +25,21 @@ class SportTrackingDataClient extends AbstractHydraClient
 
     /**
      * @throws ClientHydraException
-     *
-     * @return null|ProxyCollection|ProxyObject
      */
-    public function getCurrentUserMeasure(string $userId)
+    public function getCurrentUserMeasures(string $userId): ProxyCollection
     {
-        return $this->parseResponse(
+        $response = $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'GET',
                 \sprintf('/v2/users/%s/current_user_measures', $userId)
             )
         );
+
+        if (!$response instanceof ProxyCollection) {
+            throw new \RuntimeException('Invalid response');
+        }
+
+        return $response;
     }
 
     /**
@@ -142,16 +145,21 @@ class SportTrackingDataClient extends AbstractHydraClient
 
     /**
      * @throws ClientHydraException
-     *
-     * @return null|ProxyCollection|ProxyObject
      */
-    public function getCurrentUserRecords(string $id, $filters = [])
+    public function getCurrentUserRecords(string $id, $filters = []): ProxyCollection
     {
-        return $this->parseResponse(
+        $response = $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'GET',
                 \sprintf('/v2/users/%s/current_user_records?%s', $id, $this->iriConverter->formatFilters($filters))
-            ));
+            )
+        );
+
+        if (!$response instanceof ProxyCollection) {
+            throw new \RuntimeException('Invalid response');
+        }
+
+        return $response;
     }
 
     /**
@@ -171,16 +179,21 @@ class SportTrackingDataClient extends AbstractHydraClient
 
     /**
      * @throws ClientHydraException
-     *
-     * @return null|ProxyCollection|ProxyObject
      */
-    public function getFriendActivities(string $friendLdid, ?array $filters)
+    public function getFriendActivities(string $friendLdid, ?array $filters): ProxyCollection
     {
-        return $this->parseResponse(
+        $response = $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'GET',
                 \sprintf('/v2/friends/%s/activities?%s', $friendLdid, $this->iriConverter->formatFilters($filters))
-            ));
+            )
+        );
+
+        if (!$response instanceof ProxyCollection) {
+            throw new \RuntimeException('Invalid response');
+        }
+
+        return $response;
     }
 
     public function getFriendActivity(string $friendLdid, string $activityId)

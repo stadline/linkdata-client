@@ -161,9 +161,6 @@ abstract class AbstractHydraClient implements HydraClientInterface
         return $this->iriConverter->getIriFromObject($proxyObject);
     }
 
-    /**
-     * @return null|ProxyObject
-     */
     public function getObject(string $className, $id, ?bool $autoHydrate = false): ?ProxyObject
     {
         if (!\is_string($id) || !$this->iriConverter->isIri($id)) {
