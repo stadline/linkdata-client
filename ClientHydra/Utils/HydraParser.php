@@ -43,11 +43,6 @@ class HydraParser
         return $content['@type'] ?? null;
     }
 
-    /**
-     * @param ProxyObject $object
-     *
-     * @return string
-     */
     public static function getNormContext(ProxyObject $object): string
     {
         $e = \explode('\\', \get_class($object));

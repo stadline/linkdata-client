@@ -28,10 +28,6 @@ class UniversalAnnotationReader extends AnnotationReader
 {
     /**
      * Get type of property from property declaration.
-     *
-     * @param \ReflectionProperty $property
-     *
-     * @return null|string
      */
     public function getPropertyType(\ReflectionProperty $property): ?string
     {
@@ -45,8 +41,6 @@ class UniversalAnnotationReader extends AnnotationReader
      * Get groups of property from property declaration.
      *
      * @param array $property
-     *
-     * @return null|array
      */
     public function getPropertyGroups(array $annotations): ?array
     {

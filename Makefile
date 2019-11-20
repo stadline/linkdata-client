@@ -37,7 +37,6 @@ phpstan: ; $(info $(M) Test phpstan…) @ ## Launches phpstan test
 cs-fixer: ; $(info $(M) Apply cs-fixer…) @ ## Launches php-cs-fixer fix
 	$Q php vendor/bin/php-cs-fixer fix --no-ansi
 
-
 ##
 ## General
 .PHONY: help
