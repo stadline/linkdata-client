@@ -1,0 +1,27 @@
+{
+  "name": "stadline/std_standalone",
+  "license": "MIT",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    },
+    "files": [],
+    "classmap": [
+    ]
+  },
+  "require": {
+    "php": "^7.1",
+    "stadline/linkdata-client": "2.0.x-dev"
+  },
+  "require-dev": {
+  },
+  "suggest": {
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/stadline/linkdata-client.git"
+    }
+  ]
+}

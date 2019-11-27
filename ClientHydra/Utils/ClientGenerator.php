@@ -14,21 +14,35 @@ use Symfony\Component\Serializer\Serializer;
 
 final class ClientGenerator
 {
+    /**
+     * @todo Rename this method
+     * @todo Add cache management
+     * @todo really implement the securityToken callback
+     * @todo simplify this ?
+     * @todo add real return type (if possible)
+     * @todo tag the 2.0 version
+     */
     public static function createClient(
         string $clientClassname,
         string $baseUrl,
         \Closure $getSecurityToken = null
-    ): HydraClientInterface {
+    ): HydraClientInterface
+    {
+        $reflectClient = new \ReflectionClass($clientClassname);
+        if (!$reflectClient->implementsInterface(HydraClientInterface::class)) {
+            throw new \RuntimeException(sprintf('The %s must implement HydraClientInterface', $clientClassname));
+        }
+
         $guzzleAdapter = new GuzzleHttpAdapter($baseUrl);
         $iriConverter = new IriConverter(
-            (HydraClientInterface::class)(${$clientClassname})::getEntityNamespace(),
-            (HydraClientInterface::class)(${$clientClassname})::getIriPrefix()
+            $clientClassname::getEntityNamespace(),
+            $clientClassname::getIriPrefix()
         );
         $proxyNormalizer = new ProxyObjectNormalizer();
         $serializer = new Serializer([$proxyNormalizer, new ObjectNormalizer()], [new JsonEncoder()]);
-        $metadataManager = new MetadataManager((HydraClientInterface::class)(${$clientClassname})::getEntityNamespace());
+        $metadataManager = new MetadataManager($clientClassname::getEntityNamespace());
 
-        $client = new ${$clientClassname}($guzzleAdapter, $iriConverter, $serializer, $metadataManager);
+        $client = new $clientClassname($guzzleAdapter, $iriConverter, $serializer, $metadataManager);
 
         $proxyNormalizer->setIriConverter($iriConverter);
         $proxyNormalizer->setHydraClient($client);
