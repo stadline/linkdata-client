@@ -11,6 +11,16 @@ use SportTrackingDataSdk\SportTrackingData\Entity\Activity;
 
 class SportTrackingDataClient extends AbstractHydraClient
 {
+    public static function getIriPrefix(): string
+    {
+        return '/v2';
+    }
+
+    public static function getEntityNamespace(): string
+    {
+        return 'SportTrackingDataSdk\SportTrackingData\Entity';
+    }
+
     public function getActivityDatastream(string $activityId): array
     {
         try {

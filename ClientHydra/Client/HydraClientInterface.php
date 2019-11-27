@@ -10,6 +10,10 @@ use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
 
 interface HydraClientInterface
 {
+    public static function getIriPrefix(): string;
+
+    public static function getEntityNamespace(): string;
+
     public function getCollection(string $classname, array $filters = []): ProxyCollection;
 
     public function getObject(string $className, $id, bool $autoHydrate = false): ?ProxyObject;
