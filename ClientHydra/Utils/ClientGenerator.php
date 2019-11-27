@@ -26,11 +26,10 @@ final class ClientGenerator
         string $clientClassname,
         string $baseUrl,
         \Closure $getSecurityToken = null
-    ): HydraClientInterface
-    {
+    ): HydraClientInterface {
         $reflectClient = new \ReflectionClass($clientClassname);
         if (!$reflectClient->implementsInterface(HydraClientInterface::class)) {
-            throw new \RuntimeException(sprintf('The %s must implement HydraClientInterface', $clientClassname));
+            throw new \RuntimeException(\sprintf('The %s must implement HydraClientInterface', $clientClassname));
         }
 
         $guzzleAdapter = new GuzzleHttpAdapter($baseUrl);
