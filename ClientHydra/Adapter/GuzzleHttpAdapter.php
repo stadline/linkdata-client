@@ -37,14 +37,16 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     private $isRecordingCacheWarmup = false;
     private $cacheWarmupData = [];
 
-    public function __construct(string $baseUrl, CacheItemPoolInterface $persistantCache, $debugEnabled = false)
+    public function __construct(string $baseUrl, CacheItemPoolInterface $persistantCache = null, $debugEnabled = false)
     {
         $this->baseUrl = $baseUrl;
         $this->client = new Client(['base_uri' => $baseUrl]);
         $this->debugEnabled = $debugEnabled;
         $this->debugData = [];
         $this->executionCache = new ArrayAdapter();
-
+        if (null === $persistantCache) {
+            $persistantCache = new ArrayAdapter();
+        }
         $this->persistantCache = $persistantCache;
     }
 
