@@ -34,7 +34,7 @@ interface HydraClientInterface
 
     public function cacheWarmUp(): void;
 
-    public function setAuthorizationToken(string $token): void;
+    public function setAuthorizationToken(string $token, string $type = 'bearer'): void;
 
     public function getIriConverter(): IriConverter;
 
