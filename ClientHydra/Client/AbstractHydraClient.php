@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SportTrackingDataSdk\ClientHydra\Client;
 
 use Doctrine\Common\Inflector\Inflector;
+use SportTrackingDataSdk\ClientHydra\Adapter\GuzzleHttpAdapter;
 use SportTrackingDataSdk\ClientHydra\Adapter\HttpAdapterInterface;
 use SportTrackingDataSdk\ClientHydra\Adapter\JsonResponse;
 use SportTrackingDataSdk\ClientHydra\Adapter\Request;
@@ -35,11 +36,17 @@ abstract class AbstractHydraClient implements HydraClientInterface
     private $objects = [];
 
     public function __construct(
-        HttpAdapterInterface $adapter,
+        $httpAdapterOrBaseUrl,
         SerializerInterface $serializer = null,
         MetadataManager $metadataManager = null
     ) {
-        $this->adapter = $adapter;
+        if ($httpAdapterOrBaseUrl instanceof HttpAdapterInterface) {
+            $this->adapter = $httpAdapterOrBaseUrl;
+        } elseif (is_string($httpAdapterOrBaseUrl)) {
+            $this->adapter = new GuzzleHttpAdapter($httpAdapterOrBaseUrl);
+        } else {
+            throw new \RuntimeException('AbstractHydraClient first parameter must be an instance of HttpAdapterInterface or a string (api base_url)');
+        }
         $this->iriConverter = new IriConverter(
             $this::getEntityNamespace(),
             $this::getIriPrefix()
