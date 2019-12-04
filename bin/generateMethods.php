@@ -28,10 +28,6 @@ class UniversalAnnotationReader extends AnnotationReader
 {
     /**
      * Get type of property from property declaration.
-     *
-     * @param \ReflectionProperty $property
-     *
-     * @return null|string
      */
     public function getPropertyType(\ReflectionProperty $property): ?string
     {
@@ -45,8 +41,6 @@ class UniversalAnnotationReader extends AnnotationReader
      * Get groups of property from property declaration.
      *
      * @param array $property
-     *
-     * @return null|array
      */
     public function getPropertyGroups(array $annotations): ?array
     {
@@ -141,9 +135,9 @@ function processEntity(string $entityContent): array
         
 declare(strict_types=1);
         
-namespace Stadline\LinkdataClient\Linkdata\Entity;
+namespace SportTrackingDataSdk\SportTrackingData\Entity;
 
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;

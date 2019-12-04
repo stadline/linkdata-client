@@ -1,3 +1,4 @@
+*.DS_Store
 /vendor/
 .idea/*
 /nbproject/*
@@ -7,3 +8,4 @@ Dockerfile
 docker-*
 .env
 /var
+/composer.lock

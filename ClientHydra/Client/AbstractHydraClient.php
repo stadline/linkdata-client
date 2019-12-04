@@ -2,20 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Client;
+namespace SportTrackingDataSdk\ClientHydra\Client;
 
 use Doctrine\Common\Inflector\Inflector;
-use Stadline\LinkdataClient\ClientHydra\Adapter\HttpAdapterInterface;
-use Stadline\LinkdataClient\ClientHydra\Adapter\JsonResponse;
-use Stadline\LinkdataClient\ClientHydra\Adapter\Request;
-use Stadline\LinkdataClient\ClientHydra\Adapter\ResponseInterface;
-use Stadline\LinkdataClient\ClientHydra\Exception\ClientHydraException;
-use Stadline\LinkdataClient\ClientHydra\Exception\FormatException;
-use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
-use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
-use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
+use SportTrackingDataSdk\ClientHydra\Adapter\GuzzleHttpAdapter;
+use SportTrackingDataSdk\ClientHydra\Adapter\HttpAdapterInterface;
+use SportTrackingDataSdk\ClientHydra\Adapter\JsonResponse;
+use SportTrackingDataSdk\ClientHydra\Adapter\Request;
+use SportTrackingDataSdk\ClientHydra\Adapter\ResponseInterface;
+use SportTrackingDataSdk\ClientHydra\Exception\ClientHydraException;
+use SportTrackingDataSdk\ClientHydra\Exception\FormatException;
+use SportTrackingDataSdk\ClientHydra\Metadata\MetadataManager;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyCollection;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Serializer\ProxyObjectNormalizer;
+use SportTrackingDataSdk\ClientHydra\Utils\HydraParser;
+use SportTrackingDataSdk\ClientHydra\Utils\IriConverter;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractHydraClient implements HydraClientInterface
@@ -31,15 +36,35 @@ abstract class AbstractHydraClient implements HydraClientInterface
     private $objects = [];
 
     public function __construct(
-        HttpAdapterInterface $adapter,
-        IriConverter $iriConverter,
-        SerializerInterface $serializer,
-        MetadataManager $metadataManager
+        $httpAdapterOrBaseUrl,
+        SerializerInterface $serializer = null,
+        MetadataManager $metadataManager = null
     ) {
-        $this->adapter = $adapter;
-        $this->iriConverter = $iriConverter;
-        $this->serializer = $serializer;
+        if ($httpAdapterOrBaseUrl instanceof HttpAdapterInterface) {
+            $this->adapter = $httpAdapterOrBaseUrl;
+        } elseif (\is_string($httpAdapterOrBaseUrl)) {
+            $this->adapter = new GuzzleHttpAdapter($httpAdapterOrBaseUrl);
+        } else {
+            throw new \RuntimeException('AbstractHydraClient first parameter must be an instance of HttpAdapterInterface or a string (api base_url)');
+        }
+        $this->iriConverter = new IriConverter(
+            $this::getEntityNamespace(),
+            $this::getIriPrefix()
+        );
+
+        // Metadata manager
+        if (null === $metadataManager) {
+            $metadataManager = new MetadataManager($this::getEntityNamespace());
+        }
         $this->metadataManager = $metadataManager;
+
+        // Serializer
+        if (null === $serializer) {
+            $proxyNormalizer = new ProxyObjectNormalizer();
+            $serializer = new Serializer([$proxyNormalizer, new ObjectNormalizer()], [new JsonEncoder()]);
+            $proxyNormalizer->setHydraClient($this);
+        }
+        $this->serializer = $serializer;
 
         ProxyObject::_init(
             // refresh
@@ -103,6 +128,25 @@ abstract class AbstractHydraClient implements HydraClientInterface
         );
     }
 
+    public function getIriConverter(): IriConverter
+    {
+        return $this->iriConverter;
+    }
+
+    public function getMetadataManager(): MetadataManager
+    {
+        return $this->metadataManager;
+    }
+
+    public function setAuthorizationToken(string $token, string $type = 'bearer'): void
+    {
+        if ('bearer' !== $type) {
+            throw new \RuntimeException('Only bearer authorization token authorized for now');
+        }
+
+        $this->adapter->setAuthorizationToken('Bearer '.$token);
+    }
+
     public function cacheWarmUp(): void
     {
         if (self::$cache_initialized) {
@@ -161,9 +205,6 @@ abstract class AbstractHydraClient implements HydraClientInterface
         return $this->iriConverter->getIriFromObject($proxyObject);
     }
 
-    /**
-     * @return $className
-     */
     public function getObject(string $className, $id, ?bool $autoHydrate = false): ?ProxyObject
     {
         if (!\is_string($id) || !$this->iriConverter->isIri($id)) {
@@ -178,7 +219,9 @@ abstract class AbstractHydraClient implements HydraClientInterface
      */
     protected function parseResponse(ResponseInterface $response)
     {
-        if (!$response instanceof JsonResponse || !isset(($elt = $response->getContent())['@type'])) {
+        $elt = $response->getContent();
+
+        if (!$response instanceof JsonResponse || !isset($elt['@type'])) {
             return null;
         }
 
@@ -340,7 +383,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
                 return $this->putObject($args[0]);
             case 'delete':
-                if (!\is_string($args[0]) || !\is_int($args[0])) {
+                if (!\is_string($args[0]) && !\is_int($args[0])) {
                     throw new \RuntimeException('Delete require a string or an int in parameter');
                 }
 

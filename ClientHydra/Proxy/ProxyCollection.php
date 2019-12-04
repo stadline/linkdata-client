@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Proxy;
+namespace SportTrackingDataSdk\ClientHydra\Proxy;
 
 class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
 {

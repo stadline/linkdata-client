@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Adapter;
+namespace SportTrackingDataSdk\ClientHydra\Adapter;
 
 class JsonResponse implements ResponseInterface
 {

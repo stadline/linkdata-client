@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Metadata;
+namespace SportTrackingDataSdk\ClientHydra\Metadata;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\CachedReader;
@@ -10,11 +10,11 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ApcuCache;
 use ReflectionClass;
 use ReflectionMethod;
-use Stadline\LinkdataClient\ClientHydra\Adapter\Request;
-use Stadline\LinkdataClient\ClientHydra\Annotation\Cache;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
-use Stadline\LinkdataClient\Linkdata\Entity\Datatype;
-use Stadline\LinkdataClient\Linkdata\Entity\Sport;
+use SportTrackingDataSdk\ClientHydra\Adapter\Request;
+use SportTrackingDataSdk\ClientHydra\Annotation\Cache;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\SportTrackingData\Entity\Datatype;
+use SportTrackingDataSdk\SportTrackingData\Entity\Sport;
 
 class MetadataManager
 {
@@ -59,8 +59,10 @@ class MetadataManager
         $metadata = new ProxyObjectMetadata($class);
         $reflexionClass = new ReflectionClass($class);
 
+        /** @var null|Cache $cacheAnnotation */
+        $cacheAnnotation = $this->reader->getClassAnnotation($reflexionClass, Cache::class);
         // cache
-        if (null !== ($cacheAnnotation = $this->reader->getClassAnnotation($reflexionClass, Cache::class))) {
+        if (null !== $cacheAnnotation) {
             /* @var Cache $cacheAnnotation */
             $metadata->setPersistantCacheEnable(true);
             $metadata->setPersistantCacheScope($cacheAnnotation->public ? Request::PERSISTANTCACHE_SCOPE_PUBLIC : Request::PERSISTANTCACHE_SCOPE_PRIVATE);

@@ -2,14 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Client;
+namespace SportTrackingDataSdk\ClientHydra\Client;
 
-use Stadline\LinkdataClient\ClientHydra\Adapter\HttpAdapterInterface;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyCollection;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Adapter\HttpAdapterInterface;
+use SportTrackingDataSdk\ClientHydra\Metadata\MetadataManager;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyCollection;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Utils\IriConverter;
 
 interface HydraClientInterface
 {
+    public static function getIriPrefix(): string;
+
+    public static function getEntityNamespace(): string;
+
     public function getCollection(string $classname, array $filters = []): ProxyCollection;
 
     public function getObject(string $className, $id, bool $autoHydrate = false): ?ProxyObject;
@@ -27,4 +33,10 @@ interface HydraClientInterface
     public function getProxyFromIri(string $iri, ?bool $autoHydrate = false): ?ProxyObject;
 
     public function cacheWarmUp(): void;
+
+    public function setAuthorizationToken(string $token, string $type = 'bearer'): void;
+
+    public function getIriConverter(): IriConverter;
+
+    public function getMetadataManager(): MetadataManager;
 }

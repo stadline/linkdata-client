@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Serializer;
+namespace SportTrackingDataSdk\ClientHydra\Serializer;
 
-use Stadline\LinkdataClient\ClientHydra\Client\HydraClientInterface;
-use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
-use Stadline\LinkdataClient\ClientHydra\Metadata\ProxyObjectMetadata;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
-use Stadline\LinkdataClient\ClientHydra\Utils\HydraParser;
-use Stadline\LinkdataClient\ClientHydra\Utils\IriConverter;
+use SportTrackingDataSdk\ClientHydra\Client\HydraClientInterface;
+use SportTrackingDataSdk\ClientHydra\Metadata\ProxyObjectMetadata;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Utils\HydraParser;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -18,24 +16,10 @@ class ProxyObjectNormalizer extends ObjectNormalizer
 {
     /** @var HydraClientInterface */
     private $hydraClient;
-    /** @var IriConverter */
-    private $iriConverter;
-    /** @var MetadataManager */
-    private $metadataManager;
-
-    public function setMetadataManager(MetadataManager $metadataManager): void
-    {
-        $this->metadataManager = $metadataManager;
-    }
 
     public function setHydraClient(HydraClientInterface $hydraClient): void
     {
         $this->hydraClient = $hydraClient;
-    }
-
-    public function setIriConverter(IriConverter $iriConverter): void
-    {
-        $this->iriConverter = $iriConverter;
     }
 
     public function normalize($object, $format = null, array $context = [])
@@ -69,7 +53,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             return $data;
         }
 
-        return $this->iriConverter->getIriFromObject($object);
+        return $this->hydraClient->getIriConverter()->getIriFromObject($object);
     }
 
     /**
@@ -82,7 +66,8 @@ class ProxyObjectNormalizer extends ObjectNormalizer
             throw new InvalidArgumentException('ProxyObjectDenormalizer::denormalize requires an array in parameter');
         }
 
-        if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject && null !== ($metadata = $this->metadataManager->getClassMetadata(\get_class($context[AbstractNormalizer::OBJECT_TO_POPULATE])))) {
+        $metadata = $this->hydraClient->getMetadataManager()->getClassMetadata(\get_class($context[AbstractNormalizer::OBJECT_TO_POPULATE]));
+        if (isset($context[AbstractNormalizer::OBJECT_TO_POPULATE]) && $context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof ProxyObject) {
             foreach ($metadata->getPropertiesNameByTypes(ProxyObject::class) as $propName) {
                 if (isset($data[$propName])) {
                     if (\is_array($data[$propName])) {
@@ -99,7 +84,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
                                     $properties[] = $subObject;
                                     continue;
                                 }
-                                if (\is_string($elt) && $this->iriConverter->isIri($elt)) {
+                                if (\is_string($elt) && $this->hydraClient->getIriConverter()->isIri($elt)) {
                                     $properties[] = $this->hydraClient->getProxyFromIri($elt);
                                 } else {
                                     $properties[] = $elt;

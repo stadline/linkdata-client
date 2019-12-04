@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Proxy;
+namespace SportTrackingDataSdk\ClientHydra\Proxy;
 
-use Stadline\LinkdataClient\ClientHydra\Metadata\MetadataManager;
-use Stadline\LinkdataClient\ClientHydra\Metadata\ProxyObjectMetadata;
+use SportTrackingDataSdk\ClientHydra\Metadata\MetadataManager;
+use SportTrackingDataSdk\ClientHydra\Metadata\ProxyObjectMetadata;
 
 /**
  * @method void            setId(null|int|string $id)

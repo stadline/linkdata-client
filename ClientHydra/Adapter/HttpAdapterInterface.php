@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Adapter;
+namespace SportTrackingDataSdk\ClientHydra\Adapter;
 
-use Stadline\LinkdataClient\ClientHydra\Exception\RequestException;
+use SportTrackingDataSdk\ClientHydra\Exception\RequestException;
 
 interface HttpAdapterInterface
 {
@@ -24,4 +24,6 @@ interface HttpAdapterInterface
     public function warmupCache(array $cacheData): array;
 
     public function getDebugData(): array;
+
+    public function setAuthorizationToken(string $token): void;
 }

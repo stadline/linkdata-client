@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Stadline\LinkdataClient\ClientHydra\Utils;
+namespace SportTrackingDataSdk\ClientHydra\Utils;
 
 use Doctrine\Common\Inflector\Inflector;
-use Stadline\LinkdataClient\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
 
 class HydraParser
 {
@@ -43,11 +43,6 @@ class HydraParser
         return $content['@type'] ?? null;
     }
 
-    /**
-     * @param ProxyObject $object
-     *
-     * @return string
-     */
     public static function getNormContext(ProxyObject $object): string
     {
         $e = \explode('\\', \get_class($object));
