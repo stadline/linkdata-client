@@ -42,7 +42,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
     ) {
         if ($httpAdapterOrBaseUrl instanceof HttpAdapterInterface) {
             $this->adapter = $httpAdapterOrBaseUrl;
-        } elseif (is_string($httpAdapterOrBaseUrl)) {
+        } elseif (\is_string($httpAdapterOrBaseUrl)) {
             $this->adapter = new GuzzleHttpAdapter($httpAdapterOrBaseUrl);
         } else {
             throw new \RuntimeException('AbstractHydraClient first parameter must be an instance of HttpAdapterInterface or a string (api base_url)');
