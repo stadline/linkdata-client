@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SportTrackingDataSdk\SportTrackingData\Bridge\Symfony\Bundle\DataCollector;
 
-use SportTrackingDataSdk\ClientHydra\Metadata\MetadataManager;
 use SportTrackingDataSdk\SportTrackingData\Client\SportTrackingDataClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,18 +12,16 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 class SportTrackingDataCollector extends DataCollector
 {
     private $client;
-    private $metadataManager;
 
-    public function __construct(SportTrackingDataClient $client, MetadataManager $metadataManager)
+    public function __construct(SportTrackingDataClient $client)
     {
         $this->client = $client;
-        $this->metadataManager = $metadataManager;
     }
 
     public function collect(Request $request, Response $response, \Exception $exception = null): void
     {
         $this->data = $this->client->getAdapter()->getDebugData();
-        $this->data['metadata'] = $this->metadataManager->getClassMetadatas();
+        $this->data['metadata'] = $this->client->getMetadataManager()->getClassMetadatas();
     }
 
     public function reset(): void

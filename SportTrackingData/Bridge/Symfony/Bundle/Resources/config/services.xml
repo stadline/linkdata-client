@@ -19,36 +19,18 @@
 
         <service id="SportTrackingDataSdk\SportTrackingData\Client\SportTrackingDataClient" class="SportTrackingDataSdk\SportTrackingData\Client\SportTrackingDataClient">
             <argument type="service" id="sporttrackingdata_sdk.http_adapter" />
-            <argument type="service" id="sporttrackingdata_sdk.iri_converter" />
             <argument type="service" id="Symfony\Component\Serializer\SerializerInterface" />
-            <argument type="service" id="sporttrackingdata_sdk.metadata_manager" />
-        </service>
-
-        <service id="sporttrackingdata_sdk.metadata_manager" class="SportTrackingDataSdk\ClientHydra\Metadata\MetadataManager">
-            <argument>%sporttrackingdata_sdk.entity_namespace%</argument>
-        </service>
-
-        <service id="sporttrackingdata_sdk.iri_converter" class="SportTrackingDataSdk\ClientHydra\Utils\IriConverter">
-            <argument>%sporttrackingdata_sdk.entity_namespace%</argument>
-            <argument>%sporttrackingdata_sdk.iri_prefix%</argument>
         </service>
 
         <service id="sporttrackingdata_sdk.proxy_object_normalizer" class="SportTrackingDataSdk\ClientHydra\Serializer\ProxyObjectNormalizer">
             <call method="setHydraClient">
                 <argument type="service" id="sporttrackingdata_sdk.client" />
             </call>
-            <call method="setIriConverter">
-                <argument type="service" id="sporttrackingdata_sdk.iri_converter" />
-            </call>
-            <call method="setMetadataManager">
-                <argument type="service" id="sporttrackingdata_sdk.metadata_manager" />
-            </call>
             <tag name="serializer.normalizer" priority="-980" />
         </service>
 
         <service id="sporttrackingdata_sdk.data_collector" class="SportTrackingDataSdk\SportTrackingData\Bridge\Symfony\Bundle\DataCollector\SportTrackingDataCollector">
             <argument type="service" id="sporttrackingdata_sdk.client" />
-            <argument type="service" id="sporttrackingdata_sdk.metadata_manager" />
             <tag name="data_collector" template="SportTrackingDataSdkBundle::toolbar.html.twig" id="sporttrackingdata_sdk.sporttrackingdata_collector" />
         </service>
     </services>

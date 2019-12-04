@@ -24,4 +24,6 @@ interface HttpAdapterInterface
     public function warmupCache(array $cacheData): array;
 
     public function getDebugData(): array;
+
+    public function setAuthorizationToken(string $token): void;
 }

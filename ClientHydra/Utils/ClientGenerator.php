@@ -6,7 +6,6 @@ namespace SportTrackingDataSdk\ClientHydra\Utils;
 
 use SportTrackingDataSdk\ClientHydra\Adapter\GuzzleHttpAdapter;
 use SportTrackingDataSdk\ClientHydra\Client\HydraClientInterface;
-use SportTrackingDataSdk\ClientHydra\Metadata\MetadataManager;
 use SportTrackingDataSdk\ClientHydra\Serializer\ProxyObjectNormalizer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -25,7 +24,7 @@ final class ClientGenerator
     public static function createClient(
         string $clientClassname,
         string $baseUrl,
-        \Closure $getSecurityToken = null
+        string $authorizationToken = null
     ): HydraClientInterface {
         $reflectClient = new \ReflectionClass($clientClassname);
         if (!$reflectClient->implementsInterface(HydraClientInterface::class)) {
@@ -33,25 +32,16 @@ final class ClientGenerator
         }
 
         $guzzleAdapter = new GuzzleHttpAdapter($baseUrl);
-        $iriConverter = new IriConverter(
-            $clientClassname::getEntityNamespace(),
-            $clientClassname::getIriPrefix()
-        );
         $proxyNormalizer = new ProxyObjectNormalizer();
         $serializer = new Serializer([$proxyNormalizer, new ObjectNormalizer()], [new JsonEncoder()]);
-        $metadataManager = new MetadataManager($clientClassname::getEntityNamespace());
 
-        $client = new $clientClassname($guzzleAdapter, $iriConverter, $serializer, $metadataManager);
-
-        $proxyNormalizer->setIriConverter($iriConverter);
+        /** @var HydraClientInterface $client */
+        $client = new $clientClassname($guzzleAdapter, $serializer);
         $proxyNormalizer->setHydraClient($client);
-        $proxyNormalizer->setMetadataManager($metadataManager);
 
         // Set authentication token
-        if ($getSecurityToken) {
-            $guzzleAdapter->setDefaultHeader('Authorization',
-                \sprintf('Bearer %s', $getSecurityToken())
-            );
+        if ($authorizationToken) {
+            $client->setAuthorizationToken($authorizationToken);
         }
 
         return $client;

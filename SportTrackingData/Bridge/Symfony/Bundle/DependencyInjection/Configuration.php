@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace SportTrackingDataSdk\SportTrackingData\Bridge\Symfony\Bundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\ArrayNode;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-/**
- * @todo : re-check this part and usage to remove parameters
- */
 class Configuration implements ConfigurationInterface
 {
     /**
@@ -21,9 +17,10 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        /** @var ArrayNode|NodeDefinition $rootNode */
-        $rootNode = $treeBuilder->root('sporttrackingdata');
+        $treeBuilder = new TreeBuilder('sporttrackingdata');
+
+        /** @var ArrayNodeDefinition $rootNode */
+        $rootNode = $treeBuilder->getRootNode();
         $rootNode
             ->children()
                 ->scalarNode('base_url')
@@ -31,19 +28,6 @@ class Configuration implements ConfigurationInterface
                 ->isRequired()
                 ->cannotBeEmpty()
                 ->defaultValue('https://linkdata.geonaute.com')
-                ->end()
-                ->scalarNode('entity_namespace')
-                ->info('Entity namespace.')
-                ->isRequired()
-                ->cannotBeEmpty()
-                ->defaultValue('SportTrackingDataSdk\SportTrackingData\Entity')
-                ->end()
-                ->scalarNode('iri_prefix')
-                ->info('Iri prefix.')
-                ->isRequired()
-                ->cannotBeEmpty()
-                ->defaultValue('/v2')
-                ->end()
             ->end()
         ;
 

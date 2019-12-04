@@ -21,6 +21,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     private $defaultHeaders = [
         'Content-Type' => 'application/ld+json',
     ];
+    private $authorizationToken = null;
 
     /** @var CacheItemPoolInterface */
     private $persistantCache;
@@ -48,6 +49,11 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             $persistantCache = new ArrayAdapter();
         }
         $this->persistantCache = $persistantCache;
+    }
+
+    public function setAuthorizationToken(string $token): void
+    {
+        $this->authorizationToken = $token;
     }
 
     public function warmupCache(array $cacheData): array
@@ -122,7 +128,13 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
 
     public function call(Request $request, bool $useExecutionCache = true): ResponseInterface
     {
-        $request->setHeaders(\array_merge($this->defaultHeaders, $request->getHeaders()));
+        // Default header
+        $request->setHeaders(\array_merge(
+            $this->defaultHeaders,
+            $request->getHeaders(),
+            $this->authorizationToken ? ['Authorization', $this->authorizationToken] : []
+        ));
+
         if (\in_array(\strtoupper($request->getMethod()), ['PUT', 'POST', 'DELETE'], true)) {
             $useExecutionCache = false;
         }

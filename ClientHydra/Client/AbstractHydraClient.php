@@ -14,8 +14,12 @@ use SportTrackingDataSdk\ClientHydra\Exception\FormatException;
 use SportTrackingDataSdk\ClientHydra\Metadata\MetadataManager;
 use SportTrackingDataSdk\ClientHydra\Proxy\ProxyCollection;
 use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Serializer\ProxyObjectNormalizer;
 use SportTrackingDataSdk\ClientHydra\Utils\HydraParser;
 use SportTrackingDataSdk\ClientHydra\Utils\IriConverter;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractHydraClient implements HydraClientInterface
@@ -32,14 +36,28 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
     public function __construct(
         HttpAdapterInterface $adapter,
-        IriConverter $iriConverter,
-        SerializerInterface $serializer,
-        MetadataManager $metadataManager
+        SerializerInterface $serializer = null,
+        MetadataManager $metadataManager = null
     ) {
         $this->adapter = $adapter;
-        $this->iriConverter = $iriConverter;
-        $this->serializer = $serializer;
+        $this->iriConverter = new IriConverter(
+            $this::getEntityNamespace(),
+            $this::getIriPrefix()
+        );
+
+        // Metadata manager
+        if (null === $metadataManager) {
+            $metadataManager = new MetadataManager($this::getEntityNamespace());
+        }
         $this->metadataManager = $metadataManager;
+
+        // Serializer
+        if (null === $serializer) {
+            $proxyNormalizer = new ProxyObjectNormalizer();
+            $serializer = new Serializer([$proxyNormalizer, new ObjectNormalizer()], [new JsonEncoder()]);
+            $proxyNormalizer->setHydraClient($this);
+        }
+        $this->serializer = $serializer;
 
         ProxyObject::_init(
             // refresh
@@ -101,6 +119,25 @@ abstract class AbstractHydraClient implements HydraClientInterface
                 return $this->getProxyFromIri($iri);
             }
         );
+    }
+
+    public function getIriConverter(): IriConverter
+    {
+        return $this->iriConverter;
+    }
+
+    public function getMetadataManager(): MetadataManager
+    {
+        return $this->metadataManager;
+    }
+
+    public function setAuthorizationToken(string $token, string $type = 'bearer'): void
+    {
+        if ('bearer' !== $type) {
+            throw new \RuntimeException('Only bearer authorization token authorized for now');
+        }
+
+        $this->adapter->setAuthorizationToken('Bearer '.$token);
     }
 
     public function cacheWarmUp(): void

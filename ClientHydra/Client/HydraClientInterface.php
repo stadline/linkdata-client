@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace SportTrackingDataSdk\ClientHydra\Client;
 
 use SportTrackingDataSdk\ClientHydra\Adapter\HttpAdapterInterface;
+use SportTrackingDataSdk\ClientHydra\Metadata\MetadataManager;
 use SportTrackingDataSdk\ClientHydra\Proxy\ProxyCollection;
 use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
+use SportTrackingDataSdk\ClientHydra\Utils\IriConverter;
 
 interface HydraClientInterface
 {
@@ -31,4 +33,10 @@ interface HydraClientInterface
     public function getProxyFromIri(string $iri, ?bool $autoHydrate = false): ?ProxyObject;
 
     public function cacheWarmUp(): void;
+
+    public function setAuthorizationToken(string $token): void;
+
+    public function getIriConverter(): IriConverter;
+
+    public function getMetadataManager(): MetadataManager;
 }
