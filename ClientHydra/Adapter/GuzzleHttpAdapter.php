@@ -132,7 +132,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         $request->setHeaders(\array_merge(
             $this->defaultHeaders,
             $request->getHeaders(),
-            $this->authorizationToken ? ['Authorization', $this->authorizationToken] : []
+            null !== $this->authorizationToken ? ['Authorization' => $this->authorizationToken] : []
         ));
 
         if (\in_array(\strtoupper($request->getMethod()), ['PUT', 'POST', 'DELETE'], true)) {
