@@ -8,7 +8,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 use SportTrackingDataSdk\SportTrackingData\Client\SportTrackingDataClient;
 use SportTrackingDataSdk\SportTrackingData\Entity\Activity;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 AnnotationRegistry::registerLoader('class_exists');
 
 $stdClient = new SportTrackingDataClient('https://linkdata.dev.geonaute.com');

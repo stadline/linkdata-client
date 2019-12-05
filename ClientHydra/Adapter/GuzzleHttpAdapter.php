@@ -178,7 +178,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             $requestData['cache']['savedIn'][] = 'execution';
         } else {
             try {
-                $rUri = substr($request->getUri(), 0, 1) === '/' ? substr($request->getUri(), 1) : $request->getUri();
+                $rUri = '/' === \substr($request->getUri(), 0, 1) ? \substr($request->getUri(), 1) : $request->getUri();
                 /** @var Response $response */
                 $response = $this->client->send(
                     new \GuzzleHttp\Psr7\Request($request->getMethod(), $rUri, $request->getHeaders(), $request->getBody())
