@@ -178,7 +178,7 @@ class Sport extends ProxyObject
      */
     public $userEquipments;
 
-    public function getNameByLocale(string $locale): ?string
+    public function getNameByLocale(?string $locale = 'fr'): ?string
     {
         return $this->getTranslatedPropertyByLocale('translatedNames', $locale);
     }
