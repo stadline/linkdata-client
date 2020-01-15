@@ -104,9 +104,11 @@ class ProxyCollection implements \Iterator, \ArrayAccess, \Countable
         // Members
         if (isset($data['hydra:member'])) {
             foreach ($data['hydra:member'] as $member) {
-                $object = (self::$_getProxyFromIri)($member['@id']);
-                $object->_refresh($member);
-                $this->objects[] = $object;
+                if (null !== $member) {
+                    $object = (self::$_getProxyFromIri)($member['@id']);
+                    $object->_refresh($member);
+                    $this->objects[] = $object;
+                }
             }
 
             if (true === $this->autoHydrateEnable && null !== ($data['hydra:view']['hydra:next'] ?? null)) {
