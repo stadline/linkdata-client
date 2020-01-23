@@ -174,8 +174,8 @@ class GlobalChallenge extends ProxyObject
     public function getState()
     {
         $now = new \DateTime();
-        $startedAt = $this->getStartedAtAsDateTimeObject();
-        $endedAt = $this->getEndedAtAsDateTimeObject();
+        $startedAt = $this->getStartedAt();
+        $endedAt = $this->getEndedAt();
 
         if ($startedAt > $now) {
             return self::STATE_BEFORE;
@@ -185,26 +185,6 @@ class GlobalChallenge extends ProxyObject
         }
 
         return self::STATE_CURRENT;
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return \DateTime
-     */
-    public function getStartedAtAsDateTimeObject()
-    {
-        return null !== $this->getStartedAt() ? new \DateTime($this->getStartedAt()) : null;
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return \DateTime
-     */
-    public function getEndedAtAsDateTimeObject()
-    {
-        return null !== $this->getEndedAt() ? new \DateTime($this->getEndedAt()) : null;
     }
 
     /**

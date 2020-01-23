@@ -67,7 +67,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
         $this->serializer = $serializer;
 
         ProxyObject::_init(
-            // refresh
+        // refresh
             function (ProxyObject $proxyObject, $data): void {
                 $this->serializer->deserialize(\json_encode($data), \get_class($proxyObject), 'json', [
                     'object_to_populate' => $proxyObject,
@@ -102,7 +102,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
         );
 
         ProxyCollection::_init(
-            // getData
+        // getData
             function (?string $classname, string $uri, bool $executionCacheEnable = true) use ($metadataManager): array {
                 $request = new Request(
                     'GET',
@@ -184,8 +184,8 @@ abstract class AbstractHydraClient implements HydraClientInterface
         // check if object not already store
         if (!isset($this->objects[$iri])) {
             $className = $this->iriConverter->getClassnameFromIri($iri);
-            /** @var ProxyObject $proxyObject */
             $id = $this->iriConverter->getObjectIdFromIri($iri);
+            /** @var ProxyObject $proxyObject */
             $proxyObject = new $className();
             $proxyObject->setId($id);
             $this->objects[$iri] = $proxyObject;
