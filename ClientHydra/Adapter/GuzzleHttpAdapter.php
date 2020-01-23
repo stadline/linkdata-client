@@ -23,7 +23,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     ];
     private $authorizationToken = null;
 
-    /** @var CacheItemPoolInterface */
+    /** @var ?CacheItemPoolInterface */
     private $persistantCache;
 
     /**
@@ -45,9 +45,6 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         $this->debugEnabled = $debugEnabled;
         $this->debugData = [];
         $this->executionCache = new ArrayAdapter();
-        if (null === $persistantCache) {
-            $persistantCache = new ArrayAdapter();
-        }
         $this->persistantCache = $persistantCache;
     }
 
@@ -165,7 +162,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
                 $requestData['cacheOrigin'] = 'execution';
             }
             $arrayResponse = $this->executionCache->getItem($requestHash)->get();
-        } elseif ($useExecutionCache && $this->persistantCache->hasItem($requestHash)) {
+        } elseif ($useExecutionCache && null !== $this->persistantCache && $this->persistantCache->hasItem($requestHash)) {
             if ($this->debugEnabled) {
                 $requestData['cacheOrigin'] = 'persistant';
             }
@@ -178,7 +175,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
             $requestData['cache']['savedIn'][] = 'execution';
         } else {
             try {
-                $rUri = '/' === \substr($request->getUri(), 0, 1) ? \substr($request->getUri(), 1) : $request->getUri();
+                $rUri = substr($request->getUri(), 0, 1) === '/' ? substr($request->getUri(), 1) : $request->getUri();
                 /** @var Response $response */
                 $response = $this->client->send(
                     new \GuzzleHttp\Psr7\Request($request->getMethod(), $rUri, $request->getHeaders(), $request->getBody())
@@ -197,7 +194,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
                     }
                     $requestData['cacheSavedIn'][] = 'execution';
 
-                    if ($request->isPersistantCacheEnable()) {
+                    if (null !== $this->persistantCache && $request->isPersistantCacheEnable()) {
                         $cacheItem = $this->persistantCache->getItem($requestHash);
                         $cacheItem->set($arrayResponse);
                         $cacheItem->expiresAfter($request->getPersistantCacheTTL());
@@ -263,5 +260,10 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         }
 
         return $response;
+    }
+
+    public function getPersistantCache(): ?CacheItemPoolInterface
+    {
+        return $this->persistantCache;
     }
 }
