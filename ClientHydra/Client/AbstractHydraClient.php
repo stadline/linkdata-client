@@ -149,7 +149,7 @@ abstract class AbstractHydraClient implements HydraClientInterface
 
     public function cacheWarmUp(): void
     {
-        if (self::$cache_initialized) {
+        if (self::$cache_initialized || null === $this->adapter->getPersistantCache()) {
             return;
         }
         self::$cache_initialized = true;
