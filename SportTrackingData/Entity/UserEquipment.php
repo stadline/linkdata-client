@@ -22,6 +22,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void      setSumups(array $sumups)
  * @method array     getSportsAutoAssigned()
  * @method void      setSportsAutoAssigned(array $sports)
+ * @method \DateTime getStartDate()
+ * @method void      setStartDate(\DateTime $startDate)
  * @method \DateTime getCreatedAt()
  * @method void      setCreatedAt(\DateTime $createdAt)
  * @method \DateTime getUpdatedAt()
@@ -77,6 +79,13 @@ class UserEquipment extends ProxyObject
      * @Groups({"equipment_norm", "equipment_denorm"})
      */
     public $sportsAutoAssigned;
+
+    /**
+     * @var \DateTime
+     *
+     * @Groups({"equipment_norm", "equipment_denorm"})
+     */
+    public $startDate;
 
     /**
      * @var \DateTime
