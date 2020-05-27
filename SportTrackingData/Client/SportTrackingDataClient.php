@@ -261,11 +261,17 @@ class SportTrackingDataClient extends AbstractHydraClient
     /**
      * @throws ClientHydraException
      */
-    public function getAutocompleteEquipement(string $parameter, string $query): array
+    public function getAutocompleteEquipement(string $parameter, string $query, ?string $filters = null): array
     {
+        $request = \sprintf('/v2/user_equipments/autocomplete/%s/%s', $parameter, $query);
+
+        if (null !== $filters) {
+            $request = \sprintf('%s?%s', $request, $filters);
+        }
+
         return $this->getAdapter()->makeRequest(
             'GET',
-            \sprintf('/v2/user_equipments/autocomplete/%s/%s', $parameter, $query)
+            $request
         )->getContent();
     }
 }
