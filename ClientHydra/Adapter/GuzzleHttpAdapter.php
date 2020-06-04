@@ -38,6 +38,9 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     private $isRecordingCacheWarmup = false;
     private $cacheWarmupData = [];
 
+    private $privatePersistentCachePrefix = '';
+    private $privatePersistentCacheTtl = 300;
+
     public function __construct(string $baseUrl, CacheItemPoolInterface $persistantCache = null, $debugEnabled = false)
     {
         $this->baseUrl = $baseUrl;
@@ -46,6 +49,14 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
         $this->debugData = [];
         $this->executionCache = new ArrayAdapter();
         $this->persistantCache = $persistantCache;
+    }
+
+    public function setPrivatePersistentCache(string $prefix, ?int $ttl): void
+    {
+        $this->privatePersistentCachePrefix = $prefix;
+        if (null !== $ttl) {
+            $this->privatePersistentCacheTtl = $ttl;
+        }
     }
 
     public function setAuthorizationToken(string $token): void
@@ -125,6 +136,14 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
 
     public function call(Request $request, bool $useExecutionCache = true): ResponseInterface
     {
+        // if privatePersistentCache defined, give config to Request object
+        if ('' !== $this->privatePersistentCachePrefix && -1 !== $this->privatePersistentCacheTtl) {
+            $request->setPersistantCacheEnable(true);
+            $request->setPersistantCacheScope(Request::PERSISTANTCACHE_SCOPE_PRIVATE);
+            $request->setPersistantCacheScopeId($this->privatePersistentCachePrefix);
+            $request->setPersistantCacheTTL($this->privatePersistentCacheTtl);
+        }
+
         // Default header
         $request->setHeaders(\array_merge(
             $this->defaultHeaders,
