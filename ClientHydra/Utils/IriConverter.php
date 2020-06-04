@@ -42,6 +42,9 @@ class IriConverter
             $reflectionMethod = $reflectionClass->getMethod('setId');
             $reflectionParameter = $reflectionMethod->getParameters()[0];
 
+            if (!$reflectionParameter->getType() instanceof \ReflectionNamedType) {
+                throw new \RuntimeException('Methode parameter must be a ReflectionNamedType');
+            }
             $this->classNameIdTypes[$className] = $reflectionParameter->getType()->getName();
 
             return $this->classNameIdTypes[$className];

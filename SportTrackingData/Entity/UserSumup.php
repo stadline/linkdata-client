@@ -29,9 +29,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class UserSumup extends ProxyObject
 {
-    const MONTHLY_SUMUP = 'MonthlySumup';
-    const YEARLY_SUMUP = 'YearlySumup';
-    const LIFELY_SUMUP = 'LifelySumup';
+    const MONTHLY_SUMUP = 'monthlySumup';
+    const YEARLY_SUMUP = 'yearlySumup';
+    const LIFELY_SUMUP = 'lifelySumup';
 
     /**
      * @var string
