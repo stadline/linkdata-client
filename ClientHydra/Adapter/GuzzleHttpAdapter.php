@@ -138,7 +138,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     public function call(Request $request, bool $useExecutionCache = true): ResponseInterface
     {
         // if privatePersistentCache defined, give config to Request object
-        if ($this->privatePersistentCachePrefix !== '' && $this->privatePersistentCacheTtl !== -1) {
+        if ('' !== $this->privatePersistentCachePrefix && -1 !== $this->privatePersistentCacheTtl) {
             $request->setPersistantCacheEnable(true);
             $request->setPersistantCacheScope(Request::PERSISTANTCACHE_SCOPE_PRIVATE);
             $request->setPersistantCacheScopeId($this->privatePersistentCachePrefix);
