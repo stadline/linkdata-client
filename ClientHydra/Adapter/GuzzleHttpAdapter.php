@@ -39,7 +39,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     private $cacheWarmupData = [];
 
     private $privatePersistentCachePrefix = '';
-    private $privatePersistentCacheTtl = -1;
+    private $privatePersistentCacheTtl = 300;
 
     public function __construct(string $baseUrl, CacheItemPoolInterface $persistantCache = null, $debugEnabled = false)
     {
@@ -57,7 +57,9 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
     public function setPrivatePersistentCache(string $prefix, ?int $ttl): void
     {
         $this->privatePersistentCachePrefix = $prefix;
-        $this->privatePersistentCacheTtl = $ttl ? $ttl : 5;
+        if (null !== $ttl) {
+            $this->privatePersistentCacheTtl = $ttl;
+        }
     }
 
     public function setAuthorizationToken(string $token): void
