@@ -86,11 +86,6 @@ class Request
             return false;
         }
 
-        // @todo : remove when private scope is implemented
-        if (self::PERSISTANTCACHE_SCOPE_PUBLIC !== $this->persistantCacheScope) {
-            return false;
-        }
-
         if (\in_array(\strtoupper($this->getMethod()), ['PUT', 'POST', 'DELETE'], true)) {
             return false;
         }
