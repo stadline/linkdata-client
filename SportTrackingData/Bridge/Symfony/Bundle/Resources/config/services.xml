@@ -7,13 +7,10 @@
     <services>
         <service id="sporttrackingdata_sdk.client" alias="SportTrackingDataSdk\SportTrackingData\Client\SportTrackingDataClient" />
         <service id="sporttrackingdata_sdk.http_adapter" alias="sporttrackingdata_sdk.http_adapter.guzzle" />
-        <service id="sporttrackingdata_sdk.cache_adapter" alias="sporttrackingdata_sdk.cache_adapter.array" />
-
-        <service id="sporttrackingdata_sdk.cache_adapter.array" class="Symfony\Component\Cache\Adapter\ArrayAdapter" />
 
         <service id="sporttrackingdata_sdk.http_adapter.guzzle" class="SportTrackingDataSdk\ClientHydra\Adapter\GuzzleHttpAdapter">
             <argument>%sporttrackingdata_sdk.base_url%</argument>
-            <argument type="service" id="sporttrackingdata_sdk.cache_adapter" />
+            <argument type="service" id="sporttrackingdata_sdk.cache_adapter"  on-invalid="null" />
             <argument>%kernel.debug%</argument>
         </service>
 

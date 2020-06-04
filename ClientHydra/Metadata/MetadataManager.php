@@ -94,7 +94,7 @@ class MetadataManager
                 $propertyName = \lcfirst(\substr($method->getName(), 3));
 
                 // property already known : ignore
-                if (\in_array($propertyName, $metadata, true)) {
+                if (\in_array($propertyName, $metadata->getProperties(), true)) {
                     continue;
                 }
 
@@ -108,6 +108,9 @@ class MetadataManager
                     continue;
                 }
 
+                if (!$param->getType() instanceof \ReflectionNamedType) {
+                    throw new \RuntimeException('Methode parameter must be a ReflectionNamedType');
+                }
                 $type = $this->parseType($param->getType()->getName());
 
                 $metadata->setProperty(

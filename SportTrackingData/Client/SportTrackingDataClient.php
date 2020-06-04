@@ -109,9 +109,11 @@ class SportTrackingDataClient extends AbstractHydraClient
             )
         );
 
-        if ($object instanceof Activity) {
-            return $object;
+        if (!$object instanceof Activity) {
+            throw new \RuntimeException('postActivityGPX need the api to return an Activity object');
         }
+
+        return $object;
     }
 
     public function getActivityTCX(string $activityId): string
@@ -137,9 +139,11 @@ class SportTrackingDataClient extends AbstractHydraClient
             )
         );
 
-        if ($object instanceof Activity) {
-            return $object;
+        if (!$object instanceof Activity) {
+            throw new \RuntimeException('postActivityGPX need the api to return an Activity object');
         }
+
+        return $object;
     }
 
     /**

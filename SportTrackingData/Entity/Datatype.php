@@ -146,7 +146,6 @@ class Datatype extends ProxyObject
         self::DESCENT => 'icon-geonaute-descent',
         self::LAP => 'icon-geonaute-time',
         self::BREAK_TIME => 'icon-geonaute-time',
-        self::WEIGHT_KILOGRAMS => 'icon-geonaute-cal',
         self::CALORIES_BURNT => 'icon-geonaute-cal',
         self::DURATION => 'icon-geonaute-time',
         self::ELAPSED_TIME => 'icon-geonaute-time',

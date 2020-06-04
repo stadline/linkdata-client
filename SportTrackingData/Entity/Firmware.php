@@ -85,6 +85,6 @@ class Firmware extends ProxyObject
 
     public function __toString(): string
     {
-        return \sprintf('%s | %s (#%s)', $this->getModel(), $this->getVersion(), $this->getId());
+        return \sprintf('%s | %s (#%s)', $this->getModel()->getNameByLocale('en'), $this->getVersion(), $this->getId());
     }
 }
