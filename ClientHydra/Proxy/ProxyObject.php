@@ -95,23 +95,23 @@ abstract class ProxyObject
     public function __call($name, $arguments)
     {
         if (1 !== \preg_match('/^(?<method>set|get|is)(?<propertyName>[A-Za-z0-1]+)$/', $name, $matches)) {
-            throw new \RuntimeException(\sprintf('No method %s for object %s', $name, \get_class($this)));
+            throw new \RuntimeException(\sprintf('No method %s for object %s', $name, static::class));
         }
 
         // Check propertyExists
         $propertyName = \lcfirst($matches['propertyName']);
         if (!(new \ReflectionClass($this))->hasProperty($propertyName)) {
-            throw new \RuntimeException(\sprintf('%s::%s() error : property "%s" does not exists', \get_class($this), $name, $propertyName));
+            throw new \RuntimeException(\sprintf('%s::%s() error : property "%s" does not exists', static::class, $name, $propertyName));
         }
 
         if ('set' === $matches['method']) {
             if (1 !== \count($arguments)) {
-                throw new \RuntimeException(\sprintf('%s::%s() require one and only one parameter', \get_class($this), $name));
+                throw new \RuntimeException(\sprintf('%s::%s() require one and only one parameter', static::class, $name));
             }
             $this->_set($propertyName, $arguments[0]);
         } elseif (\in_array($matches['method'], ['is', 'get'], true)) {
             if (0 !== \count($arguments)) {
-                throw new \RuntimeException(\sprintf('%s::%s() require no parameter', \get_class($this), $name));
+                throw new \RuntimeException(\sprintf('%s::%s() require no parameter', static::class, $name));
             }
 
             return $this->_get($propertyName);
@@ -146,7 +146,7 @@ abstract class ProxyObject
 
     protected function _getMetadata(): ProxyObjectMetadata
     {
-        return self::$_metadataManager->getClassMetadata(\get_class($this));
+        return self::$_metadataManager->getClassMetadata(static::class);
     }
 
     protected function _set($property, $value): void
@@ -215,7 +215,7 @@ abstract class ProxyObject
 
         // search if property exists
         if (null === $this->_getMetadata()->getProperty($property)) {
-            throw new \RuntimeException(\sprintf('Try to get undefined property %s::%s', \get_class($this), $property));
+            throw new \RuntimeException(\sprintf('Try to get undefined property %s::%s', static::class, $property));
         }
 
         // Object not hydrated : autohydrate
