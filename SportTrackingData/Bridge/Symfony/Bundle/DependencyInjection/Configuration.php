@@ -17,10 +17,15 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-
-        /** @var ArrayNodeDefinition $rootNode */
-        $rootNode = $treeBuilder->root('sporttrackingdata');
+        if (\method_exists(TreeBuilder::class, 'getRootNode')) {
+            $treeBuilder = new TreeBuilder('sporttrackingdata');
+            /** @var ArrayNodeDefinition $rootNode */
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $treeBuilder = new TreeBuilder();
+            /** @var ArrayNodeDefinition $rootNode */
+            $rootNode = $treeBuilder->root('sporttrackingdata');
+        }
 
         $rootNode
             ->children()
