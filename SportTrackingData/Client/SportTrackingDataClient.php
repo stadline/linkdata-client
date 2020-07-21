@@ -274,4 +274,17 @@ class SportTrackingDataClient extends AbstractHydraClient
             $request
         )->getContent();
     }
+
+    /**
+     * @throws ClientHydraException
+     */
+    public function getProductRecommandation(string $userLdid, string $algoName)
+    {
+        $request = \sprintf('/v2/product_recommandations?user=%s&algoName=%s', $userLdid, $algoName);
+
+        return $this->getAdapter()->makeRequest(
+            'GET',
+            $request
+        )->getContent();
+    }
 }
