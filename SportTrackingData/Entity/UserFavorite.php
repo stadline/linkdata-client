@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
 
 namespace SportTrackingDataSdk\SportTrackingData\Entity;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @method User              getUser()
- * @method void              setUser(User $user)
- * @method string            getType()
- * @method void              setType(string $type)
- * @method ?string           getProvider()
- * @method void              setProvider(?string $provider)
- * @method string            getValue()
- * @method void              setValue(string $value)
+ * @method User    getUser()
+ * @method void    setUser(User $user)
+ * @method string  getType()
+ * @method void    setType(string $type)
+ * @method ?string getProvider()
+ * @method void    setProvider(?string $provider)
+ * @method string  getValue()
+ * @method void    setValue(string $value)
  */
 class UserFavorite
 {
