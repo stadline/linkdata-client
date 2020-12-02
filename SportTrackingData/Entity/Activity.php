@@ -65,7 +65,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void                 setEquipments(array $equipments)
  * @method void                 addEquipment(UserEquipment $equipment)
  * @method void                 removeEquipment(UserEquipment $equipment)
- * @method null|SubActivity     getSubActivities()
+ * @method array                getSubActivities()
  * @method void                 setSubActivities(?array $subActivity)
  */
 class Activity extends ProxyObject

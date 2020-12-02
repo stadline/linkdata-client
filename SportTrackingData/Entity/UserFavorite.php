@@ -9,6 +9,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class UserFavorite
 {
     /**
+     * @var string
+     * @Groups({"user_favorite_norm"})
+     */
+    public $id;
+
+    /**
      * @var User
      * @Groups({"user_favorite_norm", "user_favorite_denorm"})
      */
@@ -32,6 +38,23 @@ class UserFavorite
      */
     public $value;
 
+    /**
+     * @var \DateTime
+     * @Groups({"user_favorite_norm", "user_favorite_denorm"})
+     */
+    public $createdAt;
+
+    /**
+     * @var \DateTime
+     * @Groups({"user_favorite_norm", "user_favorite_denorm"})
+     */
+    public $updatedAt;
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+    
     public function getUser(): User
     {
         return $this->user;
@@ -70,5 +93,25 @@ class UserFavorite
     public function setValue(string $value): void
     {
         $this->value = $value;
+    }
+
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
     }
 }
