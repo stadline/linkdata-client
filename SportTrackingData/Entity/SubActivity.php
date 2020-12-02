@@ -6,39 +6,71 @@ namespace SportTrackingDataSdk\SportTrackingData\Entity;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @method int   getFrom()
- * @method void  setFrom(int $from)
- * @method int   getSportId()
- * @method void  setSportId(int $sportId)
- * @method int   getDuration()
- * @method void  setDuration(int $duration)
- * @method array getDataSummaries()
- * @method void  setDataSummaries(array $dataSummaries)
- */
 class SubActivity
 {
     /**
      * @var int
-     * @Groups({"sub_activity_norm", "sub_activity_denorm"})
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     public $from;
 
     /**
      * @var int
-     * @Groups({"sub_activity_norm", "sub_activity_denorm"})
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     public $sportId;
 
     /**
      * @var int
-     * @Groups({"sub_activity_norm", "sub_activity_denorm"})
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     public $duration;
 
     /**
      * @var array
-     * @Groups({"sub_activity_norm", "sub_activity_denorm"})
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     public $dataSummaries = [];
+
+    public function getFrom(): int
+    {
+        return $this->from;
+    }
+
+    public function setFrom(int $from): void
+    {
+        $this->from = $from;
+    }
+
+    public function getSportId(): int
+    {
+        return $this->sportId;
+    }
+
+    public function setSportId(int $sportId): void
+    {
+        $this->sportId = $sportId;
+    }
+
+    public function getDuration(): int
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(int $duration): void
+    {
+        $this->duration = $duration;
+    }
+
+    public function getDataSummaries(): array
+    {
+        return $this->dataSummaries;
+    }
+
+    public function setDataSummaries(array $dataSummaries): void
+    {
+        $this->dataSummaries = $dataSummaries;
+    }
+
+
 }

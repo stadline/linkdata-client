@@ -240,7 +240,7 @@ class Activity extends ProxyObject
 
     /**
      * @var SubActivity[]
-     * @Groups({"activity_norm"})
+     * @Groups({"activity_norm", "activity_denorm"})
      */
     public $subActivities;
 
