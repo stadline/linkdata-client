@@ -2,3 +2,5 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     excludes_analyse:
         - vendor
+    ignoreErrors:
+        - '#Access to an undefined property SportTrackingDataSdk\\ClientHydra\\Proxy\\ProxyObject::\$id\.#'

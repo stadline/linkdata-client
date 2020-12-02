@@ -18,7 +18,7 @@ interface HydraClientInterface
 
     public function getCollection(string $classname, array $filters = []): ProxyCollection;
 
-    public function getObject(string $className, $id, bool $autoHydrate = false): ?ProxyObject;
+    public function getObject(string $className, $id, ?bool $autoHydrate = false): ?ProxyObject;
 
     public function contains($object): bool;
 
