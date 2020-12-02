@@ -65,6 +65,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void                 setEquipments(array $equipments)
  * @method void                 addEquipment(UserEquipment $equipment)
  * @method void                 removeEquipment(UserEquipment $equipment)
+ * @method array                getSubActivities()
+ * @method void                 setSubActivities(?array $subActivity)
  */
 class Activity extends ProxyObject
 {
@@ -235,6 +237,12 @@ class Activity extends ProxyObject
      * @Groups({"activity_norm"})
      */
     public $updatedAt;
+
+    /**
+     * @var SubActivity[]
+     * @Groups({"activity_norm", "activity_denorm"})
+     */
+    public $subActivities;
 
     public function getDatastream()
     {
