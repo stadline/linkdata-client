@@ -54,7 +54,7 @@ class UserFavorite
     {
         return $this->id;
     }
-    
+
     public function getUser(): User
     {
         return $this->user;
