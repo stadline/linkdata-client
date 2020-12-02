@@ -71,6 +71,4 @@ class SubActivity
     {
         $this->dataSummaries = $dataSummaries;
     }
-
-
 }
