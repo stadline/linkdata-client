@@ -26,6 +26,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void           setBirthDate(\DateTime $birthDate)
  * @method null|\DateTime getScheduleDelete()
  * @method void           setScheduleDelete(?\DateTime $scheduleDelete)
+ * @method bool           getMonthlyActivityMail()
+ * @method void           setMonthlyActivityMail(bool $monthlyActivityMail)
  * @method null|array     getUserMeasures()
  * @method null|array     getUserMeasureGoals()
  * @method null|array     getUserStorages()
@@ -121,6 +123,12 @@ class User extends ProxyObject
      * @Groups({"user_denorm"})
      */
     public $userAgreements;
+
+    /**
+     * @var bool
+     * @Groups({"user_norm", "user_denorm"})
+     */
+    public $monthlyActivityMail;
 
     /**
      * @var \DateTime
