@@ -50,7 +50,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @method void                 setTrackFlag(bool $trackFlag)
  * @method bool                 isDatastreamFlag()
  * @method void                 setDatastreamFlag(bool $datastreamFlag)
- * @method null|GlobalChallenge getGlobalChallenge()
  * @method void                 setGlobalChallenge(?GlobalChallenge $globalChallenge)
  * @method array                getAvailableDatatypes()
  * @method void                 setAvailableDatatypes(array $availableDatatypes)
