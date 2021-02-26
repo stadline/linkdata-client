@@ -24,12 +24,12 @@ $extractConf = \json_decode($fileContent, true);
 $loader = require \sprintf('%s/%s', $baseLd2Path, $extractConf['autoload_path']);
 AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 
-class UniversalAnnotationReader extends AnnotationReader
+class generateMethods extends AnnotationReader
 {
     /**
      * Get type of property from property declaration.
      */
-    public function getPropertyType(\ReflectionProperty $property): ?string
+    public function getPropertyType(ReflectionProperty $property): ?string
     {
         $doc = $property->getDocComment();
         \preg_match_all('#@var (.*?)\n#s', $doc, $annotations);
@@ -61,12 +61,12 @@ class UniversalAnnotationReader extends AnnotationReader
 }
 
 if (!isset($argv[1])) {
-    echo 'Error : missing filename parameter'.PHP_EOL;
+    echo 'Error : missing filename parameter'.\PHP_EOL;
     exit(1);
 }
 
 if (!\file_exists($argv[1])) {
-    echo "Error : File \"{$argv[1]}\" not found".PHP_EOL;
+    echo "Error : File \"{$argv[1]}\" not found".\PHP_EOL;
     exit(1);
 }
 
@@ -132,9 +132,9 @@ function processEntity(string $entityContent): array
 
     $content = <<<EOF
 <?php
-        
+
 declare(strict_types=1);
-        
+
 namespace SportTrackingDataSdk\SportTrackingData\Entity;
 
 use SportTrackingDataSdk\ClientHydra\Proxy\ProxyObject;
@@ -175,7 +175,7 @@ function generateClassDoc(array $reflectionProperties): string
 {
     global $annotationReader;
 
-    $classDoc = '/**'.PHP_EOL;
+    $classDoc = '/**'.\PHP_EOL;
 
     foreach ($reflectionProperties as $reflectionProperty) {
         // Annotations
@@ -202,10 +202,10 @@ function generateClassDoc(array $reflectionProperties): string
 
         // Setter
         $stringSetter = 'set'.\ucfirst($propertyName).'('.$stringType.' $'.$propertyName.')';
-        $classDoc .= \sprintf(' * @method %s %s', $stringType, $stringGetter).PHP_EOL;
-        $classDoc .= \sprintf(' * @method void %s', $stringSetter).PHP_EOL;
+        $classDoc .= \sprintf(' * @method %s %s', $stringType, $stringGetter).\PHP_EOL;
+        $classDoc .= \sprintf(' * @method void %s', $stringSetter).\PHP_EOL;
     }
-    $classDoc .= ' */'.PHP_EOL;
+    $classDoc .= ' */'.\PHP_EOL;
 
     return $classDoc;
 }
@@ -240,7 +240,7 @@ EOF;
 
     if ($type = $annotationReader->getPropertyType($reflectionProperty)) {
         $annotationsString .= <<<EOF
-        
+
      * @var ${type}
      *
 EOF;
@@ -256,13 +256,13 @@ EOF;
         }
 
         $annotationsString .= <<<EOF
-        
+
      * @Groups(${groupsString}})
 EOF;
     }
 
     $annotationsString .= <<<EOF
-    
+
      */
 
 EOF;

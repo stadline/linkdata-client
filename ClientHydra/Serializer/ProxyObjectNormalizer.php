@@ -32,7 +32,7 @@ class ProxyObjectNormalizer extends ObjectNormalizer
         }
 
         if ($object instanceof \DateTime) {
-            return $object->format(DATE_ATOM);
+            return $object->format(\DATE_ATOM);
         }
 
         if (!$object instanceof ProxyObject || \in_array(\get_class($object), $context['classContext'], true)) {
