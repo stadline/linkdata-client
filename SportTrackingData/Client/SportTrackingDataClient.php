@@ -103,7 +103,7 @@ class SportTrackingDataClient extends AbstractHydraClient
         $object = $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'POST',
-                \sprintf('/v2/activities'),
+                '/v2/activities',
                 ['Content-Type' => 'application/gpx+xml'],
                 $gpxString
             )
@@ -133,7 +133,7 @@ class SportTrackingDataClient extends AbstractHydraClient
         $object = $this->parseResponse(
             $this->getAdapter()->makeRequest(
                 'POST',
-                \sprintf('/v2/activities'),
+                '/v2/activities',
                 ['Content-Type' => 'application/tcx+xml'],
                 $gpxString
             )
