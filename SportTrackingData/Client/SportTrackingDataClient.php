@@ -140,7 +140,37 @@ class SportTrackingDataClient extends AbstractHydraClient
         );
 
         if (!$object instanceof Activity) {
-            throw new \RuntimeException('postActivityGPX need the api to return an Activity object');
+            throw new \RuntimeException('postActivityTCX need the api to return an Activity object');
+        }
+
+        return $object;
+    }
+
+    public function getActivityFIT(string $activityId): string
+    {
+        try {
+            return $this->getAdapter()->makeRequest(
+                'GET',
+                \sprintf('/v2/activities/%s.%s', $activityId, 'fit')
+            )->getContent();
+        } catch (ClientHydraException $e) {
+            return '';
+        }
+    }
+
+    public function postActivityFIT($fitString): Activity
+    {
+        $object = $this->parseResponse(
+            $this->getAdapter()->makeRequest(
+                'POST',
+                '/v2/activities',
+                ['Content-Type' => 'application/octet-stream'],
+                $fitString
+            )
+        );
+
+        if (!$object instanceof Activity) {
+            throw new \RuntimeException('postActivityFIT need the api to return an Activity object');
         }
 
         return $object;
