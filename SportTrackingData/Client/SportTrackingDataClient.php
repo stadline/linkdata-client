@@ -289,7 +289,7 @@ class SportTrackingDataClient extends AbstractHydraClient
     /**
      * @throws ClientHydraException
      */
-    public function getExportPersonalData(string $userId, string $format = null)
+    public function createExportPersonalData(string $userId, string $format = null)
     {
         return $this->getAdapter()->makeRequest(
             'POST',
