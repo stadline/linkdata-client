@@ -285,7 +285,7 @@ class SportTrackingDataClient extends AbstractHydraClient
             \sprintf('/v2/product_recommendations?user=%s&algoName=%s', $userId, $algoName)
         )->getContent();
     }
-    
+
     /**
      * @throws ClientHydraException
      */
@@ -295,7 +295,7 @@ class SportTrackingDataClient extends AbstractHydraClient
             'POST',
             \sprintf('/v2/users/%s/export_personal_data', $userId),
             [],
-            json_encode(["activities_format" => $format])
+            \json_encode(['activities_format' => $format])
         )->getContent();
     }
 }
