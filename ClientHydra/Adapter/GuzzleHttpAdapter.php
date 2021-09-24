@@ -249,7 +249,7 @@ class GuzzleHttpAdapter implements HttpAdapterInterface
                 throw $e;
             }
 
-            throw new RequestException(\sprintf('Error while requesting %s with %s method : %s', $request->getUri(), $request->getMethod(), substr($e->getMessage(), 0, 200).'...'), $request->getBody(), $e);
+            throw new RequestException(\sprintf('Error while requesting %s with %s method : %s', $request->getUri(), $request->getMethod(), substr($e->getMessage(), 0, 600).'...'), $request->getBody(), $e);
         }
 
         if (isset($arrayResponse) && null !== $arrayResponse['contentType']) {
